@@ -1,24 +1,7 @@
-#ifndef RCC_H
-#define RCC_H
+#ifndef STM32L432KC_RCC_H
+#define STM32L432KC_RCC_H
 
 #include <stdint.h>
-
-#define MASK_RCC_AHB2ENR_GPIOAEN (1 << 0) 
-#define MASK_RCC_AHB2ENR_GPIOBEN (1 << 1) 
-#define MASK_RCC_AHB2ENR_GPIOCEN (1 << 2) 
-#define MASK_RCC_AHB2ENR_GPIODEN (1 << 3) 
-#define MASK_RCC_AHB2ENR_GPIOEEN (1 << 4) 
-#define MASK_RCC_AHB2ENR_GPIOHEN (1 << 7)
-
-#define MASK_RCC_APB2ENR_USART1EN  (1 << 14)
-#define MASK_RCC_APB1ENR1_USART2EN (1 << 17)
-#define MASK_RCC_APB1ENR1_USART3EN (1 << 18)
-
-#define MASK_RCC_APB2ENR_TIM1EN (1 << 11)
-
-#define ADDRESS_BASE_RCC 0x40021000
-
-#define RCC ( (RCC_t *) (ADDRESS_BASE_RCC) )
 
 typedef struct {
 	uint32_t volatile CR;
@@ -61,7 +44,24 @@ typedef struct {
 	uint32_t volatile CSR;
 	uint32_t volatile CRRCR;
 	uint32_t volatile CCIPR2;
-} RCC_t;
+} RCC_REG_BLOCKS;
+
+/* RCC registers as structs */
+
+#define RCC ( (RCC_REG_BLOCKS volatile *) 0x40021000 )
+
+/* RCC AHB2 register macros */
+
+#define RCC_AHB2ENR_GPIOAEN_MASK (1 << 0)
+#define RCC_AHB2ENR_GPIOBEN_MASK (1 << 1)
+#define RCC_AHB2ENR_GPIOCEN_MASK (1 << 2)
+#define RCC_AHB2ENR_GPIOHEN_MASK (1 << 7)
+
+#define RCC_AHB2ENR_ADCEN_MASK   (1 << 13)
+
+#define RCC_AHB2ENR_AESEN_MASK   (1 << 16)
+
+#define RCC_AHB2ENR_RNGEN_MASK   (1 << 18)
 
 #endif
 

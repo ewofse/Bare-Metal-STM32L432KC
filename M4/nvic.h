@@ -1,0 +1,115 @@
+#ifndef M4_NVIC_H
+#define M4_NVIC_H
+
+#include <stdint.h>
+
+typedef struct {
+    uint32_t ISER0;
+    uint32_t ISER1;
+    uint32_t ISER2;
+    uint32_t ISER3;
+    uint32_t ISER4;
+    uint32_t ISER5;
+    uint32_t ISER6;
+    uint32_t ISER7;
+    uint32_t ICER0;
+    uint32_t ICER1;
+    uint32_t ICER2;
+    uint32_t ICER3;
+    uint32_t ICER4;
+    uint32_t ICER5;
+    uint32_t ICER6;
+    uint32_t ICER7;
+    uint32_t ISPR0;
+    uint32_t ISPR1;
+    uint32_t ISPR2;
+    uint32_t ISPR3;
+    uint32_t ISPR4;
+    uint32_t ISPR5;
+    uint32_t ISPR6;
+    uint32_t ISPR7;
+    uint32_t ICPR0;
+    uint32_t ICPR1;
+    uint32_t ICPR2;
+    uint32_t ICPR3;
+    uint32_t ICPR4;
+    uint32_t ICPR5;
+    uint32_t ICPR6;
+    uint32_t ICPR7;
+    uint32_t IABR0;
+    uint32_t IABR1;
+    uint32_t IABR2;
+    uint32_t IABR3;
+    uint32_t IABR4;
+    uint32_t IABR5;
+    uint32_t IABR6;
+    uint32_t IABR7;
+    uint32_t IPR0;
+    uint32_t IPR1;
+    uint32_t IPR2;
+    uint32_t IPR3;
+    uint32_t IPR4;
+    uint32_t IPR5;
+    uint32_t IPR6;
+    uint32_t IPR7;
+    uint32_t IPR8;
+    uint32_t IPR9;
+    uint32_t IPR10;
+    uint32_t IPR11;
+    uint32_t IPR12;
+    uint32_t IPR13;
+    uint32_t IPR14;
+    uint32_t IPR15;
+    uint32_t IPR16;
+    uint32_t IPR17;
+    uint32_t IPR18;
+    uint32_t IPR19;
+    uint32_t IPR20;
+    uint32_t IPR21;
+    uint32_t IPR22;
+    uint32_t IPR23;
+    uint32_t IPR24;
+    uint32_t IPR25;
+    uint32_t IPR26;
+    uint32_t IPR27;
+    uint32_t IPR28;
+    uint32_t IPR29;
+    uint32_t IPR30;
+    uint32_t IPR31;
+    uint32_t IPR32;
+    uint32_t IPR33;
+    uint32_t IPR34;
+    uint32_t IPR35;
+    uint32_t IPR36;
+    uint32_t IPR37;
+    uint32_t IPR38;
+    uint32_t IPR39;
+    uint32_t IPR40;
+    uint32_t IPR41;
+    uint32_t IPR42;
+    uint32_t IPR43;
+    uint32_t IPR44;
+    uint32_t IPR45;
+    uint32_t IPR46;
+    uint32_t IPR47;
+    uint32_t IPR48;
+    uint32_t IPR49;
+    uint32_t IPR50;
+    uint32_t IPR51;
+    uint32_t IPR52;
+    uint32_t IPR53;
+    uint32_t IPR54;
+    uint32_t IPR55;
+    uint32_t IPR56;
+    uint32_t IPR57;
+    uint32_t IPR58;
+    uint32_t IPR59;
+    uint32_t STIR;
+} NVIC_REG_BLOCKS;
+
+/* NVIC registers as structs */
+
+#define NVIC ( (NVIC_REG_BLOCKS volatile *) 0xE000E100 )
+
+#endif
+

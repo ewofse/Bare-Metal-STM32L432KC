@@ -16,8 +16,8 @@ typedef struct {
 
 /* SysTick control and status register macros */
 
-#define SYST_CSR_ENABLE_MASK (1 << 0)
-#define SYST_CSR_TICKINT_MASK (1 << 1)
+#define SYST_CSR_ENABLE_MASK    (1 << 0)
+#define SYST_CSR_TICKINT_MASK   (1 << 1)
 #define SYST_CSR_CLKSOURCE_MASK (1 << 2)
 #define SYST_CSR_COUNTFLAG_MASK (1 << 16)
 
@@ -32,7 +32,7 @@ typedef struct {
 /* SysTick calibration value register macros */
 
 #define SYST_CVR_TENMS_MASK (1 << 23)
-#define SYST_CVR_SKEW_MASK (1 << 30)
+#define SYST_CVR_SKEW_MASK  (1 << 30)
 #define SYST_CVR_NOREF_MASK (1 << 31)
 
 #endif

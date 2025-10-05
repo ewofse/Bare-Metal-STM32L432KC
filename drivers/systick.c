@@ -4,7 +4,7 @@
 #include "../M4/systick.h"
 
 #ifndef SYSTICK_FREQ_HZ
-#define SYSTICK_FREQ_HZ 1
+#define SYSTICK_FREQ_HZ 2
 #endif
 
 #ifndef EXT_CLK_FREQ_HZ

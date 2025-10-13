@@ -10,8 +10,8 @@ MEMORY {
 SECTIONS {
     .text : {
         *(.vector_table*)
-        *(.init*)
         *(.text*)
+        *(.init*)
         *(.rodata*)
         __etext = .;
     } > FLASH

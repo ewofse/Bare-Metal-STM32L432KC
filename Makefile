@@ -1,5 +1,5 @@
 INCLUDES = -Idrivers -ISTM32L432KC -IM4 -Isetup
-CFLAGS = -Os -std=c99 -ffreestanding -nostartfiles -mcpu=cortex-m33
+CFLAGS = -Os -std=c99 -ffreestanding -nostartfiles -mcpu=cortex-m33 -Wall
 
 .PHONY: clean
 

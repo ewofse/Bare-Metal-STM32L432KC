@@ -4,7 +4,7 @@
 #include "../M4/systick.h"
 
 #ifndef SYSTICK_FREQ_HZ
-#define SYSTICK_FREQ_HZ 2
+#define SYSTICK_FREQ_HZ 1
 #endif
 
 #ifndef EXT_CLK_FREQ_HZ
@@ -16,7 +16,7 @@
 void configure_systick(void) {
     SYSTICK->RVR = SYSTICK_TOP; 
     SYSTICK->CVR = 0;
-    SYSTICK->CSR = SYST_CSR_ENABLE_MASK | SYST_CSR_CLKSOURCE_MASK;
+    SYSTICK->CSR = SYST_CSR_ENABLE(1) | SYST_CSR_CLKSOURCE(1);
 }
 
 _Bool systick_has_fired(void) {

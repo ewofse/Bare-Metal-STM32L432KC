@@ -10,5 +10,5 @@ stm32l432kc.elf: setup/*.c src/test_systick.c led.o systick.o
 	arm-none-eabi-gcc $(CFLAGS) $(INCLUDES) -c $^
 
 clean:
-	-rm *.elf
+	-rm *.elf *.o
 

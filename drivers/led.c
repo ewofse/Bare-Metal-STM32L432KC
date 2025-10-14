@@ -3,7 +3,7 @@
 #include "rcc.h"
 
 void configure_led(void) {
-    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN_MASK;
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN(1);
 
     GPIOB->MODER &= ~(GPIO_MODER_MODE3_MASK);
     GPIOB->MODER |= GPIO_MODER_MODE3(1);

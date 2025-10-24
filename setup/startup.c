@@ -12,7 +12,7 @@ void __attribute__( ( section (".init") ) ) entry_point(void) {
 
 void DEFAULT_Handler() {
     // M4 system reset request
-    SCB->AIRCR |= SCB_AIRCR_SYSRESETREQ_MASK;
+    SCB->AIRCR |= SCB_AIRCR_SYSRESETREQ(1);
 
     __asm__("CPSID I");
     
@@ -100,6 +100,9 @@ void * const __attribute__( ( section (".vector_table") ) ) vector_table[] = {
     MEMMANAGE_Handler,
     BUSFAULT_Handler,
     USAGEFAULT_Handler,
+    RESERVED,
+    RESERVED,
+    RESERVED,
     RESERVED,
     SVCALL_Handler,
     DEBUG_Handler,

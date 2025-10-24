@@ -15,6 +15,7 @@ void configure_led(void) {
     GPIOB->PUPDR |= GPIO_PUPDR_PUPD3(0);
 
     GPIOB->OTYPER &= ~(GPIO_OTYPER_OT3_MASK);
+    GPIOB->OTYPER |= GPIO_OTYPER_OT3(0);
 }
 
 void turn_on_led(void) {
@@ -26,6 +27,6 @@ void turn_off_led(void) {
 }
 
 void toggle_led(void) {
-    GPIOB->BSRR = (GPIOB->ODR & GPIO_ODR_OD3_MASK) ? GPIO_BSRR_BR3(1) : GPIO_BSRR_BS3(1);
+    (GPIOB->ODR & GPIO_ODR_OD3_MASK) ? turn_off_led() : turn_on_led();
 }
 

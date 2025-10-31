@@ -1,0 +1,807 @@
+#ifndef M4_NVIC_H
+#define M4_NVIC_H
+
+#include <stdint.h>
+
+#define ALL1 ( (uint32_t) 0xFFFFFFFF )
+
+typedef struct {
+    uint32_t ISER0;
+    uint32_t ISER1;
+    uint32_t ISER2;
+    uint32_t ISER3;
+    uint32_t ISER4;
+    uint32_t ISER5;
+    uint32_t ISER6;
+    uint32_t ISER7;
+    uint32_t ICER0;
+    uint32_t ICER1;
+    uint32_t ICER2;
+    uint32_t ICER3;
+    uint32_t ICER4;
+    uint32_t ICER5;
+    uint32_t ICER6;
+    uint32_t ICER7;
+    uint32_t ISPR0;
+    uint32_t ISPR1;
+    uint32_t ISPR2;
+    uint32_t ISPR3;
+    uint32_t ISPR4;
+    uint32_t ISPR5;
+    uint32_t ISPR6;
+    uint32_t ISPR7;
+    uint32_t ICPR0;
+    uint32_t ICPR1;
+    uint32_t ICPR2;
+    uint32_t ICPR3;
+    uint32_t ICPR4;
+    uint32_t ICPR5;
+    uint32_t ICPR6;
+    uint32_t ICPR7;
+    uint32_t IABR0;
+    uint32_t IABR1;
+    uint32_t IABR2;
+    uint32_t IABR3;
+    uint32_t IABR4;
+    uint32_t IABR5;
+    uint32_t IABR6;
+    uint32_t IABR7;
+    uint32_t IPR0;
+    uint32_t IPR1;
+    uint32_t IPR2;
+    uint32_t IPR3;
+    uint32_t IPR4;
+    uint32_t IPR5;
+    uint32_t IPR6;
+    uint32_t IPR7;
+    uint32_t IPR8;
+    uint32_t IPR9;
+    uint32_t IPR10;
+    uint32_t IPR11;
+    uint32_t IPR12;
+    uint32_t IPR13;
+    uint32_t IPR14;
+    uint32_t IPR15;
+    uint32_t IPR16;
+    uint32_t IPR17;
+    uint32_t IPR18;
+    uint32_t IPR19;
+    uint32_t IPR20;
+    uint32_t IPR21;
+    uint32_t IPR22;
+    uint32_t IPR23;
+    uint32_t IPR24;
+    uint32_t IPR25;
+    uint32_t IPR26;
+    uint32_t IPR27;
+    uint32_t IPR28;
+    uint32_t IPR29;
+    uint32_t IPR30;
+    uint32_t IPR31;
+    uint32_t IPR32;
+    uint32_t IPR33;
+    uint32_t IPR34;
+    uint32_t IPR35;
+    uint32_t IPR36;
+    uint32_t IPR37;
+    uint32_t IPR38;
+    uint32_t IPR39;
+    uint32_t IPR40;
+    uint32_t IPR41;
+    uint32_t IPR42;
+    uint32_t IPR43;
+    uint32_t IPR44;
+    uint32_t IPR45;
+    uint32_t IPR46;
+    uint32_t IPR47;
+    uint32_t IPR48;
+    uint32_t IPR49;
+    uint32_t IPR50;
+    uint32_t IPR51;
+    uint32_t IPR52;
+    uint32_t IPR53;
+    uint32_t IPR54;
+    uint32_t IPR55;
+    uint32_t IPR56;
+    uint32_t IPR57;
+    uint32_t IPR58;
+    uint32_t IPR59;
+    uint32_t STIR;
+} NVIC_REG_BLOCKS;
+
+/* NVIC registers as structs */
+
+#define NVIC ( (NVIC_REG_BLOCKS volatile *) 0xE000E100 )
+
+/* NVIC ISER0 - ISER7 register as macros */
+
+#define NVIC_ISER_SETENA(v, m) ( ( (v) & 0x1 ) << ( (m) & 0x1F ) )
+#define NVIC_ISER_SETENA_MASK(m) NVIC_ISER0_SETENA(ALL1, m)
+
+/* NVIC ICER0 - ICER7 register as macros */
+
+#define NVIC_ICER_CLRENA(v, m) ( ( (v) & 0x1 ) << ( (m) & 0x1F ) )
+#define NVIC_ICER_CLRENA_MASK(m) NVIC_ICER_CLRENA(ALL1, m)
+
+/* NVIC ISPR0 - ISPR7 register as macros */
+
+#define NVIC_ISPR_SETPEND(v, m) ( ( (v) & 0x1 ) << ( (m) & 0x1F ) )
+#define NVIC_ISPR_SETPEND_MASK(m) NVIC_ISPR_SETPEND(ALL1, m)
+
+/* NVIC ICPR0 - ICPR7 register as macros */
+
+#define NVIC_ICPR_CLRPEND(v, m) ( ( (v) & 0x1 ) << ( (m) & 0x1F ) )
+#define NVIC_ICPR_CLRPEND_MASK(m) NVIC_ICPR_CLRPEND(ALL1, m)
+
+/* NVIC IABR0 - IABR7 register as macros */
+
+#define NVIC_IABR_ACTIVE(v, m) ( ( (v) & 0x1 ) << ( (m) & 0x1F ) )
+#define NVIC_IABR_ACTIVE_MASK(m) NVIC_ICPR_ACTIVE(ALL1, m)
+
+/* NVIC IPR0 register as macros */
+
+#define NVIC_IPR0_PRI_0(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR0_PRI_0_MASK NVIC_IPR0_PRI_0(ALL1)
+#define NVIC_IPR0_PRI_1(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR0_PRI_1_MASK NVIC_IPR0_PRI_1(ALL1)
+#define NVIC_IPR0_PRI_2(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR0_PRI_2_MASK NVIC_IPR0_PRI_2(ALL1)
+#define NVIC_IPR0_PRI_3(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR0_PRI_3_MASK NVIC_IPR0_PRI_3(ALL1)
+
+/* NVIC IPR1 register as macros */
+
+#define NVIC_IPR1_PRI_4(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR1_PRI_4_MASK NVIC_IPR1_PRI_4(ALL1)
+#define NVIC_IPR1_PRI_5(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR1_PRI_5_MASK NVIC_IPR1_PRI_5(ALL1)
+#define NVIC_IPR1_PRI_6(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR1_PRI_6_MASK NVIC_IPR1_PRI_6(ALL1)
+#define NVIC_IPR1_PRI_7(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR1_PRI_7_MASK NVIC_IPR1_PRI_7(ALL1)
+
+/* NVIC IPR2 register as macros */
+
+#define NVIC_IPR2_PRI_8(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR2_PRI_8_MASK NVIC_IPR2_PRI_8(ALL1)
+#define NVIC_IPR2_PRI_9(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR2_PRI_9_MASK NVIC_IPR2_PRI_9(ALL1)
+#define NVIC_IPR2_PRI_10(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR2_PRI_10_MASK NVIC_IPR2_PRI_10(ALL1)
+#define NVIC_IPR2_PRI_11(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR2_PRI_11_MASK NVIC_IPR2_PRI_11(ALL1)
+
+/* NVIC IPR3 register as macros */
+
+#define NVIC_IPR3_PRI_12(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR3_PRI_12_MASK NVIC_IPR3_PRI_12(ALL1)
+#define NVIC_IPR3_PRI_13(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR3_PRI_13_MASK NVIC_IPR3_PRI_13(ALL1)
+#define NVIC_IPR3_PRI_14(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR3_PRI_14_MASK NVIC_IPR3_PRI_14(ALL1)
+#define NVIC_IPR3_PRI_15(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR3_PRI_15_MASK NVIC_IPR3_PRI_15(ALL1)
+
+/* NVIC IPR4 register as macros */
+
+#define NVIC_IPR4_PRI_16(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR4_PRI_16_MASK NVIC_IPR4_PRI_16(ALL1)
+#define NVIC_IPR4_PRI_17(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR4_PRI_17_MASK NVIC_IPR4_PRI_17(ALL1)
+#define NVIC_IPR4_PRI_18(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR4_PRI_18_MASK NVIC_IPR4_PRI_18(ALL1)
+#define NVIC_IPR4_PRI_19(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR4_PRI_19_MASK NVIC_IPR4_PRI_19(ALL1)
+
+/* NVIC IPR5 register as macros */
+
+#define NVIC_IPR5_PRI_20(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR5_PRI_20_MASK NVIC_IPR5_PRI_20(ALL1)
+#define NVIC_IPR5_PRI_21(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR5_PRI_21_MASK NVIC_IPR5_PRI_21(ALL1)
+#define NVIC_IPR5_PRI_22(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR5_PRI_22_MASK NVIC_IPR5_PRI_22(ALL1)
+#define NVIC_IPR5_PRI_23(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR5_PRI_23_MASK NVIC_IPR5_PRI_23(ALL1)
+
+/* NVIC IPR6 register as macros */
+
+#define NVIC_IPR6_PRI_24(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR6_PRI_24_MASK NVIC_IPR6_PRI_24(ALL1)
+#define NVIC_IPR6_PRI_25(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR6_PRI_25_MASK NVIC_IPR6_PRI_25(ALL1)
+#define NVIC_IPR6_PRI_26(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR6_PRI_26_MASK NVIC_IPR6_PRI_26(ALL1)
+#define NVIC_IPR6_PRI_27(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR6_PRI_27_MASK NVIC_IPR6_PRI_27(ALL1)
+
+/* NVIC IPR7 register as macros */
+
+#define NVIC_IPR7_PRI_28(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR7_PRI_28_MASK NVIC_IPR7_PRI_28(ALL1)
+#define NVIC_IPR7_PRI_29(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR7_PRI_29_MASK NVIC_IPR7_PRI_29(ALL1)
+#define NVIC_IPR7_PRI_30(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR7_PRI_30_MASK NVIC_IPR7_PRI_30(ALL1)
+#define NVIC_IPR7_PRI_31(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR7_PRI_31_MASK NVIC_IPR7_PRI_31(ALL1)
+
+/* NVIC IPR8 register as macros */
+
+#define NVIC_IPR8_PRI_32(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR8_PRI_32_MASK NVIC_IPR8_PRI_32(ALL1)
+#define NVIC_IPR8_PRI_33(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR8_PRI_33_MASK NVIC_IPR8_PRI_33(ALL1)
+#define NVIC_IPR8_PRI_34(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR8_PRI_34_MASK NVIC_IPR8_PRI_34(ALL1)
+#define NVIC_IPR8_PRI_35(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR8_PRI_35_MASK NVIC_IPR8_PRI_35(ALL1)
+
+/* NVIC IPR9 register as macros */
+
+#define NVIC_IPR9_PRI_36(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR9_PRI_36_MASK NVIC_IPR9_PRI_36(ALL1)
+#define NVIC_IPR9_PRI_37(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR9_PRI_37_MASK NVIC_IPR9_PRI_37(ALL1)
+#define NVIC_IPR9_PRI_38(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR9_PRI_38_MASK NVIC_IPR9_PRI_38(ALL1)
+#define NVIC_IPR9_PRI_39(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR9_PRI_39_MASK NVIC_IPR9_PRI_39(ALL1)
+
+/* NVIC IPR10 register as macros */
+
+#define NVIC_IPR10_PRI_40(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR10_PRI_40_MASK NVIC_IPR10_PRI_40(ALL1)
+#define NVIC_IPR10_PRI_41(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR10_PRI_41_MASK NVIC_IPR10_PRI_41(ALL1)
+#define NVIC_IPR10_PRI_42(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR10_PRI_42_MASK NVIC_IPR10_PRI_42(ALL1)
+#define NVIC_IPR10_PRI_43(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR10_PRI_43_MASK NVIC_IPR10_PRI_43(ALL1)
+
+/* NVIC IPR11 register as macros */
+
+#define NVIC_IPR11_PRI_44(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR11_PRI_44_MASK NVIC_IPR11_PRI_44(ALL1)
+#define NVIC_IPR11_PRI_45(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR11_PRI_45_MASK NVIC_IPR11_PRI_45(ALL1)
+#define NVIC_IPR11_PRI_46(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR11_PRI_46_MASK NVIC_IPR11_PRI_46(ALL1)
+#define NVIC_IPR11_PRI_47(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR11_PRI_47_MASK NVIC_IPR11_PRI_47(ALL1)
+
+/* NVIC IPR12 register as macros */
+
+#define NVIC_IPR12_PRI_48(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR12_PRI_48_MASK NVIC_IPR12_PRI_48(ALL1)
+#define NVIC_IPR12_PRI_49(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR12_PRI_49_MASK NVIC_IPR12_PRI_49(ALL1)
+#define NVIC_IPR12_PRI_50(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR12_PRI_50_MASK NVIC_IPR12_PRI_50(ALL1)
+#define NVIC_IPR12_PRI_51(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR12_PRI_51_MASK NVIC_IPR12_PRI_51(ALL1)
+
+/* NVIC IPR13 register as macros */
+
+#define NVIC_IPR13_PRI_52(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR13_PRI_52_MASK NVIC_IPR13_PRI_52(ALL1)
+#define NVIC_IPR13_PRI_53(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR13_PRI_53_MASK NVIC_IPR13_PRI_53(ALL1)
+#define NVIC_IPR13_PRI_54(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR13_PRI_54_MASK NVIC_IPR13_PRI_54(ALL1)
+#define NVIC_IPR13_PRI_55(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR13_PRI_55_MASK NVIC_IPR13_PRI_55(ALL1)
+
+/* NVIC IPR14 register as macros */
+
+#define NVIC_IPR14_PRI_56(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR14_PRI_56_MASK NVIC_IPR14_PRI_56(ALL1)
+#define NVIC_IPR14_PRI_57(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR14_PRI_57_MASK NVIC_IPR14_PRI_57(ALL1)
+#define NVIC_IPR14_PRI_58(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR14_PRI_58_MASK NVIC_IPR14_PRI_58(ALL1)
+#define NVIC_IPR14_PRI_59(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR14_PRI_59_MASK NVIC_IPR14_PRI_59(ALL1)
+
+/* NVIC IPR15 register as macros */
+
+#define NVIC_IPR15_PRI_60(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR15_PRI_60_MASK NVIC_IPR15_PRI_60(ALL1)
+#define NVIC_IPR15_PRI_61(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR15_PRI_61_MASK NVIC_IPR15_PRI_61(ALL1)
+#define NVIC_IPR15_PRI_62(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR15_PRI_62_MASK NVIC_IPR15_PRI_62(ALL1)
+#define NVIC_IPR15_PRI_63(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR15_PRI_63_MASK NVIC_IPR15_PRI_63(ALL1)
+
+/* NVIC IPR16 register as macros */
+
+#define NVIC_IPR16_PRI_64(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR16_PRI_64_MASK NVIC_IPR16_PRI_64(ALL1)
+#define NVIC_IPR16_PRI_65(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR16_PRI_65_MASK NVIC_IPR16_PRI_65(ALL1)
+#define NVIC_IPR16_PRI_66(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR16_PRI_66_MASK NVIC_IPR16_PRI_66(ALL1)
+#define NVIC_IPR16_PRI_67(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR16_PRI_67_MASK NVIC_IPR16_PRI_67(ALL1)
+
+/* NVIC IPR17 register as macros */
+
+#define NVIC_IPR17_PRI_68(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR17_PRI_68_MASK NVIC_IPR17_PRI_68(ALL1)
+#define NVIC_IPR17_PRI_69(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR17_PRI_69_MASK NVIC_IPR17_PRI_69(ALL1)
+#define NVIC_IPR17_PRI_70(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR17_PRI_70_MASK NVIC_IPR17_PRI_70(ALL1)
+#define NVIC_IPR17_PRI_71(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR17_PRI_71_MASK NVIC_IPR17_PRI_71(ALL1)
+
+/* NVIC IPR18 register as macros */
+
+#define NVIC_IPR18_PRI_72(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR18_PRI_72_MASK NVIC_IPR18_PRI_72(ALL1)
+#define NVIC_IPR18_PRI_73(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR18_PRI_73_MASK NVIC_IPR18_PRI_73(ALL1)
+#define NVIC_IPR18_PRI_74(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR18_PRI_74_MASK NVIC_IPR18_PRI_74(ALL1)
+#define NVIC_IPR18_PRI_75(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR18_PRI_75_MASK NVIC_IPR18_PRI_75(ALL1)
+
+/* NVIC IPR19 register as macros */
+
+#define NVIC_IPR19_PRI_76(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR19_PRI_76_MASK NVIC_IPR19_PRI_76(ALL1)
+#define NVIC_IPR19_PRI_77(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR19_PRI_77_MASK NVIC_IPR19_PRI_77(ALL1)
+#define NVIC_IPR19_PRI_78(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR19_PRI_78_MASK NVIC_IPR19_PRI_78(ALL1)
+#define NVIC_IPR19_PRI_79(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR19_PRI_79_MASK NVIC_IPR19_PRI_79(ALL1)
+
+/* NVIC IPR20 register as macros */
+
+#define NVIC_IPR20_PRI_80(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR20_PRI_80_MASK NVIC_IPR20_PRI_80(ALL1)
+#define NVIC_IPR20_PRI_81(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR20_PRI_81_MASK NVIC_IPR20_PRI_81(ALL1)
+#define NVIC_IPR20_PRI_82(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR20_PRI_82_MASK NVIC_IPR20_PRI_82(ALL1)
+#define NVIC_IPR20_PRI_83(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR20_PRI_83_MASK NVIC_IPR20_PRI_83(ALL1)
+
+/* NVIC IPR21 register as macros */
+
+#define NVIC_IPR21_PRI_84(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR21_PRI_84_MASK NVIC_IPR21_PRI_84(ALL1)
+#define NVIC_IPR21_PRI_85(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR21_PRI_85_MASK NVIC_IPR21_PRI_85(ALL1)
+#define NVIC_IPR21_PRI_86(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR21_PRI_86_MASK NVIC_IPR21_PRI_86(ALL1)
+#define NVIC_IPR21_PRI_87(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR21_PRI_87_MASK NVIC_IPR21_PRI_87(ALL1)
+
+/* NVIC IPR22 register as macros */
+
+#define NVIC_IPR22_PRI_88(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR22_PRI_88_MASK NVIC_IPR22_PRI_88(ALL1)
+#define NVIC_IPR22_PRI_89(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR22_PRI_89_MASK NVIC_IPR22_PRI_89(ALL1)
+#define NVIC_IPR22_PRI_90(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR22_PRI_90_MASK NVIC_IPR22_PRI_90(ALL1)
+#define NVIC_IPR22_PRI_91(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR22_PRI_91_MASK NVIC_IPR22_PRI_91(ALL1)
+
+/* NVIC IPR23 register as macros */
+
+#define NVIC_IPR23_PRI_92(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR23_PRI_92_MASK NVIC_IPR23_PRI_92(ALL1)
+#define NVIC_IPR23_PRI_93(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR23_PRI_93_MASK NVIC_IPR23_PRI_93(ALL1)
+#define NVIC_IPR23_PRI_94(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR23_PRI_94_MASK NVIC_IPR23_PRI_94(ALL1)
+#define NVIC_IPR23_PRI_95(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR23_PRI_95_MASK NVIC_IPR23_PRI_95(ALL1)
+
+/* NVIC IPR24 register as macros */
+
+#define NVIC_IPR24_PRI_96(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR24_PRI_96_MASK NVIC_IPR24_PRI_96(ALL1)
+#define NVIC_IPR24_PRI_97(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR24_PRI_97_MASK NVIC_IPR24_PRI_97(ALL1)
+#define NVIC_IPR24_PRI_98(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR24_PRI_98_MASK NVIC_IPR24_PRI_98(ALL1)
+#define NVIC_IPR24_PRI_99(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR24_PRI_99_MASK NVIC_IPR24_PRI_99(ALL1)
+
+/* NVIC IPR25 register as macros */
+
+#define NVIC_IPR25_PRI_100(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR25_PRI_100_MASK NVIC_IPR25_PRI_100(ALL1)
+#define NVIC_IPR25_PRI_101(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR25_PRI_101_MASK NVIC_IPR25_PRI_101(ALL1)
+#define NVIC_IPR25_PRI_102(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR25_PRI_102_MASK NVIC_IPR25_PRI_102(ALL1)
+#define NVIC_IPR25_PRI_103(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR25_PRI_103_MASK NVIC_IPR25_PRI_103(ALL1)
+
+/* NVIC IPR26 register as macros */
+
+#define NVIC_IPR26_PRI_104(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR26_PRI_104_MASK NVIC_IPR26_PRI_104(ALL1)
+#define NVIC_IPR26_PRI_105(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR26_PRI_105_MASK NVIC_IPR26_PRI_105(ALL1)
+#define NVIC_IPR26_PRI_106(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR26_PRI_106_MASK NVIC_IPR26_PRI_106(ALL1)
+#define NVIC_IPR26_PRI_107(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR26_PRI_107_MASK NVIC_IPR26_PRI_107(ALL1)
+
+/* NVIC IPR27 register as macros */
+
+#define NVIC_IPR27_PRI_108(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR27_PRI_108_MASK NVIC_IPR27_PRI_108(ALL1)
+#define NVIC_IPR27_PRI_109(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR27_PRI_109_MASK NVIC_IPR27_PRI_109(ALL1)
+#define NVIC_IPR27_PRI_110(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR27_PRI_110_MASK NVIC_IPR27_PRI_110(ALL1)
+#define NVIC_IPR27_PRI_111(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR27_PRI_111_MASK NVIC_IPR27_PRI_111(ALL1)
+
+/* NVIC IPR28 register as macros */
+
+#define NVIC_IPR28_PRI_112(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR28_PRI_112_MASK NVIC_IPR28_PRI_112(ALL1)
+#define NVIC_IPR28_PRI_113(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR28_PRI_113_MASK NVIC_IPR28_PRI_113(ALL1)
+#define NVIC_IPR28_PRI_114(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR28_PRI_114_MASK NVIC_IPR28_PRI_114(ALL1)
+#define NVIC_IPR28_PRI_115(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR28_PRI_115_MASK NVIC_IPR28_PRI_115(ALL1)
+
+/* NVIC IPR29 register as macros */
+
+#define NVIC_IPR29_PRI_116(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR29_PRI_116_MASK NVIC_IPR29_PRI_116(ALL1)
+#define NVIC_IPR29_PRI_117(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR29_PRI_117_MASK NVIC_IPR29_PRI_117(ALL1)
+#define NVIC_IPR29_PRI_118(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR29_PRI_118_MASK NVIC_IPR29_PRI_118(ALL1)
+#define NVIC_IPR29_PRI_119(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR29_PRI_119_MASK NVIC_IPR29_PRI_119(ALL1)
+
+/* NVIC IPR30 register as macros */
+
+#define NVIC_IPR30_PRI_120(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR30_PRI_120_MASK NVIC_IPR30_PRI_120(ALL1)
+#define NVIC_IPR30_PRI_121(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR30_PRI_121_MASK NVIC_IPR30_PRI_121(ALL1)
+#define NVIC_IPR30_PRI_122(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR30_PRI_122_MASK NVIC_IPR30_PRI_122(ALL1)
+#define NVIC_IPR30_PRI_123(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR30_PRI_123_MASK NVIC_IPR30_PRI_123(ALL1)
+
+/* NVIC IPR31 register as macros */
+
+#define NVIC_IPR31_PRI_124(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR31_PRI_124_MASK NVIC_IPR31_PRI_124(ALL1)
+#define NVIC_IPR31_PRI_125(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR31_PRI_125_MASK NVIC_IPR31_PRI_125(ALL1)
+#define NVIC_IPR31_PRI_126(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR31_PRI_126_MASK NVIC_IPR31_PRI_126(ALL1)
+#define NVIC_IPR31_PRI_127(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR31_PRI_127_MASK NVIC_IPR31_PRI_127(ALL1)
+
+/* NVIC IPR32 register as macros */
+
+#define NVIC_IPR32_PRI_128(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR32_PRI_128_MASK NVIC_IPR32_PRI_128(ALL1)
+#define NVIC_IPR32_PRI_129(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR32_PRI_129_MASK NVIC_IPR32_PRI_129(ALL1)
+#define NVIC_IPR32_PRI_130(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR32_PRI_130_MASK NVIC_IPR32_PRI_130(ALL1)
+#define NVIC_IPR32_PRI_131(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR32_PRI_131_MASK NVIC_IPR32_PRI_131(ALL1)
+
+/* NVIC IPR33 register as macros */
+
+#define NVIC_IPR33_PRI_132(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR33_PRI_132_MASK NVIC_IPR33_PRI_132(ALL1)
+#define NVIC_IPR33_PRI_133(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR33_PRI_133_MASK NVIC_IPR33_PRI_133(ALL1)
+#define NVIC_IPR33_PRI_134(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR33_PRI_134_MASK NVIC_IPR33_PRI_134(ALL1)
+#define NVIC_IPR33_PRI_135(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR33_PRI_135_MASK NVIC_IPR33_PRI_135(ALL1)
+
+/* NVIC IPR34 register as macros */
+
+#define NVIC_IPR34_PRI_136(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR34_PRI_136_MASK NVIC_IPR34_PRI_136(ALL1)
+#define NVIC_IPR34_PRI_137(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR34_PRI_137_MASK NVIC_IPR34_PRI_137(ALL1)
+#define NVIC_IPR34_PRI_138(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR34_PRI_138_MASK NVIC_IPR34_PRI_138(ALL1)
+#define NVIC_IPR34_PRI_139(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR34_PRI_139_MASK NVIC_IPR34_PRI_139(ALL1)
+
+/* NVIC IPR35 register as macros */
+
+#define NVIC_IPR35_PRI_140(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR35_PRI_140_MASK NVIC_IPR35_PRI_140(ALL1)
+#define NVIC_IPR35_PRI_141(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR35_PRI_141_MASK NVIC_IPR35_PRI_141(ALL1)
+#define NVIC_IPR35_PRI_142(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR35_PRI_142_MASK NVIC_IPR35_PRI_142(ALL1)
+#define NVIC_IPR35_PRI_143(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR35_PRI_143_MASK NVIC_IPR35_PRI_143(ALL1)
+
+/* NVIC IPR36 register as macros */
+
+#define NVIC_IPR36_PRI_144(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR36_PRI_144_MASK NVIC_IPR36_PRI_144(ALL1)
+#define NVIC_IPR36_PRI_145(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR36_PRI_145_MASK NVIC_IPR36_PRI_145(ALL1)
+#define NVIC_IPR36_PRI_146(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR36_PRI_146_MASK NVIC_IPR36_PRI_146(ALL1)
+#define NVIC_IPR36_PRI_147(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR36_PRI_147_MASK NVIC_IPR36_PRI_147(ALL1)
+
+/* NVIC IPR37 register as macros */
+
+#define NVIC_IPR37_PRI_148(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR37_PRI_148_MASK NVIC_IPR37_PRI_148(ALL1)
+#define NVIC_IPR37_PRI_149(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR37_PRI_149_MASK NVIC_IPR37_PRI_149(ALL1)
+#define NVIC_IPR37_PRI_150(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR37_PRI_150_MASK NVIC_IPR37_PRI_150(ALL1)
+#define NVIC_IPR37_PRI_151(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR37_PRI_151_MASK NVIC_IPR37_PRI_151(ALL1)
+
+/* NVIC IPR38 register as macros */
+
+#define NVIC_IPR38_PRI_152(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR38_PRI_152_MASK NVIC_IPR38_PRI_152(ALL1)
+#define NVIC_IPR38_PRI_153(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR38_PRI_153_MASK NVIC_IPR38_PRI_153(ALL1)
+#define NVIC_IPR38_PRI_154(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR38_PRI_154_MASK NVIC_IPR38_PRI_154(ALL1)
+#define NVIC_IPR38_PRI_155(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR38_PRI_155_MASK NVIC_IPR38_PRI_155(ALL1)
+
+/* NVIC IPR39 register as macros */
+
+#define NVIC_IPR39_PRI_156(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR39_PRI_156_MASK NVIC_IPR39_PRI_156(ALL1)
+#define NVIC_IPR39_PRI_157(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR39_PRI_157_MASK NVIC_IPR39_PRI_157(ALL1)
+#define NVIC_IPR39_PRI_158(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR39_PRI_158_MASK NVIC_IPR39_PRI_158(ALL1)
+#define NVIC_IPR39_PRI_159(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR39_PRI_159_MASK NVIC_IPR39_PRI_159(ALL1)
+
+/* NVIC IPR40 register as macros */
+
+#define NVIC_IPR40_PRI_160(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR40_PRI_160_MASK NVIC_IPR40_PRI_160(ALL1)
+#define NVIC_IPR40_PRI_161(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR40_PRI_161_MASK NVIC_IPR40_PRI_161(ALL1)
+#define NVIC_IPR40_PRI_162(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR40_PRI_162_MASK NVIC_IPR40_PRI_162(ALL1)
+#define NVIC_IPR40_PRI_163(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR40_PRI_163_MASK NVIC_IPR40_PRI_163(ALL1)
+
+/* NVIC IPR41 register as macros */
+
+#define NVIC_IPR41_PRI_164(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR41_PRI_164_MASK NVIC_IPR41_PRI_164(ALL1)
+#define NVIC_IPR41_PRI_165(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR41_PRI_165_MASK NVIC_IPR41_PRI_165(ALL1)
+#define NVIC_IPR41_PRI_166(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR41_PRI_166_MASK NVIC_IPR41_PRI_166(ALL1)
+#define NVIC_IPR41_PRI_167(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR41_PRI_167_MASK NVIC_IPR41_PRI_167(ALL1)
+
+/* NVIC IPR42 register as macros */
+
+#define NVIC_IPR42_PRI_168(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR42_PRI_168_MASK NVIC_IPR42_PRI_168(ALL1)
+#define NVIC_IPR42_PRI_169(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR42_PRI_169_MASK NVIC_IPR42_PRI_169(ALL1)
+#define NVIC_IPR42_PRI_170(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR42_PRI_170_MASK NVIC_IPR42_PRI_170(ALL1)
+#define NVIC_IPR42_PRI_171(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR42_PRI_171_MASK NVIC_IPR42_PRI_171(ALL1)
+
+/* NVIC IPR43 register as macros */
+
+#define NVIC_IPR43_PRI_172(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR43_PRI_172_MASK NVIC_IPR43_PRI_172(ALL1)
+#define NVIC_IPR43_PRI_173(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR43_PRI_173_MASK NVIC_IPR43_PRI_173(ALL1)
+#define NVIC_IPR43_PRI_174(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR43_PRI_174_MASK NVIC_IPR43_PRI_174(ALL1)
+#define NVIC_IPR43_PRI_175(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR43_PRI_175_MASK NVIC_IPR43_PRI_175(ALL1)
+
+/* NVIC IPR44 register as macros */
+
+#define NVIC_IPR44_PRI_176(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR44_PRI_176_MASK NVIC_IPR44_PRI_176(ALL1)
+#define NVIC_IPR44_PRI_177(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR44_PRI_177_MASK NVIC_IPR44_PRI_177(ALL1)
+#define NVIC_IPR44_PRI_178(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR44_PRI_178_MASK NVIC_IPR44_PRI_178(ALL1)
+#define NVIC_IPR44_PRI_179(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR44_PRI_179_MASK NVIC_IPR44_PRI_179(ALL1)
+
+/* NVIC IPR45 register as macros */
+
+#define NVIC_IPR45_PRI_180(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR45_PRI_180_MASK NVIC_IPR45_PRI_180(ALL1)
+#define NVIC_IPR45_PRI_181(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR45_PRI_181_MASK NVIC_IPR45_PRI_181(ALL1)
+#define NVIC_IPR45_PRI_182(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR45_PRI_182_MASK NVIC_IPR45_PRI_182(ALL1)
+#define NVIC_IPR45_PRI_183(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR45_PRI_183_MASK NVIC_IPR45_PRI_183(ALL1)
+
+/* NVIC IPR46 register as macros */
+
+#define NVIC_IPR46_PRI_184(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR46_PRI_184_MASK NVIC_IPR46_PRI_184(ALL1)
+#define NVIC_IPR46_PRI_185(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR46_PRI_185_MASK NVIC_IPR46_PRI_185(ALL1)
+#define NVIC_IPR46_PRI_186(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR46_PRI_186_MASK NVIC_IPR46_PRI_186(ALL1)
+#define NVIC_IPR46_PRI_187(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR46_PRI_187_MASK NVIC_IPR46_PRI_187(ALL1)
+
+/* NVIC IPR47 register as macros */
+
+#define NVIC_IPR47_PRI_188(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR47_PRI_188_MASK NVIC_IPR47_PRI_188(ALL1)
+#define NVIC_IPR47_PRI_189(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR47_PRI_189_MASK NVIC_IPR47_PRI_189(ALL1)
+#define NVIC_IPR47_PRI_190(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR47_PRI_190_MASK NVIC_IPR47_PRI_190(ALL1)
+#define NVIC_IPR47_PRI_191(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR47_PRI_191_MASK NVIC_IPR47_PRI_191(ALL1)
+
+/* NVIC IPR48 register as macros */
+
+#define NVIC_IPR48_PRI_192(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR48_PRI_192_MASK NVIC_IPR48_PRI_192(ALL1)
+#define NVIC_IPR48_PRI_193(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR48_PRI_193_MASK NVIC_IPR48_PRI_193(ALL1)
+#define NVIC_IPR48_PRI_194(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR48_PRI_194_MASK NVIC_IPR48_PRI_194(ALL1)
+#define NVIC_IPR48_PRI_195(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR48_PRI_195_MASK NVIC_IPR48_PRI_195(ALL1)
+
+/* NVIC IPR49 register as macros */
+
+#define NVIC_IPR49_PRI_196(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR49_PRI_196_MASK NVIC_IPR49_PRI_196(ALL1)
+#define NVIC_IPR49_PRI_197(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR49_PRI_197_MASK NVIC_IPR49_PRI_197(ALL1)
+#define NVIC_IPR49_PRI_198(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR49_PRI_198_MASK NVIC_IPR49_PRI_198(ALL1)
+#define NVIC_IPR49_PRI_199(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR49_PRI_199_MASK NVIC_IPR49_PRI_199(ALL1)
+
+/* NVIC IPR50 register as macros */
+
+#define NVIC_IPR50_PRI_200(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR50_PRI_200_MASK NVIC_IPR50_PRI_200(ALL1)
+#define NVIC_IPR50_PRI_201(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR50_PRI_201_MASK NVIC_IPR50_PRI_201(ALL1)
+#define NVIC_IPR50_PRI_202(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR50_PRI_202_MASK NVIC_IPR50_PRI_202(ALL1)
+#define NVIC_IPR50_PRI_203(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR50_PRI_203_MASK NVIC_IPR50_PRI_203(ALL1)
+
+/* NVIC IPR51 register as macros */
+
+#define NVIC_IPR51_PRI_204(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR51_PRI_204_MASK NVIC_IPR51_PRI_204(ALL1)
+#define NVIC_IPR51_PRI_205(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR51_PRI_205_MASK NVIC_IPR51_PRI_205(ALL1)
+#define NVIC_IPR51_PRI_206(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR51_PRI_206_MASK NVIC_IPR51_PRI_206(ALL1)
+#define NVIC_IPR51_PRI_207(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR51_PRI_207_MASK NVIC_IPR51_PRI_207(ALL1)
+
+/* NVIC IPR52 register as macros */
+
+#define NVIC_IPR52_PRI_208(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR52_PRI_208_MASK NVIC_IPR52_PRI_208(ALL1)
+#define NVIC_IPR52_PRI_209(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR52_PRI_209_MASK NVIC_IPR52_PRI_209(ALL1)
+#define NVIC_IPR52_PRI_210(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR52_PRI_210_MASK NVIC_IPR52_PRI_210(ALL1)
+#define NVIC_IPR52_PRI_211(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR52_PRI_211_MASK NVIC_IPR52_PRI_211(ALL1)
+
+/* NVIC IPR53 register as macros */
+
+#define NVIC_IPR53_PRI_212(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR53_PRI_212_MASK NVIC_IPR53_PRI_212(ALL1)
+#define NVIC_IPR53_PRI_213(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR53_PRI_213_MASK NVIC_IPR53_PRI_213(ALL1)
+#define NVIC_IPR53_PRI_214(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR53_PRI_214_MASK NVIC_IPR53_PRI_214(ALL1)
+#define NVIC_IPR53_PRI_215(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR53_PRI_215_MASK NVIC_IPR53_PRI_215(ALL1)
+
+/* NVIC IPR54 register as macros */
+
+#define NVIC_IPR54_PRI_216(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR54_PRI_216_MASK NVIC_IPR54_PRI_216(ALL1)
+#define NVIC_IPR54_PRI_217(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR54_PRI_217_MASK NVIC_IPR54_PRI_217(ALL1)
+#define NVIC_IPR54_PRI_218(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR54_PRI_218_MASK NVIC_IPR54_PRI_218(ALL1)
+#define NVIC_IPR54_PRI_219(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR54_PRI_219_MASK NVIC_IPR54_PRI_219(ALL1)
+
+/* NVIC IPR55 register as macros */
+
+#define NVIC_IPR55_PRI_220(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR55_PRI_220_MASK NVIC_IPR55_PRI_220(ALL1)
+#define NVIC_IPR55_PRI_221(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR55_PRI_221_MASK NVIC_IPR55_PRI_221(ALL1)
+#define NVIC_IPR55_PRI_222(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR55_PRI_222_MASK NVIC_IPR55_PRI_222(ALL1)
+#define NVIC_IPR55_PRI_223(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR55_PRI_223_MASK NVIC_IPR55_PRI_223(ALL1)
+
+/* NVIC IPR56 register as macros */
+
+#define NVIC_IPR56_PRI_224(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR56_PRI_224_MASK NVIC_IPR56_PRI_224(ALL1)
+#define NVIC_IPR56_PRI_225(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR56_PRI_225_MASK NVIC_IPR56_PRI_225(ALL1)
+#define NVIC_IPR56_PRI_226(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR56_PRI_226_MASK NVIC_IPR56_PRI_226(ALL1)
+#define NVIC_IPR56_PRI_227(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR56_PRI_227_MASK NVIC_IPR56_PRI_227(ALL1)
+
+/* NVIC IPR57 register as macros */
+
+#define NVIC_IPR57_PRI_228(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR57_PRI_228_MASK NVIC_IPR57_PRI_228(ALL1)
+#define NVIC_IPR57_PRI_229(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR57_PRI_229_MASK NVIC_IPR57_PRI_229(ALL1)
+#define NVIC_IPR57_PRI_230(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR57_PRI_230_MASK NVIC_IPR57_PRI_230(ALL1)
+#define NVIC_IPR57_PRI_231(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR57_PRI_231_MASK NVIC_IPR57_PRI_231(ALL1)
+
+/* NVIC IPR58 register as macros */
+
+#define NVIC_IPR58_PRI_232(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR58_PRI_232_MASK NVIC_IPR58_PRI_232(ALL1)
+#define NVIC_IPR58_PRI_233(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR58_PRI_233_MASK NVIC_IPR58_PRI_233(ALL1)
+#define NVIC_IPR58_PRI_234(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR58_PRI_234_MASK NVIC_IPR58_PRI_234(ALL1)
+#define NVIC_IPR58_PRI_235(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR58_PRI_235_MASK NVIC_IPR58_PRI_235(ALL1)
+
+/* NVIC IPR59 register as macros */
+
+#define NVIC_IPR59_PRI_236(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_IPR59_PRI_236_MASK NVIC_IPR59_PRI_236(ALL1)
+#define NVIC_IPR59_PRI_237(v) ( ( (v) & 0xFF ) << 8 )
+#define NVIC_IPR59_PRI_237_MASK NVIC_IPR59_PRI_237(ALL1)
+#define NVIC_IPR59_PRI_238(v) ( ( (v) & 0xFF ) << 16 )
+#define NVIC_IPR59_PRI_238_MASK NVIC_IPR59_PRI_238(ALL1)
+#define NVIC_IPR59_PRI_239(v) ( ( (v) & 0xFF ) << 24 )
+#define NVIC_IPR59_PRI_239_MASK NVIC_IPR59_PRI_239(ALL1)
+
+/* NVIC STIR register as macros */
+
+#define NVIC_STIR_INTID(v) ( ( (v) & 0xFF ) << 0 )
+#define NVIC_STIR_INTID_MASK NVIC_STIR_INTID(ALL1)
+
+#endif
+

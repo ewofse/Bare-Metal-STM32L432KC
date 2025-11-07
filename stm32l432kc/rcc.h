@@ -53,6 +53,43 @@ typedef struct {
 
 #define RCC ( (RCC_REG_BLOCKS volatile *) 0x40021000 )
 
+/* RCC CR register macros */
+
+#define RCC_CR_MSION(v) ( ( (v) & 0x1 ) << 0 )
+#define RCC_CR_MSION_MASK RCC_CR_MSION(ALL1)
+#define RCC_CR_MSIREADY(v) ( ( (v) & 0x1 ) << 1 )
+#define RCC_CR_MSIREADY_MASK RCC_CR_MSIREADY(ALL1)
+#define RCC_CR_MSIPLLEN(v) ( ( (v) & 0x1 ) << 2 )
+#define RCC_CR_MSIPLLEN_MASK RCC_CR_MSIPLLEN(ALL1)
+#define RCC_CR_MSIRGSEL(v) ( ( (v) & 0x1 ) << 3 )
+#define RCC_CR_MSIRGSEL_MASK RCC_CR_MSIRGSEL(ALL1)
+#define RCC_CR_MSIRANGE(v) ( ( (v) & 0xF ) << 4 )
+#define RCC_CR_MSIRANGE_MASK RCC_CR_MSIRANGE(ALL1)
+#define RCC_CR_HSION(v) ( ( (v) & 0x1 ) << 8 )
+#define RCC_CR_HSION_MASK RCC_CR_HSION(ALL1)
+#define RCC_CR_HSIKERON(v) ( ( (v) & 0x1 ) << 9 )
+#define RCC_CR_HSIKERON_MASK RCC_CR_HSIKERON(ALL1)
+#define RCC_CR_HSIRDY(v) ( ( (v) & 0x1 ) << 10 )
+#define RCC_CR_HSIRDY_MASK RCC_CR_HSIRDY(ALL1)
+#define RCC_CR_HSIASFS(v) ( ( (v) & 0x1 ) << 11 )
+#define RCC_CR_HSIASFS_MASK RCC_CR_HASIASFS(ALL1)
+#define RCC_CR_HSEON(v) ( ( (v) & 0x1 ) << 16 )
+#define RCC_CR_HSEON_MASK RCC_CR_HSEON(ALL1)
+#define RCC_CR_HSERDY(v) ( ( (v) & 0x1 ) << 17 )
+#define RCC_CR_HSERDY_MASK RCC_CR_HSERDY(ALL1)
+#define RCC_CR_HSEBYP(v) ( ( (v) & 0x1 ) << 18 )
+#define RCC_CR_HSEBYP_MASK RCC_CR_HSEBYP_MASK(ALL1)
+#define RCC_CR_CSSON(v) ( ( (v) & 0x1 ) << 19 )
+#define RCC_CR_CSSON_MASK RCC_CR_CSSON(ALL1)
+#define RCC_CR_PLLON(v) ( ( (v) & 0x1 ) << 24 )
+#define RCC_CR_PLLON_MASK RCC_CR_PLLON(ALL1)
+#define RCC_CR_PLLRDY(v) ( ( (v) & 0x1 ) << 25 )
+#define RCC_CR_PLLRDY_MASK RCC_CR_PLLON(ALL1)
+#define RCC_CR_PLLSAI1ON(v) ( ( (v) & 0x1 ) << 26 )
+#define RCC_CR_PLLSAI1ON_MASK RCC_CR_PLLSAI1ON(ALL1)
+#define RCC_CR_PLLSAI1RDY(v) ( ( (v) & 0x1 ) << 27 )
+#define RCC_CR_PLLSAI1RDY_MASK RCC_CR_PLLSAI1RDY(ALL1)
+
 /* RCC AHB1RSTR register macros */
 
 #define RCC_AHB1RSTR_DMA1RST(v) ( ( (v) & 0x1 ) << 0 )
@@ -234,6 +271,33 @@ typedef struct {
 #define RCC_APB2ENR_TIM16EN_MASK RCC_APB2ENR_TIM16EN(ALL1)
 #define RCC_APB2ENR_SAI2EN(v) ( ( (v) & 0x1 ) << 21 )
 #define RCC_APB2ENR_SAI2EN_MASK RCC_APB2ENR_SAI2EN(ALL1)
+
+/* RCC CSR register macros */
+
+#define RCC_CSR_LSION(v) ( ( (v) & 0x1 ) << 0 )
+#define RCC_CSR_LSION_MASK RCC_CSR_LSION(ALL1)
+#define RCC_CSR_LSIRDY(v) ( ( (v) & 0x1 ) << 1 )
+#define RCC_CSR_LSIRDY_MASK RCC_CSR_LSION(ALL1)
+#define RCC_CSR_MSISRANGE(v) ( ( (v) & 0xF ) << 8 )
+#define RCC_CSR_MSISRANGE_MASK RCC_CSR_MSISRANGE(ALL1)
+#define RCC_CSR_RMVF(v) ( ( (v) & 0x1 ) << 23 )
+#define RCC_CSR_RMVF_MASK RCC_CSR_RMVF(ALL1)
+#define RCC_CSR_FWRSTF(v) ( ( (v) & 0x1 ) << 24 )
+#define RCC_CSR_FWRSTF_MASK RCC_CSR_FWRSTF(ALL1)
+#define RCC_CSR_OBLRSTF(v) ( ( (v) & 0x1 ) << 25 )
+#define RCC_CSR_OBLRSTF_MASK RCC_CSR_OBLRSTF(ALL1)
+#define RCC_CSR_PINRSTF(v) ( ( (v) & 0x1 ) << 26 )
+#define RCC_CSR_PINRSTF_MASK RCC_CSR_PINRSTF(ALL1)
+#define RCC_CSR_BORRSTF(v) ( ( (v) & 0x1 ) << 27 )
+#define RCC_CSR_BORRSTF_MASK RCC_CSR_BORRSTF(ALL1)
+#define RCC_CSR_SFTRSTF(v) ( ( (v) & 0x1 ) << 28 )
+#define RCC_CSR_SFTRSTF_MASK RCC_CSR_SFTRSTF(ALL1)
+#define RCC_CSR_IWWGRSTF(v) ( ( (v) & 0x1 ) << 29 )
+#define RCC_CSR_IWWGRSTF_MASK RCC_CSR_IWWGRSTF(ALL1)
+#define RCC_CSR_WWDGRSTF(v) ( ( (v) & 0x1 ) << 30 )
+#define RCC_CSR_WWDGRSTF_MASK RCC_CSR_WWDGRSTF(ALL1)
+#define RCC_CSR_LPWRRSTF(v) ( ( (v) & 0x1 ) << 31 )
+#define RCC_CSR_LPWRRSTF_MASK RCC_CSR_LPWRRSTF(ALL1)
 
 #endif
 

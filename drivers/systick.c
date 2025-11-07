@@ -1,11 +1,11 @@
 #include "systick.h"
-#include "../M4/systick.h"
-#include "scb.h"
+#include <m4/systick.h>
+#include <m4/scb.h>
 #include <stdint.h>
 #include <stdbool.h>
 
 #ifndef SYSTICK_FREQ_HZ
-#define SYSTICK_FREQ_HZ 1000
+#define SYSTICK_FREQ_HZ 2000
 #endif
 
 #ifndef EXT_CLK_FREQ_HZ

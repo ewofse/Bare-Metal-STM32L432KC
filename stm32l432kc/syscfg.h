@@ -22,12 +22,12 @@ typedef struct {
 
 #define SYSCFG ( (SYSCFG_REG_BLOCKS volatile *) 0x40010000 )
 
-/* SYSCFG MEMRMP register as macros */
+/* SYSCFG MEMRMP register macros */
 
 #define SYSCFG_MEMRMP_MEM_MODE(v) ( ( (v) & 0x7 ) << 0 )
 #define SYSCFG_MEMRMP_MEM_MODE_MASK SYSCFG_MEMRMP_MEM_MODE(ALL1)
 
-/* SYSCFG CFGR1 register as macros */
+/* SYSCFG CFGR1 register macros */
 
 #define SYSCFG_CFGR1_FWDIS(v) ( ( (v) & 0x1 ) << 0 )
 #define SYSCFG_CFGR1_FWDIS_MASK SYSCFG_CFGR1_FWDIS(ALL1)
@@ -52,7 +52,7 @@ typedef struct {
 #define SYSCFG_CFGR1_FPU_IE(v) ( ( (v) & 0x3F ) << 26 )
 #define SYSCFG_CFGR1_FPU_IE_MASK SYSCFG_CFGR1_FPU_IE(ALL1)
 
-/* SYSCFG EXTICR1 register as macros */
+/* SYSCFG EXTICR1 register macros */
 
 #define SYSCFG_EXTICR1_EXTI0(v) ( ( (v) & 0x7 ) << 0 )
 #define SYSCFG_EXTICR1_EXTI0_MASK SYSCFG_EXTICR1_EXTI0(ALL1)
@@ -63,7 +63,7 @@ typedef struct {
 #define SYSCFG_EXTICR1_EXTI3(v) ( ( (v) & 0x7 ) << 12 )
 #define SYSCFG_EXTICR1_EXTI3_MASK SYSCFG_EXTICR1_EXTI3(ALL1)
 
-/* SYSCFG EXTICR2 register as macros */
+/* SYSCFG EXTICR2 register macros */
 
 #define SYSCFG_EXTICR1_EXTI4(v) ( ( (v) & 0x7 ) << 0 )
 #define SYSCFG_EXTICR1_EXTI4_MASK SYSCFG_EXTICR1_EXTI4(ALL1)
@@ -74,7 +74,7 @@ typedef struct {
 #define SYSCFG_EXTICR1_EXTI7(v) ( ( (v) & 0x7 ) << 12 )
 #define SYSCFG_EXTICR1_EXTI7_MASK SYSCFG_EXTICR1_EXTI7(ALL1)
 
-/* SYSCFG EXTICR3 register as macros */
+/* SYSCFG EXTICR3 register macros */
 
 #define SYSCFG_EXTICR1_EXTI8(v) ( ( (v) & 0x7 ) << 0 )
 #define SYSCFG_EXTICR1_EXTI8_MASK SYSCFG_EXTICR1_EXTI8(ALL1)
@@ -85,7 +85,7 @@ typedef struct {
 #define SYSCFG_EXTICR1_EXTI11(v) ( ( (v) & 0x7 ) << 12 )
 #define SYSCFG_EXTICR1_EXTI11_MASK SYSCFG_EXTICR1_EXTI11(ALL1)
 
-/* SYSCFG EXTICR4 register as macros */
+/* SYSCFG EXTICR4 register macros */
 
 #define SYSCFG_EXTICR1_EXTI12(v) ( ( (v) & 0x7 ) << 0 )
 #define SYSCFG_EXTICR1_EXTI12_MASK SYSCFG_EXTICR1_EXTI12(ALL1)
@@ -96,14 +96,14 @@ typedef struct {
 #define SYSCFG_EXTICR1_EXTI15(v) ( ( (v) & 0x7 ) << 12 )
 #define SYSCFG_EXTICR1_EXTI15_MASK SYSCFG_EXTICR1_EXTI15(ALL1)
 
-/* SYSCFG SCSR register as macros */
+/* SYSCFG SCSR register macros */
 
 #define SYSCFG_SCSR_SRAM2ER(v) ( ( (v) & 0x1 ) << 0 )
 #define SYSCFG_SCSR_SRAM2ER_MASK SYSCFG_SCSR_SRAM2ER(ALL1)
 #define SYSCFG_SCSR_SRAM2BSY(v) ( ( (v) & 0x1 ) << 1 )
 #define SYSCFG_SCSR_SRAM2BSY_MASK SYSCFG_SCSR_SRAM2BSY(ALL1)
 
-/* SYSCFG CFGR2 register as macros */
+/* SYSCFG CFGR2 register macros */
 
 #define SYSCFG_CFGR2_CLL(v) ( ( (v) & 0x1 ) << 0 )
 #define SYSCFG_CFGR2_CLL_MASK SYSCFG_CFGR2_CLL(ALL1)
@@ -116,7 +116,7 @@ typedef struct {
 #define SYSCFG_CFGR2_SPF(v) ( ( (v) & 0x1 ) << 8 )
 #define SYSCFG_CFGR2_SPF_MASK SYSCFG_CFGR2_SPF(ALL1)
 
-/* SYSCFG SWPR register as macros */
+/* SYSCFG SWPR register macros */
 
 #define SYSCFG_SWPR_P0WP(v) ( ( (v) & 0x1 ) << 0 )
 #define SYSCFG_SWPR_P0WP_MASK SYSCFG_SWPR_P0WP(ALL1)
@@ -183,7 +183,7 @@ typedef struct {
 #define SYSCFG_SWPR_P31WP(v) ( ( (v) & 0x1 ) << 31 )
 #define SYSCFG_SWPR_P31WP_MASK SYSCFG_SWPR_P31WP(ALL1)
 
-/* SYSCFG SKR register as macros */
+/* SYSCFG SKR register macros */
 
 #define SYSCFG_SKR_KEY(v) ( ( (v) & 0xFF ) << 0 )
 #define SYSCFG_SKR_KEY_MASK SYSCFG_SKR_KEY(ALL1)

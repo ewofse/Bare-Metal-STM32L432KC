@@ -1,6 +1,6 @@
 #include "led.h"
-#include "../stm32l432kc/gpio.h"
-#include "rcc.h"
+#include <stm32l432kc/gpio.h>
+#include <stm32l432kc/rcc.h>
 
 void configure_led(void) {
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN(1);

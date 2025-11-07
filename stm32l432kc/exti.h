@@ -20,11 +20,11 @@ typedef struct {
     uint32_t PR2;
 } EXTI_REG_BLOCKS;
 
-/* EXTI registers as structs */
+/* EXTI registers structs */
 
 #define EXTI ( (EXTI_REG_BLOCKS volatile *) 0x40010400 ) 
 
-/* EXTI IMR1 register as macros */
+/* EXTI IMR1 register macros */
 
 #define EXTI_IMR1_IM0(v) ( ( (v) & 0x1 ) << 0 )
 #define EXTI_IMR1_IM0_MASK EXTI_IMR1_IM0(ALL1)
@@ -87,7 +87,7 @@ typedef struct {
 #define EXTI_IMR1_IM31(v) ( ( (v) & 0x1 ) << 31 )
 #define EXTI_IMR1_IM31_MASK EXTI_IMR1_IM31(ALL1)
 
-/* EXTI EMR1 register as macros */
+/* EXTI EMR1 register macros */
 
 #define EXTI_EMR1_EM0(v) ( ( (v) & 0x1 ) << 0 )
 #define EXTI_EMR1_EM0_MASK EXTI_EMR1_EM0(ALL1)

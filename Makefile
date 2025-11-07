@@ -1,9 +1,9 @@
-INCLUDES = -Idrivers -ISTM32L432KC -IM4 -Isetup
+INCLUDES = -I. -Idrivers -Istm32l432kc -Im4 -Isetup
 CFLAGS = -Os -std=c99 -ffreestanding -nostartfiles -mcpu=cortex-m33 -Wall -pedantic
 
 .PHONY: clean
 
-stm32l432kc.elf: setup/*.c src/test_systick_irq.c led.o systick.o
+stm32l432kc.elf: setup/*.c src/test_watchdog.c led.o watchdog.o
 	arm-none-eabi-gcc $(CFLAGS) $(INCLUDES) -T stm32l432kc.ld $^ -o $@
 
 %.o: %.c

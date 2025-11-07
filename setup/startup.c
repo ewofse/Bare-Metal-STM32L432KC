@@ -1,8 +1,8 @@
-#include "scb.h"
+#include <m4/scb.h> 
 
 #define INITIAL_STACK_POINTER 0x2000C000
 
-#define RESERVED ( ( void(*)() ) 0x44565352 )
+#define RESERVED ( ( void(*)(void) ) 0 )
 
 extern void crt0(void);
 
@@ -92,8 +92,8 @@ void __attribute__( ( weak, alias("DEFAULT_Handler") ) ) RNG_Handler();
 void __attribute__( ( weak, alias("DEFAULT_Handler") ) ) FPU_Handler();
 void __attribute__( ( weak, alias("DEFAULT_Handler") ) ) CRS_Handler();
 
-void * const __attribute__( ( section (".vector_table") ) ) vector_table[] = {
-    (void *) INITIAL_STACK_POINTER,	
+void ( * const __attribute__( ( section (".vector_table") ) ) vector_table[] )(void) = {
+    ( void (*)(void) ) INITIAL_STACK_POINTER,	
     &entry_point,
     NMI_Handler,
     HARDFAULT_Handler,

@@ -1,6 +1,6 @@
 #include "gpio.h"
-#include "nvic.h"
-#include "exti.h"
+#include <m4/nvic.h>
+#include <stm32l432kc/exti.h>
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -135,9 +135,9 @@ _Bool register_gpio_callback( void (*cb)(void), uint8_t pin ) {
     return true;
 }
 
-uint8_t get_irq_status_for_pin(uint8_t pin) {
+_Bool get_irq_status_for_pin(uint8_t pin) {
     if (pin > 15) {
-        return 0;
+        return false;
     }
 
     return gpio_irq_events & (1 << pin);

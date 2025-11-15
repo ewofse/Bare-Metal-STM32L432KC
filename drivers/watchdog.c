@@ -1,4 +1,5 @@
 #include "watchdog.h"
+#include <m4/nvic.h>
 #include <stm32l432kc/iwdg.h>
 #include <stm32l432kc/wwdg.h>
 #include <stm32l432kc/rcc.h>
@@ -34,7 +35,6 @@
 #define NUM_WWDG_CALLBACKS 5
 #endif
 
-// IWDG prescaler LUT
 static uint16_t const IWDG_PR_PR_LUT[8] = {
     4,
     8,
@@ -50,42 +50,43 @@ static void ( *callback[NUM_WWDG_CALLBACKS] )(void);
 static uint32_t num_callbacks;
 
 void configure_independent_watchdog(void) {
-    // Enable LSI clock
     RCC->CSR |= RCC_CSR_LSION(1);
     while ( !(RCC->CSR & RCC_CSR_LSIRDY_MASK) );
 
-    // Wait for the watchdog to be ready to update the prescaler and reload value
     while ( IWDG->SR & (IWDG_SR_PVU_MASK | IWDG_SR_RVU_MASK) );
 
-    // Set the watchdog key to enable write access
     IWDG->KR = IWDG_KR_KEY(0x5555);
     
-    // Set prescaler and counter reload value
     IWDG->PR = IWDG_PR_PR(IWDG_PR);
     IWDG->RLR = IWDG_RLR_RL(IWDG_TOP);
 
-    // Begin down counting
     IWDG->KR = IWDG_KR_KEY(0xCCCC);
 }
 
 void feed_the_independent_watchdog(void) {
-    // Write to key register for hardware to reload counter
     IWDG->KR = IWDG_KR_KEY(0xAAAA);
 }
 
 void configure_window_watchdog(void) {
-    // Clear the pending interrupt
+    RCC->APB1ENR1 |= RCC_APB1ENR1_WWDGEN(1);
+
+    NVIC->ISER0 = NVIC_ISER_SETENA(1, 0);
+
     WWDG->SR = WWDG_SR_EWIF(0);
+    
+    WWDG->CFR = 
+        WWDG_CFR_EWI(1) 
+      | WWDG_CFR_WDGTB(WWDG_PR) 
+      | WWDG_CFR_W(WWDG_W);
+    
+    WWDG->CR = 
+        WWDG_CR_WDGA(1)
+      | WWDG_CR_T(0x40 | WWDG_T);
 
-    // Enable interrupt and set prescaler and window
-    WWDG->CFR = WWDG_CFR_EWI(1) | WWDG_CFR_WDGTB(WWDG_PR) | WWDG_CFR_W(WWDG_W);
-
-    // Enable the watchdog and set reload top value
-    WWDG->CR = WWDG_CR_WDGA(1) | WWDG_CR_T(0x40 | WWDG_T);
+    NVIC->IPR0 = (NVIC->IPR0 & ~NVIC_IPR0_PRI_0_MASK) | NVIC_IPR0_PRI_0(0);
 }
 
 void feed_the_window_watchdog(void) {
-    // Reload down counter
     WWDG->CR |= WWDG_CR_T(0x40 | WWDG_T);
 }
 
@@ -100,6 +101,8 @@ _Bool register_window_watchdog_callback( void (*cb)(void) ) {
 }
 
 void __attribute__( (interrupt) ) WWDG_Handler(void) {
+    NVIC->ICPR0 = NVIC_ICPR_CLRPEND(1, 0);
+
     for (uint32_t i = 0; i < num_callbacks; i++) {
         callback[i]();
     }

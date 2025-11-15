@@ -10,5 +10,5 @@ stm32l432kc.elf: setup/*.c src/test_watchdog.c led.o watchdog.o
 	arm-none-eabi-gcc $(CFLAGS) $(INCLUDES) -c $^
 
 clean:
-	-rm *.elf *.o
+	-rm -f *.elf *.o
 

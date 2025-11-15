@@ -26,7 +26,11 @@ static _Bool volatile systick_fired_flag;
 void configure_systick(void) {
     SYSTICK->RVR = SYSTICK_TOP; 
     SYSTICK->CVR = 0;
-    SYSTICK->CSR = SYST_CSR_ENABLE(1) | SYST_CSR_TICKINT(1) | SYST_CSR_CLKSOURCE(1);
+    
+    SYSTICK->CSR = 
+        SYST_CSR_ENABLE(1) 
+      | SYST_CSR_TICKINT(1) 
+      | SYST_CSR_CLKSOURCE(1);
 
     SCB->SHPR3 = (SCB->SHPR3 & ~SCB_SHPR3_PRI_15_MASK) | SCB_SHPR3_PRI_15(0);
 }

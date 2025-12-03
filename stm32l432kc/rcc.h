@@ -1,4 +1,3 @@
-
 #ifndef STM32L432KC_RCC_H
 #define STM32L432KC_RCC_H
 

@@ -3,7 +3,6 @@
 #include <stm32l432kc/rcc.h>
 
 void configure_led(void) {
-    RCC->AHB2RSTR &= ~RCC_AHB2RSTR_GPIOBRST_MASK;
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN(1);
 
     GPIOB->MODER &= ~(GPIO_MODER_MODE3_MASK);

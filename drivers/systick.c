@@ -1,4 +1,5 @@
 #include "systick.h"
+#include "interrupt.h"
 #include <m4/systick.h>
 #include <m4/scb.h>
 #include <stdint.h>
@@ -59,7 +60,14 @@ uint64_t get_system_time(void) {
 void __attribute__( (interrupt) ) SYSTICK_Handler(void) {
     systick_fired_flag = true;
 
+    uint32_t primask;
+
+    get_primask(&primask);
+    disable_irq();
+
     tick_counter++;
+
+    set_primask(primask);
 
     for (uint32_t i = 0; i < num_callbacks; i++) {
         callback[i]();

@@ -44,10 +44,11 @@ static void configure_sysclk(void) {
     
     // Need a combination of PLLR, PLLN, and PLLM such that...
     // SYSCLK = F_VCO * (PLLN / PLLM) / PLLR = "X" MHz
+    RCC->PLLCFGR &= ~RCC_PLLCFGR_PLLM_MASK;
     RCC->PLLCFGR |= 
           RCC_PLLCFGR_PLLR(2)
-        | RCC_PLLCFGR_PLLN(40)
-        | RCC_PLLCFGR_PLLM(1);
+        | RCC_PLLCFGR_PLLN(32)
+        | RCC_PLLCFGR_PLLM(0);
 
     RCC->PLLCFGR |= RCC_PLLCFGR_PLLREN(1);
     RCC->CR |= RCC_CR_PLLON(1);

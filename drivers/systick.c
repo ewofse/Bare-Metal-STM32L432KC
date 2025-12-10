@@ -10,7 +10,7 @@
 #endif
 
 #ifndef EXT_CLK_FREQ_HZ
-#define EXT_CLK_FREQ_HZ 2000000 
+#define EXT_CLK_FREQ_HZ 64000000 
 #endif
 
 #define SYSTICK_TOP (EXT_CLK_FREQ_HZ / SYSTICK_FREQ_HZ - 1)

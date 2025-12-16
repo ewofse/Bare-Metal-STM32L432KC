@@ -56,8 +56,8 @@ typedef struct {
 
 #define RCC_CR_MSION(v) ( ( (v) & 0x1 ) << 0 )
 #define RCC_CR_MSION_MASK RCC_CR_MSION(ALL1)
-#define RCC_CR_MSIREADY(v) ( ( (v) & 0x1 ) << 1 )
-#define RCC_CR_MSIREADY_MASK RCC_CR_MSIREADY(ALL1)
+#define RCC_CR_MSIRDY(v) ( ( (v) & 0x1 ) << 1 )
+#define RCC_CR_MSIRDY_MASK RCC_CR_MSIRDY(ALL1)
 #define RCC_CR_MSIPLLEN(v) ( ( (v) & 0x1 ) << 2 )
 #define RCC_CR_MSIPLLEN_MASK RCC_CR_MSIPLLEN(ALL1)
 #define RCC_CR_MSIRGSEL(v) ( ( (v) & 0x1 ) << 3 )

@@ -10,7 +10,7 @@ static void configure_clk48(void);
 
 void crt0(void) {
     /* PLL SYSCLK and 48 MHz clock for peripherals such as USB */
-    
+   
     configure_sysclk();
     configure_clk48();
 
@@ -35,6 +35,8 @@ void crt0(void) {
 }
 
 static void configure_sysclk(void) {
+    /* Configure PLL with MSI 4 MHz as source */
+     
     RCC->CR &= ~RCC_CR_PLLON_MASK;
 
     while (RCC->CR & RCC_CR_PLLRDY_MASK);
@@ -43,12 +45,14 @@ static void configure_sysclk(void) {
     RCC->PLLCFGR |= RCC_PLLCFGR_PLLSRC(1);
     
     // Need a combination of PLLR, PLLN, and PLLM such that...
-    // SYSCLK = F_VCO * (PLLN / PLLM) / PLLR = "X" MHz
+    // SYSCLK = F_VCO * (PLLN / (PLLM + 1) ) / PLLR = "X" MHz
     RCC->PLLCFGR &= ~RCC_PLLCFGR_PLLM_MASK;
     RCC->PLLCFGR |= 
           RCC_PLLCFGR_PLLR(2)
         | RCC_PLLCFGR_PLLN(32)
         | RCC_PLLCFGR_PLLM(0);
+    
+    /* Enable PLL with MSI 4 MHz as system clock */
 
     RCC->PLLCFGR |= RCC_PLLCFGR_PLLREN(1);
     RCC->CR |= RCC_CR_PLLON(1);
@@ -62,6 +66,8 @@ static void configure_sysclk(void) {
 }
 
 static void configure_clk48(void) {
+    /* Enable HSI 48 MHz */
+
     RCC->CRRCR |= RCC_CRRCR_HSI48ON(1);
 
     while ( !(RCC->CRRCR & RCC_CRRCR_HSI48RDY_MASK) );

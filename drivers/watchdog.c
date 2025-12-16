@@ -49,9 +49,14 @@ static uint16_t const IWDG_PR_PR_LUT[8] = {
 static void ( *callback[NUM_WWDG_CALLBACKS] )(void);
 static uint32_t num_callbacks;
 
+/* Set IWDG timeout period */
+
 void configure_independent_watchdog(void) {
+    // LSI clock must be used for IWDG (32 kHz)
     RCC->CSR |= RCC_CSR_LSION(1);
     while ( !(RCC->CSR & RCC_CSR_LSIRDY_MASK) );
+
+    /* Update prescaler and reload value */
 
     while ( IWDG->SR & (IWDG_SR_PVU_MASK | IWDG_SR_RVU_MASK) );
 
@@ -63,9 +68,13 @@ void configure_independent_watchdog(void) {
     IWDG->KR = IWDG_KR_KEY(0xCCCC);
 }
 
+/* Reload IWDG counter */
+
 void feed_the_independent_watchdog(void) {
     IWDG->KR = IWDG_KR_KEY(0xAAAA);
 }
+
+/* Setup WWDG window timeout period */
 
 void configure_window_watchdog(void) {
     RCC->APB1ENR1 |= RCC_APB1ENR1_WWDGEN(1);
@@ -86,9 +95,13 @@ void configure_window_watchdog(void) {
     NVIC->IPR0 = (NVIC->IPR0 & ~NVIC_IPR0_PRI_0_MASK) | NVIC_IPR0_PRI_0(0);
 }
 
+/* Reload WWDG counter */
+
 void feed_the_window_watchdog(void) {
     WWDG->CR |= WWDG_CR_T(0x40 | WWDG_T);
 }
+
+/* Add callback to WWDG ISR */
 
 _Bool register_window_watchdog_callback( void (*cb)(void) ) {
     if (num_callbacks == NUM_WWDG_CALLBACKS) {
@@ -100,7 +113,10 @@ _Bool register_window_watchdog_callback( void (*cb)(void) ) {
     return true;
 }
 
+/* WWDG ISR */
+
 void __attribute__( (interrupt) ) WWDG_Handler(void) {
+    // Clear pending IRQ
     NVIC->ICPR0 = NVIC_ICPR_CLRPEND(1, 0);
 
     for (uint32_t i = 0; i < num_callbacks; i++) {

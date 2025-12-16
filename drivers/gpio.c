@@ -4,33 +4,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#ifndef NUM_EXTI0_CALLBACKS
-#define NUM_EXTI0_CALLBACKS 5
+#ifndef NUM_EXTI_CALLBACKS
+#define NUM_EXTI_CALLBACKS 5
 #endif
 
-#ifndef NUM_EXTI1_CALLBACKS
-#define NUM_EXTI1_CALLBACKS 5
-#endif
-
-#ifndef NUM_EXTI2_CALLBACKS
-#define NUM_EXTI2_CALLBACKS 5
-#endif
-
-#ifndef NUM_EXTI3_CALLBACKS
-#define NUM_EXTI3_CALLBACKS 5
-#endif
-
-#ifndef NUM_EXTI4_CALLBACKS
-#define NUM_EXTI4_CALLBACKS 5
-#endif
-
-#ifndef NUM_EXTI9_5_CALLBACKS
-#define NUM_EXTI9_5_CALLBACKS 5
-#endif
-
-#ifndef NUM_EXTI15_10_CALLBACKS
-#define NUM_EXTI15_10_CALLBACKS 5
-#endif
+#define NUM_EXTI_LINES 7
 
 #define EXTI0_IRQ 6
 #define EXTI1_IRQ 7
@@ -40,196 +18,162 @@
 #define EXTI9_5_IRQ 23
 #define EXTI15_10_IRQ 40
 
-static void ( *exti0_callback[NUM_EXTI0_CALLBACKS] )(void);
-static void ( *exti1_callback[NUM_EXTI1_CALLBACKS] )(void);
-static void ( *exti2_callback[NUM_EXTI2_CALLBACKS] )(void);
-static void ( *exti3_callback[NUM_EXTI3_CALLBACKS] )(void);
-static void ( *exti4_callback[NUM_EXTI4_CALLBACKS] )(void);
-static void ( *exti9_5_callback[NUM_EXTI9_5_CALLBACKS] )(void);
-static void ( *exti15_10_callback[NUM_EXTI15_10_CALLBACKS] )(void);
-
-static uint32_t num_exti0_callbacks;
-static uint32_t num_exti1_callbacks;
-static uint32_t num_exti2_callbacks;
-static uint32_t num_exti3_callbacks;
-static uint32_t num_exti4_callbacks;
-static uint32_t num_exti9_5_callbacks;
-static uint32_t num_exti15_10_callbacks;
+static void ( *exti_callback[NUM_EXTI_LINES][NUM_EXTI_CALLBACKS] )(void);
+static uint32_t num_exti_callbacks[NUM_EXTI_LINES];
 
 static uint16_t volatile gpio_irq_events;
+
+/* Add a callback function to the GPIO ISRs */
 
 _Bool register_gpio_callback( void (*cb)(void), uint8_t pin ) {
     if (pin > 15) {
         return false;
     }
 
-    switch (pin) {
-        case (0):
-            if (num_exti0_callbacks == NUM_EXTI0_CALLBACKS) {
-                return false;
-            }
-            
-            exti0_callback[num_exti0_callbacks++] = cb;
+    uint8_t exti_index = NUM_EXTI_LINES - 1;
 
-            break;
-
-        case (1):
-            if (num_exti1_callbacks == NUM_EXTI1_CALLBACKS) {
-                return false;
-            }
-            
-            exti1_callback[num_exti1_callbacks++] = cb;
-
-            break;
-
-        case (2):
-            if (num_exti2_callbacks == NUM_EXTI2_CALLBACKS) {
-                return false;
-            }
-            
-            exti2_callback[num_exti2_callbacks++] = cb;
-
-            break;
-
-        case (3):
-            if (num_exti3_callbacks == NUM_EXTI3_CALLBACKS) {
-                return false;
-            }
-            
-            exti3_callback[num_exti3_callbacks++] = cb;
-
-            break;
-
-        case (4):
-            if (num_exti4_callbacks == NUM_EXTI4_CALLBACKS) {
-                return false;
-            }
-            
-            exti4_callback[num_exti4_callbacks++] = cb;
-
-            break;
-
-        case (5):
-        case (6):
-        case (7):
-        case (8):
-        case (9):
-            if (num_exti9_5_callbacks == NUM_EXTI9_5_CALLBACKS) {
-                return false;
-            }
-
-            exti9_5_callback[num_exti9_5_callbacks++] = cb;
-            
-            break;
-
-        default:
-            if (num_exti15_10_callbacks == NUM_EXTI15_10_CALLBACKS) {
-                return false;
-            }
-
-            exti15_10_callback[num_exti15_10_callbacks++] = cb;
-
-            break;
+    if (pin <= 4) {
+        exti_index = pin;
+    } else if (pin >= 5 && pin <= 9) {
+        exti_index = 5;
     }
+
+    /* Add callback function */
+
+    if ( num_exti_callbacks[exti_index] == NUM_EXTI_CALLBACKS ) {
+        return false;
+    }
+    
+    exti_callback[exti_index][ num_exti_callbacks[exti_index]++ ] = cb;
 
     return true;
 }
+
+/* Check if a pin has a pending IRQ */
 
 _Bool get_irq_status_for_pin(uint8_t pin) {
     if (pin > 15) {
         return false;
     }
-
-    return gpio_irq_events & (1 << pin);
+   
+    // STM only has hardware indicating if an interrupt occurred
+    // No hardware indicating which type of edge triggered the IRQ
+    return gpio_irq_events & (1 >> pin);
 }
 
+/* GPIO 0 ISR */
+
 void __attribute__( (interrupt) ) EXTI0_Handler(void) {
+    // Clear pending IRQ
     NVIC->ICPR0 = NVIC_ICPR_CLRPEND(1, EXTI0_IRQ);
 
+    // Each callback must check their respective pin for pending IRQ
     gpio_irq_events = EXTI->PR1 & 0xFFFF;
 
-    for (uint32_t i = 0; i < num_exti0_callbacks; i++) {
-        exti0_callback[i]();
+    for (uint32_t i = 0; i < num_exti_callbacks[0]; i++) {
+        exti_callback[0][i]();
     }
     
     // Acknowledge pending interrupt
     EXTI->PR1 = EXTI_PR1_PIF0_MASK;
 }
 
+/* GPIO 1 ISR */
+
 void __attribute__( (interrupt) ) EXTI1_Handler(void) {
+    // Clear pending IRQ
     NVIC->ICPR0 = NVIC_ICPR_CLRPEND(1, EXTI1_IRQ);
     
+    // Each callback must check their respective pin for pending IRQ
     gpio_irq_events = EXTI->PR1 & 0xFFFF;
 
-    for (uint32_t i = 0; i < num_exti1_callbacks; i++) {
-        exti1_callback[i]();
+    for (uint32_t i = 0; i < num_exti_callbacks[1]; i++) {
+        exti_callback[1][i]();
     }
 
     // Acknowledge pending interrupt
     EXTI->PR1 = EXTI_PR1_PIF1_MASK;
 }
 
+/* GPIO 2 ISR */
+
 void __attribute__( (interrupt) ) EXTI2_Handler(void) {
+    // Clear pending IRQ
     NVIC->ICPR0 = NVIC_ICPR_CLRPEND(1, EXTI2_IRQ);
     
+    // Each callback must check their respective pin for pending IRQ
     gpio_irq_events = EXTI->PR1 & 0xFFFF;
 
-    for (uint32_t i = 0; i < num_exti2_callbacks; i++) {
-        exti2_callback[i]();
+    for (uint32_t i = 0; i < num_exti_callbacks[2]; i++) {
+        exti_callback[2][i]();
     }
 
     // Acknowledge pending interrupt
     EXTI->PR1 = EXTI_PR1_PIF2_MASK;
 }
 
+/* GPIO 3 ISR */
+
 void __attribute__( (interrupt) ) EXTI3_Handler(void) {
+    // Clear pending IRQ
     NVIC->ICPR0 = NVIC_ICPR_CLRPEND(1, EXTI3_IRQ);
     
+    // Each callback must check their respective pin for pending IRQ
     gpio_irq_events = EXTI->PR1 & 0xFFFF;
 
-    for (uint32_t i = 0; i < num_exti3_callbacks; i++) {
-        exti3_callback[i]();
+    for (uint32_t i = 0; i < num_exti_callbacks[3]; i++) {
+        exti_callback[3][i]();
     }
 
     // Acknowledge pending interrupt
     EXTI->PR1 = EXTI_PR1_PIF3_MASK;
 }
 
+/* GPIO 4 ISR */
+
 void __attribute__( (interrupt) ) EXTI4_Handler(void) {
+    // Clear pending IRQ
     NVIC->ICPR0 = NVIC_ICPR_CLRPEND(1, EXTI4_IRQ);
 
+    // Each callback must check their respective pin for pending IRQ
     gpio_irq_events = EXTI->PR1 & 0xFFFF;
     
-    for (uint32_t i = 0; i < num_exti4_callbacks; i++) {
-        exti4_callback[i]();
+    for (uint32_t i = 0; i < num_exti_callbacks[4]; i++) {
+        exti_callback[4][i]();
     }
     
     // Acknowledge pending interrupt
     EXTI->PR1 = EXTI_PR1_PIF4_MASK;
 }
 
+/* GPIOs 5 - 9 ISR */
+
 void __attribute__( (interrupt) ) EXTI9_5_Handler(void) {
+    // Clearn pending IRQ
     NVIC->ICPR0 = NVIC_ICPR_CLRPEND(1, EXTI9_5_IRQ);
     
-    // Each callback must check their respective pin for pending ISR
+    // Each callback must check their respective pin for pending IRQ
     gpio_irq_events = EXTI->PR1 & 0xFFFF;
 
-    for (uint32_t i = 0; i < num_exti9_5_callbacks; i++) {
-        exti9_5_callback[i]();
+    for (uint32_t i = 0; i < num_exti_callbacks[5]; i++) {
+        exti_callback[5][i]();
     }
 
     // Acknowledge pending interrupts
     EXTI->PR1 = gpio_irq_events & 0x0CE0;
 }
 
+/* GPIOs 10 - 15 ISR */
+
 void __attribute__( (interrupt) ) EXTI15_10_Handler(void) {
+    // Clear pending IRQ
     NVIC->ICPR1 = NVIC_ICPR_CLRPEND(1, EXTI15_10_IRQ - 32);
     
-    // Each callback must check their respective pin for pending ISR
+    // Each callback must check their respective pin for pending IRQ
     gpio_irq_events = EXTI->PR1 & 0xFFFF;
 
-    for (uint32_t i = 0; i < num_exti15_10_callbacks; i++) {
-        exti15_10_callback[i]();
+    for (uint32_t i = 0; i < num_exti_callbacks[6]; i++) {
+        exti_callback[6][i]();
     }
     
     // Clear all processed IRQs

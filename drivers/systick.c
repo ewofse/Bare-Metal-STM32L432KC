@@ -24,6 +24,8 @@ static uint32_t num_callbacks;
 static uint64_t volatile tick_counter;
 static _Bool volatile systick_fired_flag;
 
+/* Setup interrupts and timeout period */
+
 void configure_systick(void) {
     SYSTICK->RVR = SYSTICK_TOP; 
     SYSTICK->CVR = 0;
@@ -36,12 +38,16 @@ void configure_systick(void) {
     SCB->SHPR3 = (SCB->SHPR3 & ~SCB_SHPR3_PRI_15_MASK) | SCB_SHPR3_PRI_15(0);
 }
 
+/* Check if a system tick occurred */
+
 _Bool systick_has_fired(void) {
     _Bool retval = systick_fired_flag;
     systick_fired_flag = false;
 
     return retval;
 }
+
+/* Add callback for systick ISR */
 
 _Bool register_systick_callback( void (*cb)(void) ) {
     if (num_callbacks == NUM_SYSTICK_CALLBACKS) {
@@ -53,9 +59,13 @@ _Bool register_systick_callback( void (*cb)(void) ) {
     return true;
 }
 
+/* Get program time */
+
 uint64_t get_system_time(void) {
     return tick_counter;
 }
+
+/* SysTick ISR */
 
 void __attribute__( (interrupt) ) SYSTICK_Handler(void) {
     systick_fired_flag = true;

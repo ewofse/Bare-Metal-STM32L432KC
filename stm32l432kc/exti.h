@@ -20,7 +20,7 @@ typedef struct {
     uint32_t PR2;
 } EXTI_REG_BLOCKS;
 
-/* EXTI registers structs */
+/* EXTI registers as structs */
 
 #define EXTI ( (EXTI_REG_BLOCKS volatile *) 0x40010400 ) 
 

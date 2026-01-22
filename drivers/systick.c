@@ -6,7 +6,7 @@
 #include <stdbool.h>
 
 #ifndef SYSTICK_FREQ_HZ
-#define SYSTICK_FREQ_HZ 2000
+#define SYSTICK_FREQ_HZ 1000
 #endif
 
 #ifndef EXT_CLK_FREQ_HZ

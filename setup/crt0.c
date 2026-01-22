@@ -1,4 +1,5 @@
 #include <stm32l432kc/rcc.h>
+#include <stm32l432kc/flash.h>
 #include <stdint.h>
 
 extern uint8_t __etext, __sdata, __edata, __end;
@@ -35,6 +36,11 @@ void crt0(void) {
 }
 
 static void configure_sysclk(void) {
+    /* Setup flash for 3 wait states due to increased CPU clock */
+
+    FLASH->ACR &= ~FLASH_ACR_LATENCY_MASK;
+    FLASH->ACR |= FLASH_ACR_LATENCY(3);
+
     /* Configure PLL with MSI 4 MHz as source */
      
     RCC->CR &= ~RCC_CR_PLLON_MASK;
@@ -45,10 +51,16 @@ static void configure_sysclk(void) {
     RCC->PLLCFGR |= RCC_PLLCFGR_PLLSRC(1);
     
     // Need a combination of PLLR, PLLN, and PLLM such that...
-    // SYSCLK = F_VCO * (PLLN / (PLLM + 1) ) / PLLR = "X" MHz
-    RCC->PLLCFGR &= ~RCC_PLLCFGR_PLLM_MASK;
+    // SYSCLK (F_PLL_R) = ( F_PLL_CLK_IN * (PLLN / PLLM) ) / PLLR
+    // PLLM and PLLR use LUTs
+    RCC->PLLCFGR &= ~(
+          RCC_PLLCFGR_PLLR_MASK 
+        | RCC_PLLCFGR_PLLN_MASK
+        | RCC_PLLCFGR_PLLM_MASK
+    );
+    
     RCC->PLLCFGR |= 
-          RCC_PLLCFGR_PLLR(2)
+          RCC_PLLCFGR_PLLR(0)
         | RCC_PLLCFGR_PLLN(32)
         | RCC_PLLCFGR_PLLM(0);
     

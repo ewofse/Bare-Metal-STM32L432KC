@@ -35,6 +35,9 @@
 #define NUM_WWDG_CALLBACKS 5
 #endif
 
+#define WWDG_IRQ 0
+#define WWDG_IRQ_PRI 7
+
 static uint16_t const IWDG_PR_PR_LUT[8] = {
     4,
     8,
@@ -79,7 +82,7 @@ void feed_the_independent_watchdog(void) {
 void configure_window_watchdog(void) {
     RCC->APB1ENR1 |= RCC_APB1ENR1_WWDGEN(1);
 
-    NVIC->ISER0 = NVIC_ISER_SETENA(1, 0);
+    NVIC->ISER0 = NVIC_ISER_SETENA(1, WWDG_IRQ);
 
     WWDG->SR = WWDG_SR_EWIF(0);
     
@@ -92,7 +95,9 @@ void configure_window_watchdog(void) {
         WWDG_CR_WDGA(1)
       | WWDG_CR_T(0x40 | WWDG_T);
 
-    NVIC->IPR0 = (NVIC->IPR0 & ~NVIC_IPR0_PRI_0_MASK) | NVIC_IPR0_PRI_0(0);
+    NVIC->IPR0 = 
+        (NVIC->IPR0 & ~NVIC_IPR0_PRI_0_MASK) 
+      | NVIC_IPR0_PRI_0(WWDG_IRQ_PRI);
 }
 
 /* Reload WWDG counter */

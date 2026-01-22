@@ -1,8 +1,8 @@
 #include "gpio.h"
 #include <m4/nvic.h>
 #include <stm32l432kc/exti.h>
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #ifndef NUM_EXTI_CALLBACKS
 #define NUM_EXTI_CALLBACKS 5

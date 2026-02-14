@@ -8,23 +8,41 @@ MEMORY {
 /* Memory sections */
 
 SECTIONS {
+    /* TEXT segment */
+
     .text : {
         *(.vector_table*)
-        *(.text*)
         *(.init*)
+        *(.text*)
         *(.rodata*)
         __etext = .;
     } > FLASH
 
-    .data : {
-        __sdata = .;
+    /* DATA segment */
+
+    .data : ALIGN(4) {
+        __data = .;
+        *(.data)
+        . = ALIGN(4);
         *(.data*)
         __edata = .;
     } > SRAM1 AT > FLASH
 
-    .bss : {
+    __data_lma = LOADADDR(.data);
+
+    /* BSS segment */
+
+    .bss : ALIGN(4) {
+        __bss = .;
         *(.bss*)
-        __end = .;
+        . = ALIGN(4);
+        __ebss = .;
     } > SRAM1 
+
+    __end = .;
+
+    /* Top of stack at end of RAM */
+
+    __stack_top = ORIGIN(SRAM1) + LENGTH(SRAM1);
 }
 

@@ -39,6 +39,13 @@ typedef enum {
     USART_STOP_ONEHALF
 } usart_stop;
 
+typedef enum {
+    USART_DMA_NONE,
+    USART_DMA_RX,
+    USART_DMA_TX,
+    USART_DMA_RXTX
+} usart_dma;
+
 typedef USART_REG_BLOCKS volatile usart_t;
 
 typedef struct {
@@ -48,6 +55,7 @@ typedef struct {
     usart_mode mode     : 2;
     usart_word word     : 2;
     usart_stop stop     : 2;
+    usart_dma dma       : 2;
 } usart_config_t;
 
 typedef struct {

@@ -1,24 +1,23 @@
-#include "systick.h"
 #include "led.h"
 #include "usart.h"
 #include "interrupt.h"
+#include <stdbool.h>
 
-void print_char_1s(void);
+#define USART_BAUD_RATE 115200
 
 void main(void) {
-
     disable_irq();
 
-    configure_systick();
     configure_led();
 
     usart_config_t usart2_config = {
-        .baud_rate = 115200,
+        .baud_rate = USART_BAUD_RATE,
         .rx_pin = USART_RX_PIN_PA15,
         .tx_pin = USART_TX_PIN_PA2,
         .mode = USART_MODE_RXTX,
         .word = USART_WORD_8N1,
-        .stop = USART_STOP_ONE 
+        .stop = USART_STOP_ONE,
+        .dma = USART_DMA_NONE
     };
 
     usart_handle_t usart2_handle = {
@@ -28,25 +27,17 @@ void main(void) {
 
     configure_usart(&usart2_handle);
 
-    register_systick_callback(print_char_1s);
-
     enable_irq();
 
-    while (1) {
+    while (true) {
         wait_for_interrupt();
 
         char data;
 
-        if ( usart_getchar(USART2, &data) && data == 'W' ) {
-            data = 0;
+        if ( usart_getchar(USART2, &data) ) {
+            usart_putchar(USART2, data);
             toggle_led();
         }
-    }
-}
-
-void print_char_1s(void) {
-    if ( !( get_system_time() % 1000 ) ) {
-        usart_putchar(USART2, 'E');
     }
 }
 

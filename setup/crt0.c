@@ -1,8 +1,10 @@
 #include <stm32l432kc/rcc.h>
 #include <stm32l432kc/flash.h>
 #include <stdint.h>
+#include <stdbool.h>
 
-extern uint8_t __etext, __sdata, __edata, __end;
+extern uint8_t __bss[], __ebss[];
+extern uint8_t __data[], __edata[], __data_lma[];
 
 void main(void);
 
@@ -15,24 +17,26 @@ void crt0(void) {
     configure_sysclk();
     configure_clk48();
 
-    uint8_t * from = &__etext;
-    uint8_t * to = &__sdata;
+    uint8_t * to = __data;
+    uint8_t * from = __data_lma;
     
     /* Copy DATA memory section from flash to RAM */
 
-    while (to < &__edata) {
+    while (to < __edata) {
         *(to++) = *(from++);
     }
     
     /* Zero-initialize all data in BSS */
 
-    while (to < &__end) {
+    to = __bss;
+
+    while (to < __ebss) {
         *(to++) = 0;
     }
 
     main();
 
-    while (1); 
+    while (true); 
 }
 
 static void configure_sysclk(void) {

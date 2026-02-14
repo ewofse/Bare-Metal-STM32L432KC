@@ -4,6 +4,7 @@
 
 #define RESERVED ( ( void(*)(void) ) 0 )
 
+extern void __stack_top(void);
 extern void crt0(void);
 
 void __attribute__( ( section (".init") ) ) entry_point(void) {
@@ -93,7 +94,7 @@ void __attribute__( ( weak, alias("DEFAULT_Handler") ) ) FPU_Handler(void);
 void __attribute__( ( weak, alias("DEFAULT_Handler") ) ) CRS_Handler(void);
 
 void ( * const __attribute__( ( section (".vector_table") ) ) vector_table[] )(void) = {
-    ( void (*)(void) ) INITIAL_STACK_POINTER,	
+    &__stack_top,
     &entry_point,
     NMI_Handler,
     HARDFAULT_Handler,

@@ -6,106 +6,12 @@
 #define ALL1 ( (uint32_t) 0xFFFFFFFF )
 
 typedef struct {
-    uint32_t ISER0;
-    uint32_t ISER1;
-    uint32_t ISER2;
-    uint32_t ISER3;
-    uint32_t ISER4;
-    uint32_t ISER5;
-    uint32_t ISER6;
-    uint32_t ISER7;
-    uint32_t ICER0;
-    uint32_t ICER1;
-    uint32_t ICER2;
-    uint32_t ICER3;
-    uint32_t ICER4;
-    uint32_t ICER5;
-    uint32_t ICER6;
-    uint32_t ICER7;
-    uint32_t ISPR0;
-    uint32_t ISPR1;
-    uint32_t ISPR2;
-    uint32_t ISPR3;
-    uint32_t ISPR4;
-    uint32_t ISPR5;
-    uint32_t ISPR6;
-    uint32_t ISPR7;
-    uint32_t ICPR0;
-    uint32_t ICPR1;
-    uint32_t ICPR2;
-    uint32_t ICPR3;
-    uint32_t ICPR4;
-    uint32_t ICPR5;
-    uint32_t ICPR6;
-    uint32_t ICPR7;
-    uint32_t IABR0;
-    uint32_t IABR1;
-    uint32_t IABR2;
-    uint32_t IABR3;
-    uint32_t IABR4;
-    uint32_t IABR5;
-    uint32_t IABR6;
-    uint32_t IABR7;
-    uint32_t IPR0;
-    uint32_t IPR1;
-    uint32_t IPR2;
-    uint32_t IPR3;
-    uint32_t IPR4;
-    uint32_t IPR5;
-    uint32_t IPR6;
-    uint32_t IPR7;
-    uint32_t IPR8;
-    uint32_t IPR9;
-    uint32_t IPR10;
-    uint32_t IPR11;
-    uint32_t IPR12;
-    uint32_t IPR13;
-    uint32_t IPR14;
-    uint32_t IPR15;
-    uint32_t IPR16;
-    uint32_t IPR17;
-    uint32_t IPR18;
-    uint32_t IPR19;
-    uint32_t IPR20;
-    uint32_t IPR21;
-    uint32_t IPR22;
-    uint32_t IPR23;
-    uint32_t IPR24;
-    uint32_t IPR25;
-    uint32_t IPR26;
-    uint32_t IPR27;
-    uint32_t IPR28;
-    uint32_t IPR29;
-    uint32_t IPR30;
-    uint32_t IPR31;
-    uint32_t IPR32;
-    uint32_t IPR33;
-    uint32_t IPR34;
-    uint32_t IPR35;
-    uint32_t IPR36;
-    uint32_t IPR37;
-    uint32_t IPR38;
-    uint32_t IPR39;
-    uint32_t IPR40;
-    uint32_t IPR41;
-    uint32_t IPR42;
-    uint32_t IPR43;
-    uint32_t IPR44;
-    uint32_t IPR45;
-    uint32_t IPR46;
-    uint32_t IPR47;
-    uint32_t IPR48;
-    uint32_t IPR49;
-    uint32_t IPR50;
-    uint32_t IPR51;
-    uint32_t IPR52;
-    uint32_t IPR53;
-    uint32_t IPR54;
-    uint32_t IPR55;
-    uint32_t IPR56;
-    uint32_t IPR57;
-    uint32_t IPR58;
-    uint32_t IPR59;
+    uint32_t ISER[8];
+    uint32_t ICER[8];
+    uint32_t ISPR[8];
+    uint32_t ICPR[8];
+    uint32_t IABR[8];
+    uint32_t IPR[60];
     uint32_t STIR;
 } NVIC_REG_BLOCKS;
 
@@ -113,32 +19,32 @@ typedef struct {
 
 #define NVIC ( (NVIC_REG_BLOCKS volatile *) 0xE000E100 )
 
-/* NVIC ISER0 - ISER7 register as macros */
+/* NVIC ISER0 - ISER7 register macros */
 
 #define NVIC_ISER_SETENA(v, m) ( ( (v) & 0x1 ) << ( (m) & 0x1F ) )
 #define NVIC_ISER_SETENA_MASK(m) NVIC_ISER0_SETENA(ALL1, m)
 
-/* NVIC ICER0 - ICER7 register as macros */
+/* NVIC ICER0 - ICER7 register macros */
 
 #define NVIC_ICER_CLRENA(v, m) ( ( (v) & 0x1 ) << ( (m) & 0x1F ) )
 #define NVIC_ICER_CLRENA_MASK(m) NVIC_ICER_CLRENA(ALL1, m)
 
-/* NVIC ISPR0 - ISPR7 register as macros */
+/* NVIC ISPR0 - ISPR7 register macros */
 
 #define NVIC_ISPR_SETPEND(v, m) ( ( (v) & 0x1 ) << ( (m) & 0x1F ) )
 #define NVIC_ISPR_SETPEND_MASK(m) NVIC_ISPR_SETPEND(ALL1, m)
 
-/* NVIC ICPR0 - ICPR7 register as macros */
+/* NVIC ICPR0 - ICPR7 register macros */
 
 #define NVIC_ICPR_CLRPEND(v, m) ( ( (v) & 0x1 ) << ( (m) & 0x1F ) )
 #define NVIC_ICPR_CLRPEND_MASK(m) NVIC_ICPR_CLRPEND(ALL1, m)
 
-/* NVIC IABR0 - IABR7 register as macros */
+/* NVIC IABR0 - IABR7 register macros */
 
 #define NVIC_IABR_ACTIVE(v, m) ( ( (v) & 0x1 ) << ( (m) & 0x1F ) )
 #define NVIC_IABR_ACTIVE_MASK(m) NVIC_ICPR_ACTIVE(ALL1, m)
 
-/* NVIC IPR0 register as macros */
+/* NVIC IPR0 register macros */
 
 #define NVIC_IPR0_PRI_0(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR0_PRI_0_MASK NVIC_IPR0_PRI_0(ALL1)
@@ -149,7 +55,7 @@ typedef struct {
 #define NVIC_IPR0_PRI_3(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR0_PRI_3_MASK NVIC_IPR0_PRI_3(ALL1)
 
-/* NVIC IPR1 register as macros */
+/* NVIC IPR1 register macros */
 
 #define NVIC_IPR1_PRI_4(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR1_PRI_4_MASK NVIC_IPR1_PRI_4(ALL1)
@@ -160,7 +66,7 @@ typedef struct {
 #define NVIC_IPR1_PRI_7(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR1_PRI_7_MASK NVIC_IPR1_PRI_7(ALL1)
 
-/* NVIC IPR2 register as macros */
+/* NVIC IPR2 register macros */
 
 #define NVIC_IPR2_PRI_8(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR2_PRI_8_MASK NVIC_IPR2_PRI_8(ALL1)
@@ -171,7 +77,7 @@ typedef struct {
 #define NVIC_IPR2_PRI_11(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR2_PRI_11_MASK NVIC_IPR2_PRI_11(ALL1)
 
-/* NVIC IPR3 register as macros */
+/* NVIC IPR3 register macros */
 
 #define NVIC_IPR3_PRI_12(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR3_PRI_12_MASK NVIC_IPR3_PRI_12(ALL1)
@@ -182,7 +88,7 @@ typedef struct {
 #define NVIC_IPR3_PRI_15(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR3_PRI_15_MASK NVIC_IPR3_PRI_15(ALL1)
 
-/* NVIC IPR4 register as macros */
+/* NVIC IPR4 register macros */
 
 #define NVIC_IPR4_PRI_16(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR4_PRI_16_MASK NVIC_IPR4_PRI_16(ALL1)
@@ -193,7 +99,7 @@ typedef struct {
 #define NVIC_IPR4_PRI_19(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR4_PRI_19_MASK NVIC_IPR4_PRI_19(ALL1)
 
-/* NVIC IPR5 register as macros */
+/* NVIC IPR5 register macros */
 
 #define NVIC_IPR5_PRI_20(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR5_PRI_20_MASK NVIC_IPR5_PRI_20(ALL1)
@@ -204,7 +110,7 @@ typedef struct {
 #define NVIC_IPR5_PRI_23(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR5_PRI_23_MASK NVIC_IPR5_PRI_23(ALL1)
 
-/* NVIC IPR6 register as macros */
+/* NVIC IPR6 register macros */
 
 #define NVIC_IPR6_PRI_24(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR6_PRI_24_MASK NVIC_IPR6_PRI_24(ALL1)
@@ -215,7 +121,7 @@ typedef struct {
 #define NVIC_IPR6_PRI_27(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR6_PRI_27_MASK NVIC_IPR6_PRI_27(ALL1)
 
-/* NVIC IPR7 register as macros */
+/* NVIC IPR7 register macros */
 
 #define NVIC_IPR7_PRI_28(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR7_PRI_28_MASK NVIC_IPR7_PRI_28(ALL1)
@@ -226,7 +132,7 @@ typedef struct {
 #define NVIC_IPR7_PRI_31(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR7_PRI_31_MASK NVIC_IPR7_PRI_31(ALL1)
 
-/* NVIC IPR8 register as macros */
+/* NVIC IPR8 register macros */
 
 #define NVIC_IPR8_PRI_32(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR8_PRI_32_MASK NVIC_IPR8_PRI_32(ALL1)
@@ -237,7 +143,7 @@ typedef struct {
 #define NVIC_IPR8_PRI_35(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR8_PRI_35_MASK NVIC_IPR8_PRI_35(ALL1)
 
-/* NVIC IPR9 register as macros */
+/* NVIC IPR9 register macros */
 
 #define NVIC_IPR9_PRI_36(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR9_PRI_36_MASK NVIC_IPR9_PRI_36(ALL1)
@@ -248,7 +154,7 @@ typedef struct {
 #define NVIC_IPR9_PRI_39(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR9_PRI_39_MASK NVIC_IPR9_PRI_39(ALL1)
 
-/* NVIC IPR10 register as macros */
+/* NVIC IPR10 register macros */
 
 #define NVIC_IPR10_PRI_40(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR10_PRI_40_MASK NVIC_IPR10_PRI_40(ALL1)
@@ -259,7 +165,7 @@ typedef struct {
 #define NVIC_IPR10_PRI_43(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR10_PRI_43_MASK NVIC_IPR10_PRI_43(ALL1)
 
-/* NVIC IPR11 register as macros */
+/* NVIC IPR11 register macros */
 
 #define NVIC_IPR11_PRI_44(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR11_PRI_44_MASK NVIC_IPR11_PRI_44(ALL1)
@@ -270,7 +176,7 @@ typedef struct {
 #define NVIC_IPR11_PRI_47(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR11_PRI_47_MASK NVIC_IPR11_PRI_47(ALL1)
 
-/* NVIC IPR12 register as macros */
+/* NVIC IPR12 register macros */
 
 #define NVIC_IPR12_PRI_48(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR12_PRI_48_MASK NVIC_IPR12_PRI_48(ALL1)
@@ -281,7 +187,7 @@ typedef struct {
 #define NVIC_IPR12_PRI_51(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR12_PRI_51_MASK NVIC_IPR12_PRI_51(ALL1)
 
-/* NVIC IPR13 register as macros */
+/* NVIC IPR13 register macros */
 
 #define NVIC_IPR13_PRI_52(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR13_PRI_52_MASK NVIC_IPR13_PRI_52(ALL1)
@@ -292,7 +198,7 @@ typedef struct {
 #define NVIC_IPR13_PRI_55(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR13_PRI_55_MASK NVIC_IPR13_PRI_55(ALL1)
 
-/* NVIC IPR14 register as macros */
+/* NVIC IPR14 register macros */
 
 #define NVIC_IPR14_PRI_56(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR14_PRI_56_MASK NVIC_IPR14_PRI_56(ALL1)
@@ -303,7 +209,7 @@ typedef struct {
 #define NVIC_IPR14_PRI_59(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR14_PRI_59_MASK NVIC_IPR14_PRI_59(ALL1)
 
-/* NVIC IPR15 register as macros */
+/* NVIC IPR15 register macros */
 
 #define NVIC_IPR15_PRI_60(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR15_PRI_60_MASK NVIC_IPR15_PRI_60(ALL1)
@@ -314,7 +220,7 @@ typedef struct {
 #define NVIC_IPR15_PRI_63(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR15_PRI_63_MASK NVIC_IPR15_PRI_63(ALL1)
 
-/* NVIC IPR16 register as macros */
+/* NVIC IPR16 register macros */
 
 #define NVIC_IPR16_PRI_64(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR16_PRI_64_MASK NVIC_IPR16_PRI_64(ALL1)
@@ -325,7 +231,7 @@ typedef struct {
 #define NVIC_IPR16_PRI_67(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR16_PRI_67_MASK NVIC_IPR16_PRI_67(ALL1)
 
-/* NVIC IPR17 register as macros */
+/* NVIC IPR17 register macros */
 
 #define NVIC_IPR17_PRI_68(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR17_PRI_68_MASK NVIC_IPR17_PRI_68(ALL1)
@@ -336,7 +242,7 @@ typedef struct {
 #define NVIC_IPR17_PRI_71(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR17_PRI_71_MASK NVIC_IPR17_PRI_71(ALL1)
 
-/* NVIC IPR18 register as macros */
+/* NVIC IPR18 register macros */
 
 #define NVIC_IPR18_PRI_72(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR18_PRI_72_MASK NVIC_IPR18_PRI_72(ALL1)
@@ -347,7 +253,7 @@ typedef struct {
 #define NVIC_IPR18_PRI_75(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR18_PRI_75_MASK NVIC_IPR18_PRI_75(ALL1)
 
-/* NVIC IPR19 register as macros */
+/* NVIC IPR19 register macros */
 
 #define NVIC_IPR19_PRI_76(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR19_PRI_76_MASK NVIC_IPR19_PRI_76(ALL1)
@@ -358,7 +264,7 @@ typedef struct {
 #define NVIC_IPR19_PRI_79(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR19_PRI_79_MASK NVIC_IPR19_PRI_79(ALL1)
 
-/* NVIC IPR20 register as macros */
+/* NVIC IPR20 register macros */
 
 #define NVIC_IPR20_PRI_80(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR20_PRI_80_MASK NVIC_IPR20_PRI_80(ALL1)
@@ -369,7 +275,7 @@ typedef struct {
 #define NVIC_IPR20_PRI_83(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR20_PRI_83_MASK NVIC_IPR20_PRI_83(ALL1)
 
-/* NVIC IPR21 register as macros */
+/* NVIC IPR21 register macros */
 
 #define NVIC_IPR21_PRI_84(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR21_PRI_84_MASK NVIC_IPR21_PRI_84(ALL1)
@@ -380,7 +286,7 @@ typedef struct {
 #define NVIC_IPR21_PRI_87(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR21_PRI_87_MASK NVIC_IPR21_PRI_87(ALL1)
 
-/* NVIC IPR22 register as macros */
+/* NVIC IPR22 register macros */
 
 #define NVIC_IPR22_PRI_88(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR22_PRI_88_MASK NVIC_IPR22_PRI_88(ALL1)
@@ -391,7 +297,7 @@ typedef struct {
 #define NVIC_IPR22_PRI_91(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR22_PRI_91_MASK NVIC_IPR22_PRI_91(ALL1)
 
-/* NVIC IPR23 register as macros */
+/* NVIC IPR23 register macros */
 
 #define NVIC_IPR23_PRI_92(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR23_PRI_92_MASK NVIC_IPR23_PRI_92(ALL1)
@@ -402,7 +308,7 @@ typedef struct {
 #define NVIC_IPR23_PRI_95(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR23_PRI_95_MASK NVIC_IPR23_PRI_95(ALL1)
 
-/* NVIC IPR24 register as macros */
+/* NVIC IPR24 register macros */
 
 #define NVIC_IPR24_PRI_96(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR24_PRI_96_MASK NVIC_IPR24_PRI_96(ALL1)
@@ -413,7 +319,7 @@ typedef struct {
 #define NVIC_IPR24_PRI_99(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR24_PRI_99_MASK NVIC_IPR24_PRI_99(ALL1)
 
-/* NVIC IPR25 register as macros */
+/* NVIC IPR25 register macros */
 
 #define NVIC_IPR25_PRI_100(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR25_PRI_100_MASK NVIC_IPR25_PRI_100(ALL1)
@@ -424,7 +330,7 @@ typedef struct {
 #define NVIC_IPR25_PRI_103(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR25_PRI_103_MASK NVIC_IPR25_PRI_103(ALL1)
 
-/* NVIC IPR26 register as macros */
+/* NVIC IPR26 register macros */
 
 #define NVIC_IPR26_PRI_104(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR26_PRI_104_MASK NVIC_IPR26_PRI_104(ALL1)
@@ -435,7 +341,7 @@ typedef struct {
 #define NVIC_IPR26_PRI_107(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR26_PRI_107_MASK NVIC_IPR26_PRI_107(ALL1)
 
-/* NVIC IPR27 register as macros */
+/* NVIC IPR27 register macros */
 
 #define NVIC_IPR27_PRI_108(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR27_PRI_108_MASK NVIC_IPR27_PRI_108(ALL1)
@@ -446,7 +352,7 @@ typedef struct {
 #define NVIC_IPR27_PRI_111(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR27_PRI_111_MASK NVIC_IPR27_PRI_111(ALL1)
 
-/* NVIC IPR28 register as macros */
+/* NVIC IPR28 register macros */
 
 #define NVIC_IPR28_PRI_112(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR28_PRI_112_MASK NVIC_IPR28_PRI_112(ALL1)
@@ -457,7 +363,7 @@ typedef struct {
 #define NVIC_IPR28_PRI_115(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR28_PRI_115_MASK NVIC_IPR28_PRI_115(ALL1)
 
-/* NVIC IPR29 register as macros */
+/* NVIC IPR29 register macros */
 
 #define NVIC_IPR29_PRI_116(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR29_PRI_116_MASK NVIC_IPR29_PRI_116(ALL1)
@@ -468,7 +374,7 @@ typedef struct {
 #define NVIC_IPR29_PRI_119(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR29_PRI_119_MASK NVIC_IPR29_PRI_119(ALL1)
 
-/* NVIC IPR30 register as macros */
+/* NVIC IPR30 register macros */
 
 #define NVIC_IPR30_PRI_120(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR30_PRI_120_MASK NVIC_IPR30_PRI_120(ALL1)
@@ -479,7 +385,7 @@ typedef struct {
 #define NVIC_IPR30_PRI_123(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR30_PRI_123_MASK NVIC_IPR30_PRI_123(ALL1)
 
-/* NVIC IPR31 register as macros */
+/* NVIC IPR31 register macros */
 
 #define NVIC_IPR31_PRI_124(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR31_PRI_124_MASK NVIC_IPR31_PRI_124(ALL1)
@@ -490,7 +396,7 @@ typedef struct {
 #define NVIC_IPR31_PRI_127(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR31_PRI_127_MASK NVIC_IPR31_PRI_127(ALL1)
 
-/* NVIC IPR32 register as macros */
+/* NVIC IPR32 register macros */
 
 #define NVIC_IPR32_PRI_128(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR32_PRI_128_MASK NVIC_IPR32_PRI_128(ALL1)
@@ -501,7 +407,7 @@ typedef struct {
 #define NVIC_IPR32_PRI_131(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR32_PRI_131_MASK NVIC_IPR32_PRI_131(ALL1)
 
-/* NVIC IPR33 register as macros */
+/* NVIC IPR33 register macros */
 
 #define NVIC_IPR33_PRI_132(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR33_PRI_132_MASK NVIC_IPR33_PRI_132(ALL1)
@@ -512,7 +418,7 @@ typedef struct {
 #define NVIC_IPR33_PRI_135(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR33_PRI_135_MASK NVIC_IPR33_PRI_135(ALL1)
 
-/* NVIC IPR34 register as macros */
+/* NVIC IPR34 register macros */
 
 #define NVIC_IPR34_PRI_136(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR34_PRI_136_MASK NVIC_IPR34_PRI_136(ALL1)
@@ -523,7 +429,7 @@ typedef struct {
 #define NVIC_IPR34_PRI_139(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR34_PRI_139_MASK NVIC_IPR34_PRI_139(ALL1)
 
-/* NVIC IPR35 register as macros */
+/* NVIC IPR35 register macros */
 
 #define NVIC_IPR35_PRI_140(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR35_PRI_140_MASK NVIC_IPR35_PRI_140(ALL1)
@@ -534,7 +440,7 @@ typedef struct {
 #define NVIC_IPR35_PRI_143(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR35_PRI_143_MASK NVIC_IPR35_PRI_143(ALL1)
 
-/* NVIC IPR36 register as macros */
+/* NVIC IPR36 register macros */
 
 #define NVIC_IPR36_PRI_144(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR36_PRI_144_MASK NVIC_IPR36_PRI_144(ALL1)
@@ -545,7 +451,7 @@ typedef struct {
 #define NVIC_IPR36_PRI_147(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR36_PRI_147_MASK NVIC_IPR36_PRI_147(ALL1)
 
-/* NVIC IPR37 register as macros */
+/* NVIC IPR37 register macros */
 
 #define NVIC_IPR37_PRI_148(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR37_PRI_148_MASK NVIC_IPR37_PRI_148(ALL1)
@@ -556,7 +462,7 @@ typedef struct {
 #define NVIC_IPR37_PRI_151(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR37_PRI_151_MASK NVIC_IPR37_PRI_151(ALL1)
 
-/* NVIC IPR38 register as macros */
+/* NVIC IPR38 register macros */
 
 #define NVIC_IPR38_PRI_152(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR38_PRI_152_MASK NVIC_IPR38_PRI_152(ALL1)
@@ -567,7 +473,7 @@ typedef struct {
 #define NVIC_IPR38_PRI_155(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR38_PRI_155_MASK NVIC_IPR38_PRI_155(ALL1)
 
-/* NVIC IPR39 register as macros */
+/* NVIC IPR39 register macros */
 
 #define NVIC_IPR39_PRI_156(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR39_PRI_156_MASK NVIC_IPR39_PRI_156(ALL1)
@@ -578,7 +484,7 @@ typedef struct {
 #define NVIC_IPR39_PRI_159(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR39_PRI_159_MASK NVIC_IPR39_PRI_159(ALL1)
 
-/* NVIC IPR40 register as macros */
+/* NVIC IPR40 register macros */
 
 #define NVIC_IPR40_PRI_160(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR40_PRI_160_MASK NVIC_IPR40_PRI_160(ALL1)
@@ -589,7 +495,7 @@ typedef struct {
 #define NVIC_IPR40_PRI_163(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR40_PRI_163_MASK NVIC_IPR40_PRI_163(ALL1)
 
-/* NVIC IPR41 register as macros */
+/* NVIC IPR41 register macros */
 
 #define NVIC_IPR41_PRI_164(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR41_PRI_164_MASK NVIC_IPR41_PRI_164(ALL1)
@@ -600,7 +506,7 @@ typedef struct {
 #define NVIC_IPR41_PRI_167(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR41_PRI_167_MASK NVIC_IPR41_PRI_167(ALL1)
 
-/* NVIC IPR42 register as macros */
+/* NVIC IPR42 register macros */
 
 #define NVIC_IPR42_PRI_168(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR42_PRI_168_MASK NVIC_IPR42_PRI_168(ALL1)
@@ -611,7 +517,7 @@ typedef struct {
 #define NVIC_IPR42_PRI_171(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR42_PRI_171_MASK NVIC_IPR42_PRI_171(ALL1)
 
-/* NVIC IPR43 register as macros */
+/* NVIC IPR43 register macros */
 
 #define NVIC_IPR43_PRI_172(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR43_PRI_172_MASK NVIC_IPR43_PRI_172(ALL1)
@@ -622,7 +528,7 @@ typedef struct {
 #define NVIC_IPR43_PRI_175(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR43_PRI_175_MASK NVIC_IPR43_PRI_175(ALL1)
 
-/* NVIC IPR44 register as macros */
+/* NVIC IPR44 register macros */
 
 #define NVIC_IPR44_PRI_176(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR44_PRI_176_MASK NVIC_IPR44_PRI_176(ALL1)
@@ -633,7 +539,7 @@ typedef struct {
 #define NVIC_IPR44_PRI_179(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR44_PRI_179_MASK NVIC_IPR44_PRI_179(ALL1)
 
-/* NVIC IPR45 register as macros */
+/* NVIC IPR45 register macros */
 
 #define NVIC_IPR45_PRI_180(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR45_PRI_180_MASK NVIC_IPR45_PRI_180(ALL1)
@@ -644,7 +550,7 @@ typedef struct {
 #define NVIC_IPR45_PRI_183(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR45_PRI_183_MASK NVIC_IPR45_PRI_183(ALL1)
 
-/* NVIC IPR46 register as macros */
+/* NVIC IPR46 register macros */
 
 #define NVIC_IPR46_PRI_184(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR46_PRI_184_MASK NVIC_IPR46_PRI_184(ALL1)
@@ -655,7 +561,7 @@ typedef struct {
 #define NVIC_IPR46_PRI_187(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR46_PRI_187_MASK NVIC_IPR46_PRI_187(ALL1)
 
-/* NVIC IPR47 register as macros */
+/* NVIC IPR47 register macros */
 
 #define NVIC_IPR47_PRI_188(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR47_PRI_188_MASK NVIC_IPR47_PRI_188(ALL1)
@@ -666,7 +572,7 @@ typedef struct {
 #define NVIC_IPR47_PRI_191(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR47_PRI_191_MASK NVIC_IPR47_PRI_191(ALL1)
 
-/* NVIC IPR48 register as macros */
+/* NVIC IPR48 register macros */
 
 #define NVIC_IPR48_PRI_192(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR48_PRI_192_MASK NVIC_IPR48_PRI_192(ALL1)
@@ -677,7 +583,7 @@ typedef struct {
 #define NVIC_IPR48_PRI_195(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR48_PRI_195_MASK NVIC_IPR48_PRI_195(ALL1)
 
-/* NVIC IPR49 register as macros */
+/* NVIC IPR49 register macros */
 
 #define NVIC_IPR49_PRI_196(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR49_PRI_196_MASK NVIC_IPR49_PRI_196(ALL1)
@@ -688,7 +594,7 @@ typedef struct {
 #define NVIC_IPR49_PRI_199(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR49_PRI_199_MASK NVIC_IPR49_PRI_199(ALL1)
 
-/* NVIC IPR50 register as macros */
+/* NVIC IPR50 register macros */
 
 #define NVIC_IPR50_PRI_200(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR50_PRI_200_MASK NVIC_IPR50_PRI_200(ALL1)
@@ -699,7 +605,7 @@ typedef struct {
 #define NVIC_IPR50_PRI_203(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR50_PRI_203_MASK NVIC_IPR50_PRI_203(ALL1)
 
-/* NVIC IPR51 register as macros */
+/* NVIC IPR51 register macros */
 
 #define NVIC_IPR51_PRI_204(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR51_PRI_204_MASK NVIC_IPR51_PRI_204(ALL1)
@@ -710,7 +616,7 @@ typedef struct {
 #define NVIC_IPR51_PRI_207(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR51_PRI_207_MASK NVIC_IPR51_PRI_207(ALL1)
 
-/* NVIC IPR52 register as macros */
+/* NVIC IPR52 register macros */
 
 #define NVIC_IPR52_PRI_208(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR52_PRI_208_MASK NVIC_IPR52_PRI_208(ALL1)
@@ -721,7 +627,7 @@ typedef struct {
 #define NVIC_IPR52_PRI_211(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR52_PRI_211_MASK NVIC_IPR52_PRI_211(ALL1)
 
-/* NVIC IPR53 register as macros */
+/* NVIC IPR53 register macros */
 
 #define NVIC_IPR53_PRI_212(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR53_PRI_212_MASK NVIC_IPR53_PRI_212(ALL1)
@@ -732,7 +638,7 @@ typedef struct {
 #define NVIC_IPR53_PRI_215(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR53_PRI_215_MASK NVIC_IPR53_PRI_215(ALL1)
 
-/* NVIC IPR54 register as macros */
+/* NVIC IPR54 register macros */
 
 #define NVIC_IPR54_PRI_216(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR54_PRI_216_MASK NVIC_IPR54_PRI_216(ALL1)
@@ -743,7 +649,7 @@ typedef struct {
 #define NVIC_IPR54_PRI_219(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR54_PRI_219_MASK NVIC_IPR54_PRI_219(ALL1)
 
-/* NVIC IPR55 register as macros */
+/* NVIC IPR55 register macros */
 
 #define NVIC_IPR55_PRI_220(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR55_PRI_220_MASK NVIC_IPR55_PRI_220(ALL1)
@@ -754,7 +660,7 @@ typedef struct {
 #define NVIC_IPR55_PRI_223(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR55_PRI_223_MASK NVIC_IPR55_PRI_223(ALL1)
 
-/* NVIC IPR56 register as macros */
+/* NVIC IPR56 register macros */
 
 #define NVIC_IPR56_PRI_224(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR56_PRI_224_MASK NVIC_IPR56_PRI_224(ALL1)
@@ -765,7 +671,7 @@ typedef struct {
 #define NVIC_IPR56_PRI_227(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR56_PRI_227_MASK NVIC_IPR56_PRI_227(ALL1)
 
-/* NVIC IPR57 register as macros */
+/* NVIC IPR57 register macros */
 
 #define NVIC_IPR57_PRI_228(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR57_PRI_228_MASK NVIC_IPR57_PRI_228(ALL1)
@@ -776,7 +682,7 @@ typedef struct {
 #define NVIC_IPR57_PRI_231(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR57_PRI_231_MASK NVIC_IPR57_PRI_231(ALL1)
 
-/* NVIC IPR58 register as macros */
+/* NVIC IPR58 register macros */
 
 #define NVIC_IPR58_PRI_232(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR58_PRI_232_MASK NVIC_IPR58_PRI_232(ALL1)
@@ -787,7 +693,7 @@ typedef struct {
 #define NVIC_IPR58_PRI_235(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR58_PRI_235_MASK NVIC_IPR58_PRI_235(ALL1)
 
-/* NVIC IPR59 register as macros */
+/* NVIC IPR59 register macros */
 
 #define NVIC_IPR59_PRI_236(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_IPR59_PRI_236_MASK NVIC_IPR59_PRI_236(ALL1)
@@ -798,7 +704,12 @@ typedef struct {
 #define NVIC_IPR59_PRI_239(v) ( ( (v) & 0xFF ) << 24 )
 #define NVIC_IPR59_PRI_239_MASK NVIC_IPR59_PRI_239(ALL1)
 
-/* NVIC STIR register as macros */
+/* NVIC IPR register macros */
+
+#define NVIC_IPR_PRI(v, m) ( ( (v) & 0xFF ) << ( (m % 4) * 8 ) )
+#define NVIC_IPR_PRI_MASK(v) NVIC_IPR_PRI(ALL1, v)
+
+/* NVIC STIR register macros */
 
 #define NVIC_STIR_INTID(v) ( ( (v) & 0xFF ) << 0 )
 #define NVIC_STIR_INTID_MASK NVIC_STIR_INTID(ALL1)

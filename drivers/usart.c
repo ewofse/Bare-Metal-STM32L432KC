@@ -66,20 +66,20 @@ void configure_usart(usart_handle_t * handler) {
 
         /* IRQ enable and priority */
 
-        NVIC->ISER1 = NVIC_ISER_SETENA(1, USART1_IRQ - 32);
+        NVIC->ISER[1] = NVIC_ISER_SETENA(1, USART1_IRQ - 32);
 
-        NVIC->IPR9 = 
-            (NVIC->IPR9 & ~NVIC_IPR9_PRI_37_MASK) 
+        NVIC->IPR[9] = 
+            (NVIC->IPR[9] & ~NVIC_IPR9_PRI_37_MASK) 
           | NVIC_IPR9_PRI_37(USART1_IRQ_PRI);
     } else {
         RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN(1);
 
         /* IRQ enable and priority */
 
-        NVIC->ISER1 = NVIC_ISER_SETENA(1, USART2_IRQ - 32);
+        NVIC->ISER[1] = NVIC_ISER_SETENA(1, USART2_IRQ - 32);
 
-        NVIC->IPR9 = 
-            (NVIC->IPR9 & ~NVIC_IPR9_PRI_38_MASK) 
+        NVIC->IPR[9] = 
+            (NVIC->IPR[9] & ~NVIC_IPR9_PRI_38_MASK) 
           | NVIC_IPR9_PRI_38(USART2_IRQ_PRI);
 
     }
@@ -198,6 +198,13 @@ void configure_usart(usart_handle_t * handler) {
     // Baud rate needs the system clock to calculate USART divider 
     usart->BRR = (uint32_t) (64000000 / opts.baud_rate);
 
+    /* DMA options */
+
+    usart->CR3 &= ~(USART_CR3_DMAT_MASK | USART_CR3_DMAR_MASK);
+    usart->CR3 |= 
+          USART_CR3_DMAT(opts.dma >> 1) 
+        | USART_CR3_DMAR(opts.dma & 1);
+
     usart->CR1 |= USART_CR1_UE(1);
 
     return;
@@ -265,7 +272,7 @@ _Bool register_usart_callback( usart_t * regs, void (*cb)(void) ) {
 
 void __attribute__( (interrupt) ) USART1_Handler(void) {
     // Clear pending IRQ
-    NVIC->ICPR1 = NVIC_ICPR_CLRPEND(1, USART1_IRQ - 32);
+    NVIC->ICPR[1] = NVIC_ICPR_CLRPEND(1, USART1_IRQ - 32);
 
     if (USART1->ISR & USART_ISR_RXNE_MASK) {
         read_rx_data(USART1);
@@ -285,7 +292,7 @@ void __attribute__( (interrupt) ) USART1_Handler(void) {
 
 void __attribute__( (interrupt) ) USART2_Handler(void) {
     // Clear pending IRQ
-    NVIC->ICPR1 = NVIC_ICPR_CLRPEND(1, USART2_IRQ - 32);
+    NVIC->ICPR[1] = NVIC_ICPR_CLRPEND(1, USART2_IRQ - 32);
 
     if (USART2->ISR & USART_ISR_RXNE_MASK) {
         read_rx_data(USART2);

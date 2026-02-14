@@ -82,7 +82,7 @@ void feed_the_independent_watchdog(void) {
 void configure_window_watchdog(void) {
     RCC->APB1ENR1 |= RCC_APB1ENR1_WWDGEN(1);
 
-    NVIC->ISER0 = NVIC_ISER_SETENA(1, WWDG_IRQ);
+    NVIC->ISER[0] = NVIC_ISER_SETENA(1, WWDG_IRQ);
 
     WWDG->SR = WWDG_SR_EWIF(0);
     
@@ -95,8 +95,8 @@ void configure_window_watchdog(void) {
         WWDG_CR_WDGA(1)
       | WWDG_CR_T(0x40 | WWDG_T);
 
-    NVIC->IPR0 = 
-        (NVIC->IPR0 & ~NVIC_IPR0_PRI_0_MASK) 
+    NVIC->IPR[0] = 
+        (NVIC->IPR[0] & ~NVIC_IPR0_PRI_0_MASK) 
       | NVIC_IPR0_PRI_0(WWDG_IRQ_PRI);
 }
 
@@ -122,7 +122,7 @@ _Bool register_window_watchdog_callback( void (*cb)(void) ) {
 
 void __attribute__( (interrupt) ) WWDG_Handler(void) {
     // Clear pending IRQ
-    NVIC->ICPR0 = NVIC_ICPR_CLRPEND(1, 0);
+    NVIC->ICPR[0] = NVIC_ICPR_CLRPEND(1, 0);
 
     for (uint32_t i = 0; i < num_callbacks; i++) {
         callback[i]();

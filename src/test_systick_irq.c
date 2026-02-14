@@ -1,6 +1,7 @@
 #include "systick.h"
 #include "led.h"
 #include "interrupt.h"
+#include <stdbool.h>
 
 void toggle_led_500ms(void);
 
@@ -14,7 +15,7 @@ void main(void) {
     
     enable_irq();
 
-    while (1) {
+    while (true) {
         wait_for_interrupt();
     }
 }

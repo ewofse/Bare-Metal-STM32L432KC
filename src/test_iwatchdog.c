@@ -2,6 +2,7 @@
 #include "led.h"
 #include "interrupt.h"
 #include <stdint.h>
+#include <stdbool.h>
 
 void flash_led_blocking(void);
 
@@ -13,7 +14,7 @@ void main(void) {
 
     enable_irq();
 
-    while (1) {
+    while (true) {
         flash_led_blocking();
 
         feed_the_independent_watchdog();
@@ -56,7 +57,7 @@ void flash_led_blocking(void) {
     };
 
     if (num_loops >= 5) {
-        while (1);
+        while (true);
     }
 }
 

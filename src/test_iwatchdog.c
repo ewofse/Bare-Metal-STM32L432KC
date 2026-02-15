@@ -30,21 +30,21 @@ void flash_led_blocking(void) {
     static uint32_t cntr;
     static uint8_t num_loops;
 
-    cntr = (cntr == 199999) ? 0 : cntr + 1;
+    cntr = (cntr == 3199999) ? 0 : cntr + 1;
 
     switch (state) {
         case (ON):
-            if (cntr >= 50000) {
+            if (cntr >= 799999) {
                 state = OFF;
-                turn_on_led();
+                turn_off_led();
             }
 
             break;
 
         case (OFF):
-            if (cntr >= 199999) {
+            if (cntr >= 3199999) {
                 state = ON;
-                turn_off_led();
+                turn_on_led();
 
                 num_loops++;
             }

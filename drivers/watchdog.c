@@ -19,7 +19,7 @@
 #define IWDG_TOP (IWDG_EXT_FREQ_HZ / IWDG_FREQ_HZ - 1)
 
 #ifndef WWDG_PR
-#define WWDG_PR 0
+#define WWDG_PR 3 
 #endif
 
 // Value of T[5:0] - T[6] will always be reloaded with value of 1
@@ -28,7 +28,7 @@
 #endif
 
 #ifndef WWDG_W
-#define WWDG_W 63
+#define WWDG_W 127 
 #endif
 
 #ifndef NUM_WWDG_CALLBACKS
@@ -103,6 +103,7 @@ void configure_window_watchdog(void) {
 /* Reload WWDG counter */
 
 void feed_the_window_watchdog(void) {
+    WWDG->CR &= ~WWDG_CR_T_MASK;
     WWDG->CR |= WWDG_CR_T(0x40 | WWDG_T);
 }
 
@@ -123,6 +124,8 @@ _Bool register_window_watchdog_callback( void (*cb)(void) ) {
 void __attribute__( (interrupt) ) WWDG_Handler(void) {
     // Clear pending IRQ
     NVIC->ICPR[0] = NVIC_ICPR_CLRPEND(1, 0);
+
+    WWDG->SR &= ~WWDG_SR_EWIF_MASK;
 
     for (uint32_t i = 0; i < num_callbacks; i++) {
         callback[i]();

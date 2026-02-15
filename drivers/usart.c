@@ -62,6 +62,8 @@ void configure_usart(usart_handle_t * handler) {
     /* Clock enable, IRQ, and pin setup */
 
     if (usart == USART1) {
+        RCC->CCIPR &= RCC_CCIPR_USART1SEL_MASK;
+        RCC->CCIPR |= RCC_CCIPR_USART1SEL(0);
         RCC->APB2ENR |= RCC_APB2ENR_USART1EN(1);
 
         /* IRQ enable and priority */
@@ -72,6 +74,8 @@ void configure_usart(usart_handle_t * handler) {
             (NVIC->IPR[9] & ~NVIC_IPR9_PRI_37_MASK) 
           | NVIC_IPR9_PRI_37(USART1_IRQ_PRI);
     } else {
+        RCC->CCIPR &= RCC_CCIPR_USART2SEL_MASK;
+        RCC->CCIPR |= RCC_CCIPR_USART2SEL(0);
         RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN(1);
 
         /* IRQ enable and priority */

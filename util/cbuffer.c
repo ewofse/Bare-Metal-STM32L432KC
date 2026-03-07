@@ -35,3 +35,4 @@ _Bool cbuffer_full(cbuffer_t * buf) {
 _Bool cbuffer_empty(cbuffer_t * buf) {
 	return buf->head == buf->tail;
 }
+

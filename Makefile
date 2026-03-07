@@ -3,7 +3,7 @@ CFLAGS = -Os -std=c99 -ffreestanding -nostartfiles -mcpu=cortex-m4 -Wall -pedant
 
 .PHONY: clean
 
-stm32l432kc.elf: setup/*.c src/test_iwatchdog.c watchdog.o systick.o led.o
+stm32l432kc.elf: setup/*.c src/test_usart.c usart.o led.o cbuffer.o
 	arm-none-eabi-gcc $(CFLAGS) $(INCLUDES) -T stm32l432kc.ld $^ -o $@
 
 %.o: %.c

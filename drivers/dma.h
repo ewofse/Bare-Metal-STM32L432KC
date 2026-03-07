@@ -45,12 +45,12 @@ typedef struct {
     _Bool p_inc;
     _Bool m_inc;
     _Bool circular;
-    uint8_t ch_sel           : 4;
-    dma_mode mode            : 3;
-    dma_channel ch           : 3;
-    dma_transfer_size p_size : 2;
-    dma_transfer_size m_size : 2;
-    dma_prio prio            : 2;
+    uint8_t ch_sel;
+    dma_mode mode;
+    dma_channel ch;
+    dma_transfer_size p_size;
+    dma_transfer_size m_size;
+    dma_prio prio;
 } dma_config_t;
 
 typedef struct {
@@ -58,9 +58,9 @@ typedef struct {
     dma_config_t opts;
 } dma_handle_t;
 
-void configure_dma(dma_t * regs, dma_channel ch);
+void configure_dma(dma_handle_t * handler);
 void dma_start(dma_handle_t * handler);
-_Bool register_dma_callback( dma_t * regs, dma_channel ch, void (*cb)(void) );
+_Bool register_dma_callback( dma_handle_t * handler, void (*cb)(void) );
 
 #endif
 

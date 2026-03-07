@@ -29,7 +29,7 @@ void main(void) {
         .opts = dma1_ch1_config
     };
 
-    configure_dma(dma1_ch1_handle.regs, dma1_ch1_config.ch);
+    configure_dma(&dma1_ch1_handle);
 
     dma_config_t dma1_ch6_config = {
         .mode = DMA_MODE_P2M,
@@ -51,7 +51,7 @@ void main(void) {
         .opts = dma1_ch6_config
     };
 
-    configure_dma(dma1_ch6_handle.regs, dma1_ch6_config.ch);
+    configure_dma(&dma1_ch6_handle);
 
     dma_config_t dma1_ch7_config = {
         .mode = DMA_MODE_M2P,
@@ -73,11 +73,11 @@ void main(void) {
         .opts = dma1_ch7_config
     };
 
-    configure_dma(dma1_ch7_handle.regs, dma1_ch7_config.ch);
+    configure_dma(&dma1_ch7_handle);
 
-    register_dma_callback(dma1_ch1_handle.regs, dma1_ch1_config.ch, toggle_led);
-    register_dma_callback(dma1_ch6_handle.regs, dma1_ch6_config.ch, toggle_led);
-    register_dma_callback(dma1_ch7_handle.regs, dma1_ch7_config.ch, toggle_led);
+    register_dma_callback(&dma1_ch1_handle, toggle_led);
+    register_dma_callback(&dma1_ch6_handle, toggle_led);
+    register_dma_callback(&dma1_ch7_handle, toggle_led);
 
     usart_config_t usart2_config = {
         .baud_rate = USART_BAUD_RATE,
@@ -110,7 +110,7 @@ void main(void) {
 
         char c;
 
-        while ( !usart_getchar(USART2, &c) );
+        while ( !usart_getchar(&usart2_handle, &c) );
 
         switch (c) {
             /* Memory to memory transfer */
@@ -142,11 +142,11 @@ void main(void) {
 
             case 'p':
                 for (char * p = dest_ch1; *p != 0; p++) {
-                    usart_putchar(USART2, *p);
+                    usart_putchar(&usart2_handle, *p);
                 }
 
                 for (char * p = dest_ch6; *p != 0; p++) {
-                    usart_putchar(USART2, *p);
+                    usart_putchar(&usart2_handle, *p);
                 }
 
                 break;

@@ -31,7 +31,7 @@ static void read_rx_data(usart_t * regs);
 /* Output TX FIFO data if there is no outgoing data */
 
 static void write_tx_data(usart_t * regs) {
-    uint8_t index = (regs == USART1) ? 0 : 1;
+    uint8_t index = regs == USART2;
 
     uint8_t data;
 
@@ -47,7 +47,7 @@ static void write_tx_data(usart_t * regs) {
 /* Read incoming RX data and place into RX FIFO */
 
 static void read_rx_data(usart_t * regs) {
-    uint8_t index = (regs == USART1) ? 0 : 1;
+    uint8_t index = regs == USART2;
 
     uint8_t data = (uint8_t) regs->RDR;
     cbuffer_write( &usart_rx_fifo[index], data );
@@ -85,7 +85,6 @@ void configure_usart(usart_handle_t * handler) {
         NVIC->IPR[9] = 
             (NVIC->IPR[9] & ~NVIC_IPR9_PRI_38_MASK) 
           | NVIC_IPR9_PRI_38(USART2_IRQ_PRI);
-
     }
 
     /* Pin configurations */
@@ -216,8 +215,10 @@ void configure_usart(usart_handle_t * handler) {
 
 /* Read a character from the USART RX FIFO */
 
-_Bool usart_getchar(usart_t * regs, char * c) {
-    uint8_t index = (regs == USART1) ? 0 : 1;
+_Bool usart_getchar(usart_handle_t * handler, char * c) {
+    usart_t * regs = handler->regs;
+
+    uint8_t index = regs == USART2;
 
     if ( cbuffer_empty( &usart_rx_fifo[index] ) ) {
         return false;
@@ -237,8 +238,10 @@ _Bool usart_getchar(usart_t * regs, char * c) {
 
 /* Write a character to USART TX FIFO */
 
-_Bool usart_putchar(usart_t * regs, char c) {
-    uint8_t index = (regs == USART1) ? 0 : 1;
+_Bool usart_putchar(usart_handle_t * handler, char c) {
+    usart_t * regs = handler->regs;
+
+    uint8_t index = regs == USART2;
 
     if ( cbuffer_full( &usart_tx_fifo[index] ) ) {
         return false;
@@ -260,8 +263,10 @@ _Bool usart_putchar(usart_t * regs, char c) {
 
 /* Add a callback function to IRQ */
 
-_Bool register_usart_callback( usart_t * regs, void (*cb)(void) ) {
-    uint8_t index = (regs == USART1) ? 0 : 1;
+_Bool register_usart_callback( usart_handle_t * handler, void (*cb)(void) ) {
+    usart_t * regs = handler->regs;
+
+    uint8_t index = regs == USART2;
 
     if ( num_callbacks[index] == NUM_USART_CALLBACKS ) {
         return false;

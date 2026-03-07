@@ -1,7 +1,5 @@
 #include <m4/scb.h> 
 
-#define INITIAL_STACK_POINTER 0x2000C000
-
 #define RESERVED ( ( void(*)(void) ) 0 )
 
 extern void __stack_top(void);

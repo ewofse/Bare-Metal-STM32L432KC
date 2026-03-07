@@ -50,12 +50,12 @@ typedef USART_REG_BLOCKS volatile usart_t;
 
 typedef struct {
     uint32_t baud_rate;
-    usart_rx_pin rx_pin : 4;
-    usart_tx_pin tx_pin : 4;
-    usart_mode mode     : 2;
-    usart_word word     : 2;
-    usart_stop stop     : 2;
-    usart_dma dma       : 2;
+    usart_rx_pin rx_pin;
+    usart_tx_pin tx_pin;
+    usart_mode mode;
+    usart_word word;
+    usart_stop stop;
+    usart_dma dma;
 } usart_config_t;
 
 typedef struct {
@@ -64,10 +64,9 @@ typedef struct {
 } usart_handle_t;
 
 void configure_usart(usart_handle_t * handler);
-_Bool usart_getchar(usart_t * regs, char * c);
-_Bool usart_putchar(usart_t * regs, char c);
-_Bool register_usart_callback( usart_t * regs, void (*cb)(void) );
-uint32_t get_irq_status_for_usart(usart_t * regs);
+_Bool usart_getchar(usart_handle_t * handler, char * c);
+_Bool usart_putchar(usart_handle_t * handler, char c);
+_Bool register_usart_callback( usart_handle_t * handler, void (*cb)(void) );
 
 #endif
 

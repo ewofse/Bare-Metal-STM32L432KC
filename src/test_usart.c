@@ -1,7 +1,6 @@
 #include "led.h"
 #include "usart.h"
 #include "interrupt.h"
-#include <stdbool.h>
 
 #define USART_BAUD_RATE 115200
 
@@ -34,8 +33,8 @@ void main(void) {
 
         char data;
 
-        if ( usart_getchar(USART2, &data) ) {
-            usart_putchar(USART2, data);
+        if ( usart_getchar(&usart2_handle, &data) ) {
+            usart_putchar(&usart2_handle, data);
             toggle_led();
         }
     }

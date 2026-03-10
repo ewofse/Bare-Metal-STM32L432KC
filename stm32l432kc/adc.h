@@ -53,7 +53,6 @@ typedef struct {
 /* ADC registers as structs */
 
 #define ADC1 ( (ADC_REG_BLOCKS volatile *) 0x50040000 )
-#define ADC2 ( (ADC_REG_BLOCKS volatile *) 0x50040100 )
 #define ADC_COMMON ( (ADC_COMMON_REG_BLOCKS volatile * ) 0x50043000 )
 
 /* ADC ISR register macros */

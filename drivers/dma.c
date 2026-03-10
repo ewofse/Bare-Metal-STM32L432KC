@@ -82,14 +82,14 @@ static void dma_isr (
 /* Configure clock, NVIC, and IRQ priority for DMA channel */
 
 void configure_dma(dma_handle_t * handler) {
-    dma_t * regs = handler->regs;
+    dma_t * dma = handler->regs;
     dma_channel ch = handler->opts.ch;
 
     uint8_t irq;
 
     /* Clock enable and IRQ number selection */
 
-    if (regs == DMA1) {
+    if (dma == DMA1) {
         RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN(1);
         irq = dma1_irq_LUT[ch];
     } else {
@@ -152,10 +152,10 @@ void dma_start(dma_handle_t * handler) {
 /* Add a callback function to IRQ */
 
 _Bool register_dma_callback( dma_handle_t * handler, void (*cb)(void) ) {
-    dma_t * regs = handler->regs;
+    dma_t * dma = handler->regs;
     dma_channel ch = handler->opts.ch;
 
-    uint8_t index = (regs == DMA1) ? ch : ch + NUM_DMA_CHANNELS;
+    uint8_t index = (dma == DMA1) ? ch : ch + NUM_DMA_CHANNELS;
 
     if ( num_callbacks[index] == NUM_DMA_CALLBACKS ) {
         return false;

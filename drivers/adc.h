@@ -2,6 +2,7 @@
 #define ADC_H
 
 #include <stm32l432kc/adc.h>
+#include <util/cbuffer.h>
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -37,7 +38,20 @@ typedef enum {
     ADC_TRIGGER_RISE,
     ADC_TRIGGER_FALL,
     ADC_TRIGGER_RISEFALL
-} adc_trigger
+} adc_trigger;
+
+typedef enum {
+    ADC_TRIGSEL_TIM1_CH1,
+    ADC_TRIGSEL_TIM1_CH2,
+    ADC_TRIGSEL_TIM1_CH3,
+    ADC_TRIGSEL_TIM2_CH2,
+    ADC_TRIGSEL_EXTI_11 = 0x6, // EXT4 and EXT5 have no connection
+    ADC_TRIGSEL_TIM1_TRGO = 0x9, // EXT7 and EXT8 have no connection
+    ADC_TRIGSEL_TIM1_TRGO2,
+    ADC_TRIGSEL_TIM2_TRGO,
+    ADC_TRIGSEL_TIM6_TRGO,
+    ADC_TRIGSEL_TIM15_TRGO
+} adc_trigsel;
 
 typedef enum {
     ADC_RESOLUTION_12BIT,
@@ -50,7 +64,7 @@ typedef enum {
     ADC_DMA_NONE,
     ADC_DMA_ONESHOT,
     ADC_DMA_CONTINUOUS
-} acd_dma;
+} adc_dma;
 
 typedef ADC_REG_BLOCKS volatile adc_t;
 typedef ADC_COMMON_REG_BLOCKS volatile adc_common_t;
@@ -59,19 +73,22 @@ typedef struct {
     adc_channel ch;
     adc_resolution res;
     adc_trigger trig;
+    adc_trigsel trigsel;
     adc_dma dma;
     adc_mode mode;
 } adc_config_t;
 
 typedef struct {
     adc_t * regs;
-    adc_config_t config;
+    adc_config_t opts;
 } adc_handle_t;
 
 void configure_adc(adc_handle_t * handler);
-void adc_start(adc_handle_t * handler);
+void start_adc(adc_handle_t * handler);
+void pause_adc(adc_handle_t * handler);
+_Bool get_adc_conversion_result(adc_channel ch, uint8_t * data);
+cbuffer_t * get_adc_fifo(adc_channel ch);
 _Bool register_adc_callback( void (*cb)(void) );
-_Bool get_irq_status_for_adc(adc_handle_t * handler);
 
 #endif
 

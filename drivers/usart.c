@@ -216,9 +216,9 @@ void configure_usart(usart_handle_t * handler) {
 /* Read a character from the USART RX FIFO */
 
 _Bool usart_getchar(usart_handle_t * handler, char * c) {
-    usart_t * regs = handler->regs;
+    usart_t * usart = handler->regs;
 
-    uint8_t index = regs == USART2;
+    uint8_t index = usart == USART2;
 
     if ( cbuffer_empty( &usart_rx_fifo[index] ) ) {
         return false;
@@ -239,9 +239,9 @@ _Bool usart_getchar(usart_handle_t * handler, char * c) {
 /* Write a character to USART TX FIFO */
 
 _Bool usart_putchar(usart_handle_t * handler, char c) {
-    usart_t * regs = handler->regs;
+    usart_t * usart = handler->regs;
 
-    uint8_t index = regs == USART2;
+    uint8_t index = usart == USART2;
 
     if ( cbuffer_full( &usart_tx_fifo[index] ) ) {
         return false;
@@ -256,7 +256,7 @@ _Bool usart_putchar(usart_handle_t * handler, char c) {
 
     set_primask(primask);
 
-    regs->CR1 |= USART_CR1_TXEIE(1);
+    usart->CR1 |= USART_CR1_TXEIE(1);
 
     return true;
 }
@@ -264,9 +264,9 @@ _Bool usart_putchar(usart_handle_t * handler, char c) {
 /* Add a callback function to IRQ */
 
 _Bool register_usart_callback( usart_handle_t * handler, void (*cb)(void) ) {
-    usart_t * regs = handler->regs;
+    usart_t * usart = handler->regs;
 
-    uint8_t index = regs == USART2;
+    uint8_t index = usart == USART2;
 
     if ( num_callbacks[index] == NUM_USART_CALLBACKS ) {
         return false;

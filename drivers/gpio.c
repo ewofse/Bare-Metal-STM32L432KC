@@ -64,9 +64,6 @@ _Bool get_irq_status_for_pin(uint8_t pin) {
 /* GPIO 0 ISR */
 
 void __attribute__( (interrupt) ) EXTI0_Handler(void) {
-    // Clear pending IRQ
-    NVIC->ICPR[0] = NVIC_ICPR_CLRPEND(1, EXTI0_IRQ);
-
     // Each callback must check their respective pin for pending IRQ
     gpio_irq_events = EXTI->PR1 & 0xFFFF;
 
@@ -81,9 +78,6 @@ void __attribute__( (interrupt) ) EXTI0_Handler(void) {
 /* GPIO 1 ISR */
 
 void __attribute__( (interrupt) ) EXTI1_Handler(void) {
-    // Clear pending IRQ
-    NVIC->ICPR[0] = NVIC_ICPR_CLRPEND(1, EXTI1_IRQ);
-    
     // Each callback must check their respective pin for pending IRQ
     gpio_irq_events = EXTI->PR1 & 0xFFFF;
 
@@ -98,9 +92,6 @@ void __attribute__( (interrupt) ) EXTI1_Handler(void) {
 /* GPIO 2 ISR */
 
 void __attribute__( (interrupt) ) EXTI2_Handler(void) {
-    // Clear pending IRQ
-    NVIC->ICPR[0] = NVIC_ICPR_CLRPEND(1, EXTI2_IRQ);
-    
     // Each callback must check their respective pin for pending IRQ
     gpio_irq_events = EXTI->PR1 & 0xFFFF;
 
@@ -115,9 +106,6 @@ void __attribute__( (interrupt) ) EXTI2_Handler(void) {
 /* GPIO 3 ISR */
 
 void __attribute__( (interrupt) ) EXTI3_Handler(void) {
-    // Clear pending IRQ
-    NVIC->ICPR[0] = NVIC_ICPR_CLRPEND(1, EXTI3_IRQ);
-    
     // Each callback must check their respective pin for pending IRQ
     gpio_irq_events = EXTI->PR1 & 0xFFFF;
 
@@ -132,9 +120,6 @@ void __attribute__( (interrupt) ) EXTI3_Handler(void) {
 /* GPIO 4 ISR */
 
 void __attribute__( (interrupt) ) EXTI4_Handler(void) {
-    // Clear pending IRQ
-    NVIC->ICPR[0] = NVIC_ICPR_CLRPEND(1, EXTI4_IRQ);
-
     // Each callback must check their respective pin for pending IRQ
     gpio_irq_events = EXTI->PR1 & 0xFFFF;
     
@@ -149,9 +134,6 @@ void __attribute__( (interrupt) ) EXTI4_Handler(void) {
 /* GPIOs 5 - 9 ISR */
 
 void __attribute__( (interrupt) ) EXTI9_5_Handler(void) {
-    // Clearn pending IRQ
-    NVIC->ICPR[0] = NVIC_ICPR_CLRPEND(1, EXTI9_5_IRQ);
-    
     // Each callback must check their respective pin for pending IRQ
     gpio_irq_events = EXTI->PR1 & 0xFFFF;
 
@@ -166,9 +148,6 @@ void __attribute__( (interrupt) ) EXTI9_5_Handler(void) {
 /* GPIOs 10 - 15 ISR */
 
 void __attribute__( (interrupt) ) EXTI15_10_Handler(void) {
-    // Clear pending IRQ
-    NVIC->ICPR[1] = NVIC_ICPR_CLRPEND(1, EXTI15_10_IRQ - 32);
-    
     // Each callback must check their respective pin for pending IRQ
     gpio_irq_events = EXTI->PR1 & 0xFFFF;
 

@@ -50,7 +50,8 @@ typedef enum {
     ADC_TRIGSEL_TIM1_TRGO2,
     ADC_TRIGSEL_TIM2_TRGO,
     ADC_TRIGSEL_TIM6_TRGO,
-    ADC_TRIGSEL_TIM15_TRGO
+    ADC_TRIGSEL_TIM15_TRGO,
+    ADC_TRIGSEL_NONE
 } adc_trigsel;
 
 typedef enum {

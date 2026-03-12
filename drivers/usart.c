@@ -280,9 +280,6 @@ _Bool register_usart_callback( usart_handle_t * handler, void (*cb)(void) ) {
 /* USART1 ISR */
 
 void __attribute__( (interrupt) ) USART1_Handler(void) {
-    // Clear pending IRQ
-    NVIC->ICPR[1] = NVIC_ICPR_CLRPEND(1, USART1_IRQ - 32);
-
     if (USART1->ISR & USART_ISR_RXNE_MASK) {
         read_rx_data(USART1);
     }
@@ -300,9 +297,6 @@ void __attribute__( (interrupt) ) USART1_Handler(void) {
 /* USART2 ISR */
 
 void __attribute__( (interrupt) ) USART2_Handler(void) {
-    // Clear pending IRQ
-    NVIC->ICPR[1] = NVIC_ICPR_CLRPEND(1, USART2_IRQ - 32);
-
     if (USART2->ISR & USART_ISR_RXNE_MASK) {
         read_rx_data(USART2);
     }

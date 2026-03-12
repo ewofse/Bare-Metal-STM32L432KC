@@ -12,6 +12,7 @@
 #endif
 
 #define NUM_ADC_CHANNELS 19
+#define MAX_CHANNEL_SEQ NUM_ADC_CHANNELS - 3
 
 #define ADC1_2_IRQ 18
 #define ADC1_2_IRQ_PRI 15
@@ -21,12 +22,20 @@ static uint32_t num_callbacks;
 
 static cbuffer_t adc_fifo[NUM_ADC_CHANNELS];
 static uint8_t ch_cnt;
+static uint8_t ch_idx[MAX_CHANNEL_SEQ];
 
 /* Setup the ADC */
 
 void configure_adc(adc_handle_t * handler) {
     adc_t * adc = handler->regs;
     adc_config_t opts = handler->opts;
+
+    // Reset channel sequences in case of reconfiguration
+    ch_cnt = 0;
+    
+    for (uint8_t i = 0; i < MAX_CHANNEL_SEQ; i++) {
+        ch_idx[i] = 0;
+    }
     
     /* Clock selection and enable */
 
@@ -75,8 +84,8 @@ void configure_adc(adc_handle_t * handler) {
         | ADC_IER_AWD1IE(0)
         | ADC_IER_JEOSIE(0)
         | ADC_IER_JEOCIE(0)
-        | ADC_IER_OVRIE(0)
-        | ADC_IER_EOSIE(0)
+        | ADC_IER_OVRIE( (_Bool) !opts.dma )
+        | ADC_IER_EOSIE( (_Bool) !opts.dma )
         | ADC_IER_EOCIE( (_Bool) !opts.dma )
         | ADC_IER_EOSMPIE(0)
         | ADC_IER_ADRDYIE(0);
@@ -114,15 +123,67 @@ void configure_adc(adc_handle_t * handler) {
     /* Channel sequence selection */
 
     adc_channel ch = opts.ch;
+    uint8_t index = 0;
 
     while (ch) {
-        ch_cnt++;
+        if (ch & 1) {
+            ch_idx[ch_cnt++] = index;
+        }
+
         ch >>= 1;
+        index++;
     }
 
-    for (uint8_t i = 0; i < ch_cnt; i++) {
-        continue;
-    }
+    adc->SQR1 =
+          ADC_SQR1_SQ4( ch_idx[3] )
+        | ADC_SQR1_SQ3( ch_idx[2] )
+        | ADC_SQR1_SQ2( ch_idx[1] )
+        | ADC_SQR1_SQ1( ch_idx[0] )
+        | ADC_SQR1_L(ch_cnt - 1);
+
+    adc->SQR2 =
+          ADC_SQR2_SQ9( ch_idx[8] )
+        | ADC_SQR2_SQ8( ch_idx[7] )
+        | ADC_SQR2_SQ7( ch_idx[6] )
+        | ADC_SQR2_SQ6( ch_idx[5] )
+        | ADC_SQR2_SQ5( ch_idx[4] );
+
+    adc->SQR3 =
+          ADC_SQR3_SQ14( ch_idx[13] )
+        | ADC_SQR3_SQ13( ch_idx[12] )
+        | ADC_SQR3_SQ12( ch_idx[11] )
+        | ADC_SQR3_SQ11( ch_idx[10] )
+        | ADC_SQR3_SQ10( ch_idx[9] );
+
+    adc->SQR4 =
+          ADC_SQR4_SQ16( ch_idx[15] )
+        | ADC_SQR4_SQ15( ch_idx[14] );
+
+    /* Set channel sample time */
+
+    adc->SMPR1 = 
+          ADC_SMPR1_SMPPLUS(0)
+        | ADC_SMPR1_SMP9(3)
+        | ADC_SMPR1_SMP8(3)
+        | ADC_SMPR1_SMP7(3)
+        | ADC_SMPR1_SMP6(3)
+        | ADC_SMPR1_SMP5(3)
+        | ADC_SMPR1_SMP4(3)
+        | ADC_SMPR1_SMP3(3)
+        | ADC_SMPR1_SMP2(3)
+        | ADC_SMPR1_SMP1(3)
+        | ADC_SMPR1_SMP0(3);
+
+    adc->SMPR2 = 
+          ADC_SMPR2_SMP18(3)
+        | ADC_SMPR2_SMP17(3)
+        | ADC_SMPR2_SMP16(3)
+        | ADC_SMPR2_SMP15(3)
+        | ADC_SMPR2_SMP14(3)
+        | ADC_SMPR2_SMP13(3)
+        | ADC_SMPR2_SMP12(3)
+        | ADC_SMPR2_SMP11(3)
+        | ADC_SMPR2_SMP10(3);
 
     adc->CR |= ADC_CR_ADEN(1);
 
@@ -148,7 +209,7 @@ void pause_adc(adc_handle_t * handler) {
 /* Retrieve one sample from FIFO  */
 
 _Bool get_adc_conversion_result(adc_channel ch, uint8_t * data) {
-    return cbuffer_read(&adc_fifo[ch], data);
+    return cbuffer_read( &adc_fifo[ch], data );
 }
 
 /* Obtain the FIFO of samples (for DMA) */
@@ -174,19 +235,24 @@ _Bool register_adc_callback( void (*cb)(void) ) {
 void __attribute__( (interrupt) ) ADC1_2_Handler(void) {
     static adc_channel ch;
 
-    // Clear pending IRQ
-    NVIC->ICPR[0] = NVIC_ICPR_CLRPEND(1, ADC1_2_IRQ);
-
     if (ADC1->ISR & ADC_ISR_EOC_MASK) {
         ADC1->ISR = ADC_ISR_EOC_MASK;
 
         uint8_t data = (uint8_t) ( (ADC1->DR & ADC_DR_RDATA_MASK) >> 8 );
 
-        cbuffer_write(&adc_fifo[ch], data);
-        
-        ch = (ch == ch_cnt) ? 0 : ch + 1;
+        cbuffer_write( &adc_fifo[ ch_idx[ch++] ], data );
+    }
 
-        // TODO add overrun safety
+    if (ADC1->ISR & ADC_ISR_EOS_MASK) {
+        ADC1->ISR = ADC_ISR_EOS_MASK;
+
+        ch = 0;
+    }
+
+    if (ADC1->ISR & ADC_ISR_OVR_MASK) {
+        ADC1->ISR = ADC_ISR_OVR_MASK;
+
+        ch = 0;
     }
 
     for (uint32_t i = 0; i < num_callbacks; i++) {

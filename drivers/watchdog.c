@@ -122,9 +122,6 @@ _Bool register_window_watchdog_callback( void (*cb)(void) ) {
 /* WWDG ISR */
 
 void __attribute__( (interrupt) ) WWDG_Handler(void) {
-    // Clear pending IRQ
-    NVIC->ICPR[0] = NVIC_ICPR_CLRPEND(1, 0);
-
     WWDG->SR &= ~WWDG_SR_EWIF_MASK;
 
     for (uint32_t i = 0; i < num_callbacks; i++) {

@@ -87,7 +87,7 @@ typedef struct {
 void configure_adc(adc_handle_t * handler);
 void start_adc(adc_handle_t * handler);
 void pause_adc(adc_handle_t * handler);
-_Bool get_adc_conversion_result(adc_channel ch, uint8_t * data);
+_Bool get_adc_conversion_result(adc_channel ch, uint16_t * data);
 cbuffer_t * get_adc_fifo(adc_channel ch);
 _Bool register_adc_callback( void (*cb)(void) );
 

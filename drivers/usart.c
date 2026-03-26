@@ -62,7 +62,7 @@ void configure_usart(usart_handle_t * handler) {
     /* Clock enable, IRQ, and pin setup */
 
     if (usart == USART1) {
-        RCC->CCIPR &= RCC_CCIPR_USART1SEL_MASK;
+        RCC->CCIPR &= ~RCC_CCIPR_USART1SEL_MASK;
         RCC->CCIPR |= RCC_CCIPR_USART1SEL(0);
         RCC->APB2ENR |= RCC_APB2ENR_USART1EN(1);
 
@@ -74,7 +74,7 @@ void configure_usart(usart_handle_t * handler) {
             (NVIC->IPR[9] & ~NVIC_IPR9_PRI_37_MASK) 
           | NVIC_IPR9_PRI_37(USART1_IRQ_PRI);
     } else {
-        RCC->CCIPR &= RCC_CCIPR_USART2SEL_MASK;
+        RCC->CCIPR &= ~RCC_CCIPR_USART2SEL_MASK;
         RCC->CCIPR |= RCC_CCIPR_USART2SEL(0);
         RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN(1);
 
@@ -311,3 +311,21 @@ void __attribute__( (interrupt) ) USART2_Handler(void) {
     }
 }
 
+/* STDOUT USART for printf */
+
+int usart_getchar_stdin(char * c) {
+    usart_handle_t handler = {
+        .opts = {0},
+        .regs = USART2
+    };
+
+    return usart_getchar(&handler, c);
+}
+
+int usart_putchar_stdout(char c) {
+    while ( !(USART2->ISR & USART_ISR_TXE_MASK) ); 
+
+    USART2->TDR = c;
+
+    return 1;
+}

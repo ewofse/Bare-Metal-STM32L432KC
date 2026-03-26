@@ -68,5 +68,10 @@ _Bool usart_getchar(usart_handle_t * handler, char * c);
 _Bool usart_putchar(usart_handle_t * handler, char c);
 _Bool register_usart_callback( usart_handle_t * handler, void (*cb)(void) );
 
+/* STDOUT compliant */
+
+int usart_getchar_stdin(char * c);
+int usart_putchar_stdout(char c);
+
 #endif
 

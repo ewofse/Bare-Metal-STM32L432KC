@@ -208,8 +208,8 @@ void pause_adc(adc_handle_t * handler) {
 
 /* Retrieve one sample from FIFO  */
 
-_Bool get_adc_conversion_result(adc_channel ch, uint8_t * data) {
-    return cbuffer_read( &adc_fifo[ch], data );
+_Bool get_adc_conversion_result(adc_channel ch, uint16_t * data) {
+    return cbuffer_read( &adc_fifo[ch], (uint8_t *) data );
 }
 
 /* Obtain the FIFO of samples (for DMA) */

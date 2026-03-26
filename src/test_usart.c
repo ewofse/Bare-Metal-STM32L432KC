@@ -1,6 +1,7 @@
 #include "led.h"
 #include "usart.h"
 #include "interrupt.h"
+#include <stdbool.h>
 
 #define USART_BAUD_RATE 115200
 

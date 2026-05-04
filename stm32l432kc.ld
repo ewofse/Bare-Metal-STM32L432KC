@@ -1,8 +1,12 @@
+/* System entry point */
+
+ENTRY(entry_point)
+
 /* Memory regions */
 
 MEMORY {
     FLASH (rx)  : ORIGIN = 0x08000000, LENGTH = 256K
-    SRAM1 (rwx) : ORIGIN = 0x20000000, LENGTH = 48K
+    RAM   (rwx) : ORIGIN = 0x20000000, LENGTH = 64K /* SRAM1 and SRAM2 */
 }
 
 /* Memory sections */
@@ -11,38 +15,42 @@ SECTIONS {
     /* TEXT segment */
 
     .text : {
-        *(.vector_table*)
+        . = ALIGN(4);
+        KEEP( *(.vector_table*) )
         *(.init*)
         *(.text*)
+        *(.text.*)
         *(.rodata*)
+        . = ALIGN(4);
         __etext = .;
     } > FLASH
 
     /* DATA segment */
 
-    .data : ALIGN(4) {
+    .data : ALIGN(8) {
         __data = .;
-        *(.data)
-        . = ALIGN(4);
+        __data_lma = LOADADDR(.data);
         *(.data*)
+        . = ALIGN(8);
         __edata = .;
-    } > SRAM1 AT > FLASH
-
-    __data_lma = LOADADDR(.data);
+    } > RAM AT > FLASH
 
     /* BSS segment */
 
-    .bss : ALIGN(4) {
+    .bss : ALIGN(8) {
         __bss = .;
         *(.bss*)
-        . = ALIGN(4);
+        *(COMMON)
+        . = ALIGN(8);
         __ebss = .;
-    } > SRAM1 
+    } > RAM 
 
+    . = ALIGN(8);
     __end = .;
+    PROVIDE(end = .);
 
     /* Top of stack at end of RAM */
 
-    __stack_top = ORIGIN(SRAM1) + LENGTH(SRAM1);
+    __stack_top = ALIGN( ORIGIN(RAM) + LENGTH(RAM), 8 );
 }
 

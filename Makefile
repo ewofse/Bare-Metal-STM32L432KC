@@ -1,14 +1,28 @@
-INCLUDES = -I. -Idrivers -Istm32l432kc -Im4 -Isetup -Iutil
-CFLAGS = -Os -std=c99 -ffreestanding -nostartfiles -mcpu=cortex-m4 -Wall -pedantic
+CPU 	 = -mcpu=cortex-m4 -mthumb
+INCLUDES = -I. -Idrivers -Istm32l432kc -Im4 -Isetup -Iutil -Ilib/printf
 
-.PHONY: clean
+OPTS 	 = -Os
+LTOPTS 	 = -fdata-sections -ffunction-sections
 
-stm32l432kc.elf: setup/*.c src/temp.c usart.o systick.o cbuffer.o led.o
-	arm-none-eabi-gcc $(CFLAGS) $(INCLUDES) -T stm32l432kc.ld $^ -o $@
+LINKOPTS = -nostartfiles -Wl,--gc-sections
+LDFLAGS  = -T stm32l432kc.ld
+LIBS 	 = 
+
+CFLAGS   = -std=c99 -ffreestanding -pedantic \
+		   $(CPU) $(OPTS) $(INCLUDES) $(LTOPTS) -Wall 
+
+.PHONY: clean flash
+
+stm32l432kc.elf: setup/*.c lib/printf/printf.c src/test_printf.c \
+                 drivers/systick.o drivers/usart.o util/cbuffer.o
+	arm-none-eabi-gcc $(CFLAGS) $(LINKOPTS) $(LDFLAGS) $(LIBS) -o $@ $^
 
 %.o: %.c
-	arm-none-eabi-gcc $(CFLAGS) $(INCLUDES) -c $^
+	arm-none-eabi-gcc $(CFLAGS) -c $< -o $@
+
+flash: stm32l432kc.elf
+	cp $< /Volumes/NODE_L432KC; diskutil eject /Volumes/NODE_L432KC
 
 clean:
-	-rm -f *.elf *.o
+	-rm -f *.elf *.bin *.o
 

@@ -24,5 +24,5 @@ flash: stm32l432kc.elf
 	cp $< /Volumes/NODE_L432KC; diskutil eject /Volumes/NODE_L432KC
 
 clean:
-	-rm -f *.elf *.bin *.o
+	-rm -f *.elf *.bin *.o *.DS_Store
 

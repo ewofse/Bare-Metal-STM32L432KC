@@ -25,8 +25,15 @@ typedef struct {
 } USB_FS_REG_BLOCKS;
 
 typedef struct {
-    /* TODO */
-    uint32_t PLACEHOLDER;
+    uint16_t ADDR_TX;
+    uint16_t COUNT_TX;
+    uint16_t ADDR_RX;
+    uint16_t COUNT_RX;
+} USB_BTABLE_REG_BLOCKS;
+
+typedef struct {
+    USB_BTABLE_REG_BLOCKS BDT[8];
+    uint16_t PMA[ (1024 - 64) / 2 ];
 } USB_SRAM_REG_BLOCKS;
 
 /* USB registers as structs */
@@ -183,6 +190,30 @@ typedef struct {
 #define USB_BCDR_PS2DET_MASK USB_BCDR_PS2DET(ALL1)
 #define USB_BCDR_DPPU(v) ( ( (v) & 0x1 ) << 15 )
 #define USB_BCDR_DPPU_MASK USB_BCDR_DPPU(ALL1)
+
+/* USB ADDR_TX register macros */
+
+#define USB_ADDR_TX_ADDR_TX(v) ( ( (v) & 0x7FFF ) << 1 )
+#define USB_ADDR_TX_ADDR_TX_MASK USB_ADDR_TX_ADDR_TX(ALL1)
+
+/* USB COUNT_TX register macros */
+
+#define USB_COUNT_TX_COUNT_TX(v) ( ( (v) & 0x3FF ) << 0 )
+#define USB_COUNT_TX_COUNT_TX_MASK USB_COUNT_TX_COUNT_TX(ALL1)
+
+/* USB ADDR_RX register macros */
+
+#define USB_ADDR_RX_ADDR_RX(v) ( ( (v) & 0x7FFF ) << 1 )
+#define USB_ADDR_RX_ADDR_RX_MASK USB_ADDR_RX_ADDR_RX(ALL1)
+
+/* USB COUNT_RX register macros */
+
+#define USB_COUNT_RX_COUNT_RX(v) ( ( (v) & 0x3FF ) << 0 )
+#define USB_COUNT_RX_COUNT_RX_MASK USB_COUNT_RX_COUNT_RX(ALL1)
+#define USB_COUNT_RX_NUM_BLOCK(v) ( ( (v) & 0x1F ) << 10 )
+#define USB_COUNT_RX_NUM_BLOCK_MASK USB_COUNT_RX_NUM_BLOCK(ALL1)
+#define USB_COUNT_RX_BLSIZE(v) ( ( (v) & 0x1 ) << 15 )
+#define USB_COUNT_RX_BLSIZE_MASK USB_COUNT_RX_BLSIZE(ALL1)
 
 #endif
 

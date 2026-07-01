@@ -1,5 +1,4 @@
 #include "dma.h"
-#include "interrupt.h"
 #include <m4/nvic.h>
 #include <stm32l432kc/dma.h>
 #include <stm32l432kc/rcc.h>

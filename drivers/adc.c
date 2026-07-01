@@ -245,13 +245,11 @@ void __attribute__( (interrupt) ) ADC1_2_Handler(void) {
 
     if (ADC1->ISR & ADC_ISR_EOS_MASK) {
         ADC1->ISR = ADC_ISR_EOS_MASK;
-
         ch = 0;
     }
 
     if (ADC1->ISR & ADC_ISR_OVR_MASK) {
         ADC1->ISR = ADC_ISR_OVR_MASK;
-
         ch = 0;
     }
 

@@ -2,9 +2,12 @@
 #include "usart.h"
 #include "led.h"
 #include "interrupt.h"
+#include <printf.h>
 #include <stdbool.h>
 
 #define USART_BAUD_RATE 115200
+
+int (* _stdout_putchar)(char c);
 
 void main(void) {
     disable_irq();
@@ -105,6 +108,8 @@ void main(void) {
     char const src_ch7[] = "M2P has been performed through USART.\n\r";
     char dest_ch6[51] = "No P2M has been performed.\n\r";
 
+    _stdout_putchar = usart_putchar_stdout;
+
     while (true) {
         wait_for_interrupt();
 
@@ -141,13 +146,8 @@ void main(void) {
                 break;
 
             case 'p':
-                for (char * p = dest_ch1; *p != 0; p++) {
-                    usart_putchar(&usart2_handle, *p);
-                }
-
-                for (char * p = dest_ch6; *p != 0; p++) {
-                    usart_putchar(&usart2_handle, *p);
-                }
+                printf("%s\n\r", dest_ch1);
+                printf("%s\n\r", dest_ch6);
 
                 break;
         };

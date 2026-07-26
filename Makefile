@@ -13,8 +13,9 @@ CFLAGS   = -std=c99 -ffreestanding -pedantic \
 
 .PHONY: clean flash
 
-stm32l432kc.elf: setup/*.c lib/printf/printf.c src/test_printf.c \
-                 drivers/systick.o drivers/usart.o util/cbuffer.o
+stm32l432kc.elf: setup/*.c lib/printf/printf.c src/test_dma.c \
+                 drivers/systick.o drivers/usart.o drivers/led.o \
+				 drivers/dma.o util/cbuffer.o
 	arm-none-eabi-gcc $(CFLAGS) $(LINKOPTS) $(LDFLAGS) $(LIBS) -o $@ $^
 
 %.o: %.c

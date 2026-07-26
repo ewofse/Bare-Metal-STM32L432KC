@@ -1,9 +1,9 @@
-#include <stdint.h>
-#include <stdbool.h>
-#include <printf.h>
 #include "systick.h"
 #include "usart.h"
 #include "interrupt.h"
+#include <printf.h>
+#include <stdint.h>
+#include <stdbool.h>
 
 #define USART_BAUD_RATE 115200
 

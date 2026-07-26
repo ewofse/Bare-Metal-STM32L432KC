@@ -3,6 +3,7 @@
 #include "usart.h"
 #include "led.h"
 #include "interrupt.h"
+#include <printf.h>
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -88,11 +89,6 @@ void flash_led_blocking(void) {
 }
 
 void print_watchdog_warning(void) {
-    //static char msg[] = "Resetting...\n\r";
-
-    //for (char * p = msg; *p != 0; p++) {
-        //usart_putchar(USART2, *p);
-    //}
-    usart_putchar(USART2, 'a');
+    printf("Resetting...\n\r");
 }
 

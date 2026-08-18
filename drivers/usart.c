@@ -68,11 +68,13 @@ void configure_usart(usart_handle_t * handler) {
 
         /* IRQ enable and priority */
 
-        NVIC->ISER[1] = NVIC_ISER_SETENA(1, USART1_IRQ - 32);
+        if (opts.dma == USART_DMA_NONE) {
+            NVIC->ISER[1] = NVIC_ISER_SETENA(1, USART1_IRQ - 32);
 
-        NVIC->IPR[9] = 
-            (NVIC->IPR[9] & ~NVIC_IPR9_PRI_37_MASK) 
-          | NVIC_IPR9_PRI_37(USART1_IRQ_PRI);
+            NVIC->IPR[9] = 
+                (NVIC->IPR[9] & ~NVIC_IPR9_PRI_37_MASK) 
+              | NVIC_IPR9_PRI_37(USART1_IRQ_PRI);
+        }
     } else {
         RCC->CCIPR &= ~RCC_CCIPR_USART2SEL_MASK;
         RCC->CCIPR |= RCC_CCIPR_USART2SEL(0);
@@ -80,20 +82,22 @@ void configure_usart(usart_handle_t * handler) {
 
         /* IRQ enable and priority */
 
-        NVIC->ISER[1] = NVIC_ISER_SETENA(1, USART2_IRQ - 32);
+        if (opts.dma == USART_DMA_NONE) {
+            NVIC->ISER[1] = NVIC_ISER_SETENA(1, USART2_IRQ - 32);
 
-        NVIC->IPR[9] = 
-            (NVIC->IPR[9] & ~NVIC_IPR9_PRI_38_MASK) 
-          | NVIC_IPR9_PRI_38(USART2_IRQ_PRI);
+            NVIC->IPR[9] = 
+                (NVIC->IPR[9] & ~NVIC_IPR9_PRI_38_MASK) 
+              | NVIC_IPR9_PRI_38(USART2_IRQ_PRI);
+        }
     }
 
     /* Pin configurations */
     
     // USART1 can be on either ports A or B, USART2 is only A
-    if (opts.rx_pin == USART_RX_PIN_PB7 && opts.tx_pin == USART_TX_PIN_PB6) {
+    if (opts.rx_pin == USART1_RX_PIN_PB7 && opts.tx_pin == USART1_TX_PIN_PB6) {
         RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN(1);
-    } else if (opts.rx_pin == USART_RX_PIN_PB7 
-            || opts.tx_pin == USART_TX_PIN_PB6) {
+    } else if (opts.rx_pin == USART1_RX_PIN_PB7 
+            || opts.tx_pin == USART1_TX_PIN_PB6) {
         RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN(1);
         RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN(1);
     } else {
@@ -108,7 +112,7 @@ void configure_usart(usart_handle_t * handler) {
     /* RX pin selection */
 
     switch (opts.rx_pin) {
-        case USART_RX_PIN_PA3:
+        case USART2_RX_PIN_PA3:
             GPIOA->MODER &= ~GPIO_MODER_MODE3_MASK;
             GPIOA->MODER |= GPIO_MODER_MODE3(2);
 
@@ -117,7 +121,7 @@ void configure_usart(usart_handle_t * handler) {
 
             break;
 
-        case USART_RX_PIN_PA10:
+        case USART1_RX_PIN_PA10:
             GPIOA->MODER &= ~GPIO_MODER_MODE10_MASK;
             GPIOA->MODER |= GPIO_MODER_MODE10(2);
 
@@ -126,7 +130,7 @@ void configure_usart(usart_handle_t * handler) {
 
             break;
 
-        case USART_RX_PIN_PA15:
+        case USART2_RX_PIN_PA15:
             GPIOA->MODER &= ~GPIO_MODER_MODE15_MASK;
             GPIOA->MODER |= GPIO_MODER_MODE15(2);
 
@@ -135,7 +139,7 @@ void configure_usart(usart_handle_t * handler) {
 
             break;
 
-        case USART_RX_PIN_PB7:
+        case USART1_RX_PIN_PB7:
             GPIOB->MODER &= ~GPIO_MODER_MODE7_MASK;
             GPIOB->MODER |= GPIO_MODER_MODE7(2);
 
@@ -153,7 +157,7 @@ void configure_usart(usart_handle_t * handler) {
     /* TX pin selection */
 
     switch (opts.tx_pin) {
-        case USART_TX_PIN_PA2:
+        case USART2_TX_PIN_PA2:
             GPIOA->MODER &= ~GPIO_MODER_MODE2_MASK;
             GPIOA->MODER |= GPIO_MODER_MODE2(2);
 
@@ -162,7 +166,7 @@ void configure_usart(usart_handle_t * handler) {
 
             break;
 
-        case USART_TX_PIN_PA9:
+        case USART1_TX_PIN_PA9:
             GPIOA->MODER &= ~GPIO_MODER_MODE9_MASK;
             GPIOA->MODER |= GPIO_MODER_MODE9(2);
 
@@ -171,7 +175,7 @@ void configure_usart(usart_handle_t * handler) {
 
             break;
 
-        case USART_TX_PIN_PB6:
+        case USART1_TX_PIN_PB6:
             GPIOB->MODER &= ~GPIO_MODER_MODE6_MASK;
             GPIOB->MODER |= GPIO_MODER_MODE6(2);
 

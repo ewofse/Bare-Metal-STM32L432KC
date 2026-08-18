@@ -462,6 +462,42 @@ void configure_usb(void) {
     configure_ep_bdt();
 }
 
+_Bool usb_is_enumerated(void) {
+    return usb_enumerated;
+}
+
+int usb_getchar(char * c) {
+    if ( (USB_FS->EP2R & USB_EPR_STAT_RX_MASK) == USB_EPR_STAT_RX(3) ) {
+        return -1;
+    }
+
+    uint8_t byte;
+
+    read_pma_data(0x110, &byte, 1);
+    *c = (char) byte;
+    set_ep_stat(&USB_FS->EP2R, 0xFF, 3);
+
+    return 0;
+}
+
+int usb_putchar(char c) {
+    if (!usb_enumerated) {
+        return -1;
+    }
+
+    if ( (USB_FS->EP2R & USB_EPR_STAT_TX_MASK) != USB_EPR_STAT_TX(2) ) {
+        return -1;
+    }
+
+    uint8_t byte = (uint8_t) c;
+
+    write_pma_data(0xD0, &byte, 1);
+    USB_SRAM->BDT[2].COUNT_TX = USB_COUNT_TX_COUNT_TX(1);
+    set_ep_stat(&USB_FS->EP2R, 3, 0xFF);
+
+    return 0;
+}
+
 /* USB ISR */
 
 void __attribute__( (interrupt) ) USB_FS_Handler(void) {
@@ -596,41 +632,5 @@ void __attribute__( (interrupt) ) USB_FS_Handler(void) {
                 break;
         };
     }
-}
-
-_Bool usb_is_enumerated(void) {
-    return usb_enumerated;
-}
-
-int usb_putchar(char c) {
-    if (!usb_enumerated) {
-        return -1;
-    }
-
-    if ( (USB_FS->EP2R & USB_EPR_STAT_TX_MASK) != USB_EPR_STAT_TX(2) ) {
-        return -1;
-    }
-
-    uint8_t byte = (uint8_t) c;
-
-    write_pma_data(0xD0, &byte, 1);
-    USB_SRAM->BDT[2].COUNT_TX = USB_COUNT_TX_COUNT_TX(1);
-    set_ep_stat(&USB_FS->EP2R, 3, 0xFF);
-
-    return 0;
-}
-
-int usb_getchar(char * c) {
-    if ( (USB_FS->EP2R & USB_EPR_STAT_RX_MASK) == USB_EPR_STAT_RX(3) ) {
-        return -1;
-    }
-
-    uint8_t byte;
-
-    read_pma_data(0x110, &byte, 1);
-    *c = (char) byte;
-    set_ep_stat(&USB_FS->EP2R, 0xFF, 3);
-
-    return 0;
 }
 

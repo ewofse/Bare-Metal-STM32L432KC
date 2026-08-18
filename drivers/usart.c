@@ -68,13 +68,11 @@ void configure_usart(usart_handle_t * handler) {
 
         /* IRQ enable and priority */
 
-        if (opts.dma == USART_DMA_NONE) {
-            NVIC->ISER[1] = NVIC_ISER_SETENA(1, USART1_IRQ - 32);
+        NVIC->ISER[1] = NVIC_ISER_SETENA(1, USART1_IRQ - 32);
 
-            NVIC->IPR[9] = 
-                (NVIC->IPR[9] & ~NVIC_IPR9_PRI_37_MASK) 
-              | NVIC_IPR9_PRI_37(USART1_IRQ_PRI);
-        }
+        NVIC->IPR[9] = 
+            (NVIC->IPR[9] & ~NVIC_IPR9_PRI_37_MASK) 
+          | NVIC_IPR9_PRI_37(USART1_IRQ_PRI);
     } else {
         RCC->CCIPR &= ~RCC_CCIPR_USART2SEL_MASK;
         RCC->CCIPR |= RCC_CCIPR_USART2SEL(0);
@@ -82,13 +80,11 @@ void configure_usart(usart_handle_t * handler) {
 
         /* IRQ enable and priority */
 
-        if (opts.dma == USART_DMA_NONE) {
-            NVIC->ISER[1] = NVIC_ISER_SETENA(1, USART2_IRQ - 32);
+        NVIC->ISER[1] = NVIC_ISER_SETENA(1, USART2_IRQ - 32);
 
-            NVIC->IPR[9] = 
-                (NVIC->IPR[9] & ~NVIC_IPR9_PRI_38_MASK) 
-              | NVIC_IPR9_PRI_38(USART2_IRQ_PRI);
-        }
+        NVIC->IPR[9] = 
+            (NVIC->IPR[9] & ~NVIC_IPR9_PRI_38_MASK) 
+          | NVIC_IPR9_PRI_38(USART2_IRQ_PRI);
     }
 
     /* Pin configurations */

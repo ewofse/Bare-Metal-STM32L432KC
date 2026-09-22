@@ -25,13 +25,6 @@ typedef enum {
 } spi_sck_pin;
 
 typedef enum {
-    SPI_NSS_PIN_SSM,
-    SPI_NSS_PIN_PA4,
-    SPI_NSS_PIN_PA15,
-    SPI1_NSS_PIN_PB0
-} spi_nss_pin;
-
-typedef enum {
     SPI_MODE_UNIDIRECTIONAL,
     SPI_MODE_BIDIRECTIONAL,
     SPI_MODE_RX_ONLY
@@ -95,11 +88,24 @@ typedef enum {
 
 typedef SPI_REG_BLOCKS volatile spi_t;
 
+// User can either choose SSM mode or not
+// SSM mode is manual control of NSS pin through software - any GPIO pin can be used for CS pin on the SPI bus
+// SSM disabled is automatic control done by hardware - strict NSS GPIO pin must be used
+
 typedef struct {
+    // pin number
+    // GPIO port
+    // SSM enabled or disabled
+    uint8_t gpio_num;
+    uint8_t gpio_port;
+    _Bool smm;
+} spi_nss_pin_t;
+
+typedef struct {
+    spi_nss_pin_t nss_pin;
     spi_miso_pin miso_pin;
     spi_mosi_pin mosi_pin;
     spi_sck_pin sck_pin;
-    spi_nss_pin nss_pin;
     spi_device_type device_type;
     spi_dir dir;
     spi_mode mode;
@@ -116,8 +122,8 @@ typedef struct {
 } spi_handle_t;
 
 void configure_spi(spi_handle_t * handler);
-_Bool spi_read(spi_handle_t * handler, uint8_t * data);
-_Bool spi_write(spi_handle_t * handler, uint8_t const * data, uint16_t len);
+_Bool spi_read(spi_handle_t * handler, uint8_t * buf, uint32_t len);
+_Bool spi_write(spi_handle_t * handler, uint8_t const * buf, uint32_t len);
 _Bool register_spi_callback( spi_handle_t * handler, void (*cb)(void) );
 
 #endif

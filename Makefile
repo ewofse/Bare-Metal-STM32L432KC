@@ -12,6 +12,7 @@ CFLAGS   = -std=c99 -ffreestanding -pedantic \
 		   $(CPU) $(OPTS) $(INCLUDES) $(LTOPTS) -Wall 
 
 .PHONY: clean flash eject
+
 stm32l432kc.elf: setup/*.c lib/printf/printf.c src/test_dma.c \
 	drivers/dma.o drivers/usart.o drivers/led.o util/cbuffer.o
 	arm-none-eabi-gcc $(CFLAGS) $(LINKOPTS) $(LDFLAGS) $(LIBS) -o $@ $^

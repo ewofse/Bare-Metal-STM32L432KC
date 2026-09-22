@@ -25,8 +25,23 @@ static uint32_t num_callbacks[NUM_SPI_PERIPHERALS];
 static cbuffer_t spi_rx_fifo[NUM_SPI_PERIPHERALS];
 static cbuffer_t spi_tx_fifo[NUM_SPI_PERIPHERALS];
 
+static void assert_nss(spi_handle_t * handler);
+static void deassert_nss(spi_handle_t * handler);
+
 static void write_tx_data(spi_t * regs);
 static void read_rx_data(spi_t * regs);
+
+/* Set CS low to begin transfer */
+
+static void assert_nss(spi_handle_t * handler) {
+    ;
+}
+
+/* Set CS high to end transfer */
+
+static void deassert_nss(spi_handle_t * handler) {
+    ;
+}
 
 /* Output TX FIFO data if there is no outgoing data */
 
@@ -41,8 +56,6 @@ static void write_tx_data(spi_t * regs) {
 
     if ( cbuffer_empty( &spi_tx_fifo[index] ) ) {
         regs->CR2 &= ~SPI_CR2_TXEIE_MASK;
-
-        // ASSERT CS HIGH?
     }
 }
 
@@ -55,9 +68,28 @@ static void read_rx_data(spi_t * regs) {
     cbuffer_write( &spi_rx_fifo[index], data );
 }
 
-/* Read a byte from SPI RX FIFO */
+/* Setup SPI peripheral */
 
-_Bool spi_read(spi_handle_t * handler, uint8_t * data) {
+void configure_spi(spi_handle_t * handler) {
+    spi_t * spi = handler->regs;
+    spi_config_t opts = handler->opts;
+
+    // Clock setup
+    // IRQ enable and priority
+    // Pin setup
+
+    // SPI interrupt enable
+    
+    // SPI options - device type, mode, dir, baud rate, frame format, data dir, data size
+
+    // DMA options
+
+    // Enable peripheral
+}
+
+/* Read a payload from SPI RX FIFO */
+
+_Bool spi_read(spi_handle_t * handler, uint8_t * buf, uint32_t len) {
     spi_t * spi = handler->regs;
 
     uint8_t index = spi == SPI1;
@@ -71,16 +103,22 @@ _Bool spi_read(spi_handle_t * handler, uint8_t * data) {
     get_primask(&primask);
     disable_irq();
 
-    cbuffer_read( &spi_rx_fifo[index], (uint8_t *) data );
+    for (uint32_t i = 0; i < len; i++) {
+        cbuffer_read( &spi_rx_fifo[index], buf++ );
+    }
 
     set_primask(primask);
+
+    if (spi->CR1 & SPI_CR1_MSTR_MASK && spi->CR1 & SPI_CR1_SSM_MASK) {
+       deassert_nss(handler); 
+    }
 
     return true;
 }
 
-/* Write a byte to SPI TX FIFO */
+/* Write a payload to SPI TX FIFO */
 
-_Bool spi_write(spi_handle_t * handler, uint16_t const * data, uint16_t len) {
+_Bool spi_write(spi_handle_t * handler, uint8_t const * data, uint32_t len) {
     spi_t * spi = handler->regs;
 
     uint8_t index = spi == SPI1;
@@ -89,14 +127,16 @@ _Bool spi_write(spi_handle_t * handler, uint16_t const * data, uint16_t len) {
         return false;
     }
 
-    // ASSERT CS LOW
+    if (spi->CR1 & SPI_CR1_MSTR_MASK && spi->CR1 & SPI_CR1_SSM_MASK) {
+       assert_nss(handler); 
+    }
 
     uint32_t primask;
 
     get_primask(&primask);
     disable_irq();
 
-    for (uint16_t i = 0; i < len; i++) {
+    for (uint32_t i = 0; i < len; i++) {
         cbuffer_write( &spi_tx_fifo[index], *(data++) );
     }
 

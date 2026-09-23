@@ -13,18 +13,18 @@ CFLAGS   = -std=c99 -ffreestanding -pedantic \
 
 .PHONY: clean flash eject
 
-stm32l432kc.elf: setup/*.c lib/printf/printf.c src/test_dma.c \
-	drivers/dma.o drivers/usart.o drivers/led.o util/cbuffer.o
+stm32l432kc.elf: setup/*.c lib/printf/printf.c src/test_gpio.c \
+	drivers/gpio.o drivers/systick.o
 	arm-none-eabi-gcc $(CFLAGS) $(LINKOPTS) $(LDFLAGS) $(LIBS) -o $@ $^
 
 %.o: %.c
 	arm-none-eabi-gcc $(CFLAGS) -c $< -o $@
 
 flash: stm32l432kc.elf
-	cp $< /Volumes/NODE_L432KC; diskutil eject /Volumes/NODE_L432KC
+	cp $< /mnt/d 
 
 eject:
-	diskutil eject /Volumes/NODE_L432KC
+	sudo umount /mnt/d
 
 clean:
 	-rm -f *.elf *.bin *.o drivers/*.o util/*.o .DS_Store

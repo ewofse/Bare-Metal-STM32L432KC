@@ -345,5 +345,27 @@ typedef struct {
 #define GPIO_BSRR_BR15(v) ( ( (v) & 0x1 ) << 31 )
 #define GPIO_BRR_BR15(v) ( ( (v) & 0x1 ) << 15 )
 
+/* GPIO register macros */
+
+#define GPIO_MODER_MODE(v, n) ( ( (v) & 0x3 ) << ( (n) * 2 ) )
+#define GPIO_MODER_MODE_MASK(v) GPIO_MODER_MODE(ALL1, v)
+#define GPIO_OTYPER_OT(v, n) ( ( (v) & 0x1 ) << (n) )
+#define GPIO_OTYPER_OT_MASK(v) GPIO_MODER_MODE(ALL1, v)
+#define GPIO_OSPEEDR_OSPEED(v, n) ( ( (v) & 0x3 ) << ( (n) * 2 ) )
+#define GPIO_OSPEEDR_OSPEED_MASK(v) GPIO_MODER_MODE(ALL1, v)
+#define GPIO_PUPDR_PUPD(v, n) ( ( (v) & 0x3 ) << ( (n) * 2 ) )
+#define GPIO_PUPDR_PUPD_MASK(v) GPIO_MODER_MODE(ALL1, v)
+#define GPIO_AFR_AF(v, n) ( ( (v) & 0xF ) << ( (n) * 4 ) )
+#define GPIO_AFR_AF_MASK(v) GPIO_AFR_AF(ALL1, v)
+
+#define GPIO_IDR_ID(v, n) ( ( (v) & 0x1 ) << (n) )
+#define GPIO_IDR_ID_MASK(v) GPIO_IDR_ID(ALL1, v)
+#define GPIO_ODR_OD(v, n) ( ( (v) & 0x1 ) << (n) )
+#define GPIO_ODR_OD_MASK(v) GPIO_ODR_OD(ALL1, v)
+#define GPIO_BSRR_BS(v, n) ( ( (v) & 0x1 ) << (n) )
+#define GPIO_BSRR_BS_MASK(v) GPIO_BSRR_BS(ALL1, v)
+#define GPIO_BSRR_BR(v, n) ( ( (v) & 0x1 ) << ( (n) + 16 ) )
+#define GPIO_BSRR_BR_MASK(v) GPIO_BSRR_BR(ALL1, v)
+
 #endif
 

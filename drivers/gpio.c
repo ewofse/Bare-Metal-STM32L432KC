@@ -1,6 +1,7 @@
 #include "gpio.h"
 #include <stm32l432kc/gpio.h>
 #include <stm32l432kc/rcc.h>
+#include <stdint.h>
 #include <stdbool.h>
 
 void configure_gpio(gpio_handle_t * handler) {
@@ -9,15 +10,10 @@ void configure_gpio(gpio_handle_t * handler) {
 
     /* Clock enable */
 
-    if (gpio == GPIOA) {
-        RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN(1);
-    } else if (gpio == GPIOB) {
-        RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN(1);
-    } else if (gpio == GPIOC) {
-        RCC->AHB2ENR |= RCC_AHB2ENR_GPIOCEN(1);
-    } else {
-        RCC->AHB2ENR |= RCC_AHB2ENR_GPIOHEN(1);
-    }
+    // Formula to map GPIO port address to RCC GPIO port clock enable bit
+    uint8_t clk_en_index = ( ( (uintptr_t) gpio >> 8 ) & 0xFF ) / 4;
+
+    RCC->AHB2ENR |= 1 << clk_en_index;
 
     /* GPIO options */
 
@@ -33,10 +29,10 @@ void configure_gpio(gpio_handle_t * handler) {
     gpio->PUPDR &= ~GPIO_PUPDR_PUPD_MASK(opts.pin);
     gpio->PUPDR |= GPIO_PUPDR_PUPD(opts.pupd, opts.pin);
 
-    _Bool index = opts.pin >= GPIO_PIN_8;
+    _Bool afr_index = opts.pin >= GPIO_PIN_8;
 
-    gpio->AFR[index] &= ~GPIO_AFR_AF(opts.afr, opts.pin);
-    gpio->AFR[index] |= GPIO_AFR_AF_MASK(opts.pin);
+    gpio->AFR[afr_index] &= ~GPIO_AFR_AF(opts.afr, opts.pin);
+    gpio->AFR[afr_index] |= GPIO_AFR_AF_MASK(opts.pin);
 }
 
 /* Read incomming value on pin */

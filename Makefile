@@ -11,7 +11,7 @@ LIBS 	 =
 CFLAGS   = -std=c99 -ffreestanding -pedantic \
 		   $(CPU) $(OPTS) $(INCLUDES) $(LTOPTS) -Wall 
 
-.PHONY: clean flash eject
+.PHONY: flash eject clean
 
 stm32l432kc.elf: setup/*.c lib/printf/printf.c src/test_gpio.c \
 	drivers/gpio.o drivers/systick.o
@@ -21,11 +21,11 @@ stm32l432kc.elf: setup/*.c lib/printf/printf.c src/test_gpio.c \
 	arm-none-eabi-gcc $(CFLAGS) -c $< -o $@
 
 flash: stm32l432kc.elf
-	cp $< /mnt/d 
+	sudo mkdir -p /mnt/d; sudo mount -t drvfs D: /mnt/d; cp $< /mnt/d 
 
 eject:
 	sudo umount /mnt/d
 
 clean:
-	-rm -f *.elf *.bin *.o drivers/*.o util/*.o .DS_Store
+	-rm -f *.elf *.bin *.o drivers/*.o util/*.o
 

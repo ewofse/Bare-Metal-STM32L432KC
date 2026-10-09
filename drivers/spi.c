@@ -123,7 +123,7 @@ void configure_spi(spi_handle_t * handler) {
 
 	RCC->AHB2ENR |= 1 << (spi == SPI3 || spi1_port_b);
 
-	uint8_t af = (spi == SPI1) ? GPIO_AFR_AF5 : GPIO_AFR_AF6;
+	uint8_t af = (spi == SPI1) ? GPIO_AFSEL_AF5 : GPIO_AFSEL_AF6;
 
 	/* MISO pin selections */
 

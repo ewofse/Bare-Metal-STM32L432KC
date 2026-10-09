@@ -49,22 +49,22 @@ typedef enum {
 } gpio_pupd;
 
 typedef enum {
-    GPIO_AFR_AF0,
-    GPIO_AFR_AF1,
-    GPIO_AFR_AF2,
-    GPIO_AFR_AF3,
-    GPIO_AFR_AF4,
-    GPIO_AFR_AF5,
-    GPIO_AFR_AF6,
-    GPIO_AFR_AF7,
-    GPIO_AFR_AF8,
-    GPIO_AFR_AF9,
-    GPIO_AFR_AF10,
-    GPIO_AFR_AF11,
-    GPIO_AFR_AF12,
-    GPIO_AFR_AF13,
-    GPIO_AFR_AF14,
-    GPIO_AFR_AF15
+    GPIO_AFSEL_AF0,
+    GPIO_AFSEL_AF1,
+    GPIO_AFSEL_AF2,
+    GPIO_AFSEL_AF3,
+    GPIO_AFSEL_AF4,
+    GPIO_AFSEL_AF5,
+    GPIO_AFSEL_AF6,
+    GPIO_AFSEL_AF7,
+    GPIO_AFSEL_AF8,
+    GPIO_AFSEL_AF9,
+    GPIO_AFSEL_AF10,
+    GPIO_AFSEL_AF11,
+    GPIO_AFSEL_AF12,
+    GPIO_AFSEL_AF13,
+    GPIO_AFSEL_AF14,
+    GPIO_AFSEL_AF15
 } gpio_afr;
 
 typedef GPIO_REG_BLOCKS volatile gpio_t;

@@ -1,33 +1,41 @@
 #ifndef SPI_H
 #define SPI_H
 
+#include "gpio.h"
 #include <stm32l432kc/spi.h>
 #include <stdbool.h>
 #include <stdint.h>
 
+#define SPI_NSS_PIN_NONE NULL 
+
 typedef enum {
     SPI1_MISO_PIN_PA6,
     SPI1_MISO_PIN_PA11,
-    SPI_MISO_PIN_PB4,
+    SPI1_MISO_PIN_PB4,
+    SPI3_MISO_PIN_PB4,
+	SPI_MISO_PIN_NONE
 } spi_miso_pin;
 
 typedef enum {
-    SPI1_MOSI_PIN_PA7,
-    SPI1_MOSI_PIN_PA12,
-    SPI1_MOSI_PIN_PB5,
-    SPI3_MOSI_PIN_PB3
+	SPI1_MOSI_PIN_PA7,
+	SPI1_MOSI_PIN_PA12,
+	SPI1_MOSI_PIN_PB5,
+	SPI3_MOSI_PIN_PB5,
+	SPI_MOSI_PIN_NONE
 } spi_mosi_pin;
 
 typedef enum {
-    SPI1_SCK_PIN_PA1,
-    SPI1_SCK_PIN_PA5,
-    SPI_SCK_PIN_PB3,
+	SPI1_SCK_PIN_PA1,
+	SPI1_SCK_PIN_PA5,
+	SPI1_SCK_PIN_PB3,
+	SPI3_SCK_PIN_PB3
 } spi_sck_pin;
 
 typedef enum {
-    SPI_MODE_UNIDIRECTIONAL,
-    SPI_MODE_BIDIRECTIONAL,
-    SPI_MODE_RX_ONLY
+    SPI_DIR_FULL_DUPLEX,
+    SPI_DIR_HALF_DUPLEX,
+    SPI_DIR_TX_ONLY,
+	SPI_DIR_RX_ONLY	
 } spi_dir;
 
 typedef enum {
@@ -88,17 +96,9 @@ typedef enum {
 
 typedef SPI_REG_BLOCKS volatile spi_t;
 
-// User can either choose SSM mode or not
-// SSM mode is manual control of NSS pin through software - any GPIO pin can be used for CS pin on the SPI bus
-// SSM disabled is automatic control done by hardware - strict NSS GPIO pin must be used
-
 typedef struct {
-    // pin number
-    // GPIO port
-    // SSM enabled or disabled
-    uint8_t gpio_num;
-    uint8_t gpio_port;
-    _Bool smm;
+	gpio_t * port;
+	gpio_pin pin;
 } spi_nss_pin_t;
 
 typedef struct {

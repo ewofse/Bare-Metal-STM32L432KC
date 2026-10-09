@@ -31,8 +31,8 @@ void configure_gpio(gpio_handle_t * handler) {
 
     _Bool afr_index = opts.pin >= GPIO_PIN_8;
 
-    gpio->AFR[afr_index] &= ~GPIO_AFR_AF(opts.afr, opts.pin);
-    gpio->AFR[afr_index] |= GPIO_AFR_AF_MASK(opts.pin);
+    gpio->AFR[afr_index] &= ~GPIO_AFR_AFSEL(opts.afr, opts.pin);
+    gpio->AFR[afr_index] |= GPIO_AFR_AFSEL_MASK(opts.pin);
 }
 
 /* Read incomming value on pin */

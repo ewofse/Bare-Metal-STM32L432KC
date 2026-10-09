@@ -13,8 +13,8 @@ CFLAGS   = -std=c99 -ffreestanding -pedantic \
 
 .PHONY: flash eject clean
 
-stm32l432kc.elf: setup/*.c lib/printf/printf.c src/test_gpio.c \
-	drivers/gpio.o drivers/systick.o
+stm32l432kc.elf: setup/*.c lib/printf/printf.c src/test_spi.c \
+	drivers/led.o drivers/gpio.o drivers/systick.o drivers/spi.o util/cbuffer.o
 	arm-none-eabi-gcc $(CFLAGS) $(LINKOPTS) $(LDFLAGS) $(LIBS) -o $@ $^
 
 %.o: %.c

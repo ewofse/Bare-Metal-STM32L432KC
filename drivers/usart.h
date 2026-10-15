@@ -6,18 +6,18 @@
 #include <stdint.h>
 
 typedef enum { 
-    USART_RX_PIN_NONE,
     USART1_RX_PIN_PA10,
     USART1_RX_PIN_PB7,
     USART2_RX_PIN_PA3,
-    USART2_RX_PIN_PA15
+    USART2_RX_PIN_PA15,
+    USART_RX_PIN_NONE
 } usart_rx_pin;
 
 typedef enum {
-    USART_TX_PIN_NONE,
     USART1_TX_PIN_PA9,
     USART1_TX_PIN_PB6,
-    USART2_TX_PIN_PA2
+    USART2_TX_PIN_PA2,
+    USART_TX_PIN_NONE
 } usart_tx_pin;
 
 typedef enum {

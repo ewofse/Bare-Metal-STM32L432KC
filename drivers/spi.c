@@ -51,10 +51,19 @@ static uint32_t num_callbacks[NUM_SPI_PERIPHERALS];
 static cbuffer_t spi_rx_fifo[NUM_SPI_PERIPHERALS];
 static cbuffer_t spi_tx_fifo[NUM_SPI_PERIPHERALS];
 
-static void write_tx_data(spi_t * regs);
 static void read_rx_data(spi_t * regs);
+static void write_tx_data(spi_t * regs);
 
 static gpio_handle_t nss_gpio_handler;
+
+/* Read incoming RX data and place into RX FIFO */
+
+static void read_rx_data(spi_t * regs) {
+    uint8_t index = regs == SPI1;
+
+    uint8_t data = (uint8_t) regs->DR;
+    cbuffer_write( &spi_rx_fifo[index], data );
+}
 
 /* Output TX FIFO data if there is no outgoing data */
 
@@ -70,15 +79,6 @@ static void write_tx_data(spi_t * regs) {
     if ( cbuffer_empty( &spi_tx_fifo[index] ) ) {
         regs->CR2 &= ~SPI_CR2_TXEIE_MASK;
     }
-}
-
-/* Read incoming RX data and place into RX FIFO */
-
-static void read_rx_data(spi_t * regs) {
-    uint8_t index = regs == SPI1;
-
-    uint8_t data = (uint8_t) regs->DR;
-    cbuffer_write( &spi_rx_fifo[index], data );
 }
 
 /* Setup SPI peripheral */

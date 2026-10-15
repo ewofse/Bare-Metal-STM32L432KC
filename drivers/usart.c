@@ -1,4 +1,5 @@
 #include "usart.h"
+#include "gpio.h"
 #include "interrupt.h"
 #include <m4/nvic.h>
 #include <stm32l432kc/usart.h>
@@ -19,14 +20,39 @@
 #define USART2_IRQ 38
 #define USART2_IRQ_PRI 15
 
+#define NUM_TX_PINS 4
+#define NUM_RX_PINS 3
+
+const uint8_t tx_pin_LUT[NUM_TX_PINS] = {
+	GPIO_PIN_10,
+	GPIO_PIN_7,
+	GPIO_PIN_3,
+	GPIO_PIN_15
+};
+
+const uint8_t rx_pin_LUT[NUM_RX_PINS] = {
+	GPIO_PIN_9,
+	GPIO_PIN_6,
+	GPIO_PIN_2
+};
+
 static void ( *callback[NUM_USART_PERIPHERALS][NUM_USART_CALLBACKS] )(void);
 static uint32_t num_callbacks[NUM_USART_PERIPHERALS];
 
 static cbuffer_t usart_rx_fifo[NUM_USART_PERIPHERALS];
 static cbuffer_t usart_tx_fifo[NUM_USART_PERIPHERALS];
 
-static void write_tx_data(usart_t * regs);
 static void read_rx_data(usart_t * regs);
+static void write_tx_data(usart_t * regs);
+
+/* Read incoming RX data and place into RX FIFO */
+
+static void read_rx_data(usart_t * regs) {
+    uint8_t index = regs == USART2;
+
+    uint8_t data = (uint8_t) regs->RDR;
+    cbuffer_write( &usart_rx_fifo[index], data );
+}
 
 /* Output TX FIFO data if there is no outgoing data */
 
@@ -42,15 +68,6 @@ static void write_tx_data(usart_t * regs) {
     if ( cbuffer_empty( &usart_tx_fifo[index] ) ) {
         regs->CR1 &= ~USART_CR1_TXEIE_MASK;
     }
-}
-
-/* Read incoming RX data and place into RX FIFO */
-
-static void read_rx_data(usart_t * regs) {
-    uint8_t index = regs == USART2;
-
-    uint8_t data = (uint8_t) regs->RDR;
-    cbuffer_write( &usart_rx_fifo[index], data );
 }
 
 /* Setup the USART */
@@ -105,86 +122,39 @@ void configure_usart(usart_handle_t * handler) {
         | USART_CR1_TE(1) 
         | USART_CR1_RE(1);
 
-    /* RX pin selection */
+	uint8_t af = (opts.rx_pin == USART2_RX_PIN_PA15) ? \
+		GPIO_AFSEL_AF3 : GPIO_AFSEL_AF7;
 
-    switch (opts.rx_pin) {
-        case USART2_RX_PIN_PA3:
-            GPIOA->MODER &= ~GPIO_MODER_MODE3_MASK;
-            GPIOA->MODER |= GPIO_MODER_MODE3(2);
+	/* RX pin selection */
 
-            GPIOA->AFR[0] &= ~GPIO_AFR_AFSEL3_MASK;
-            GPIOA->AFR[0] |= GPIO_AFR_AFSEL3(7);
+	if (opts.rx_pin != USART_RX_PIN_NONE) {
+		gpio_t * gpio = (opts.rx_pin != USART1_RX_PIN_PB7) ? GPIOA : GPIOB;
+		uint8_t af_index = opts.rx_pin == USART1_RX_PIN_PA10 ||
+						   opts.rx_pin == USART2_RX_PIN_PA15;
+		uint8_t pin = rx_pin_LUT[opts.rx_pin];
 
-            break;
+		gpio->MODER &= ~GPIO_MODER_MODE_MASK(pin);
+		gpio->MODER |= GPIO_MODER_MODE(GPIO_MODE_ALTERNATE, pin);
+		gpio->AFR[af_index] &= ~GPIO_AFR_AFSEL_MASK(pin);
+		gpio->AFR[af_index] |= GPIO_AFR_AFSEL(af, pin);
+	} else {
+		usart->CR1 &= ~(USART_CR1_RE_MASK | USART_CR1_RXNEIE_MASK);
+	}
 
-        case USART1_RX_PIN_PA10:
-            GPIOA->MODER &= ~GPIO_MODER_MODE10_MASK;
-            GPIOA->MODER |= GPIO_MODER_MODE10(2);
+	/* TX pin selection */
 
-            GPIOA->AFR[0] &= ~GPIO_AFR_AFSEL10_MASK;
-            GPIOA->AFR[0] |= GPIO_AFR_AFSEL10(7);
+	if (opts.tx_pin != USART_TX_PIN_NONE) {
+		gpio_t * gpio = (opts.tx_pin != USART1_TX_PIN_PB6) ? GPIOA : GPIOB;
+		uint8_t af_index = opts.tx_pin == USART1_TX_PIN_PA9;
+		uint8_t pin = tx_pin_LUT[opts.tx_pin];
 
-            break;
-
-        case USART2_RX_PIN_PA15:
-            GPIOA->MODER &= ~GPIO_MODER_MODE15_MASK;
-            GPIOA->MODER |= GPIO_MODER_MODE15(2);
-
-            GPIOA->AFR[1] &= ~GPIO_AFR_AFSEL15_MASK;
-            GPIOA->AFR[1] |= GPIO_AFR_AFSEL15(3);
-
-            break;
-
-        case USART1_RX_PIN_PB7:
-            GPIOB->MODER &= ~GPIO_MODER_MODE7_MASK;
-            GPIOB->MODER |= GPIO_MODER_MODE7(2);
-
-            GPIOB->AFR[0] &= ~GPIO_AFR_AFSEL7_MASK;
-            GPIOB->AFR[0] |= GPIO_AFR_AFSEL7(7);
-
-            break;
-
-        case USART_RX_PIN_NONE:
-            usart->CR1 &= ~(USART_CR1_RE_MASK | USART_CR1_RXNEIE_MASK);
-            
-            break;
-    };
-
-    /* TX pin selection */
-
-    switch (opts.tx_pin) {
-        case USART2_TX_PIN_PA2:
-            GPIOA->MODER &= ~GPIO_MODER_MODE2_MASK;
-            GPIOA->MODER |= GPIO_MODER_MODE2(2);
-
-            GPIOA->AFR[0] &= ~GPIO_AFR_AFSEL2_MASK;
-            GPIOA->AFR[0] |= GPIO_AFR_AFSEL2(7);
-
-            break;
-
-        case USART1_TX_PIN_PA9:
-            GPIOA->MODER &= ~GPIO_MODER_MODE9_MASK;
-            GPIOA->MODER |= GPIO_MODER_MODE9(2);
-
-            GPIOA->AFR[1] &= ~GPIO_AFR_AFSEL9_MASK;
-            GPIOA->AFR[1] |= GPIO_AFR_AFSEL9(7);
-
-            break;
-
-        case USART1_TX_PIN_PB6:
-            GPIOB->MODER &= ~GPIO_MODER_MODE6_MASK;
-            GPIOB->MODER |= GPIO_MODER_MODE6(2);
-
-            GPIOB->AFR[0] &= ~GPIO_AFR_AFSEL6_MASK;
-            GPIOB->AFR[0] |= GPIO_AFR_AFSEL6(7);
-            
-            break;
-
-        case USART_TX_PIN_NONE:
-            usart->CR1 &= ~USART_CR1_TE_MASK;
-
-            break;
-    }
+		gpio->MODER &= ~GPIO_MODER_MODE_MASK(pin);
+		gpio->MODER |= GPIO_MODER_MODE(GPIO_MODE_ALTERNATE, pin);
+		gpio->AFR[af_index] &= ~GPIO_AFR_AFSEL_MASK(pin);
+		gpio->AFR[af_index] |= GPIO_AFR_AFSEL(af, pin);
+	} else {
+		usart->CR1 &= ~USART_CR1_TE_MASK;
+	}
 
     /* Packet setup */
 
@@ -329,3 +299,4 @@ int usart_putchar_stdout(char c) {
 
     return 1;
 }
+

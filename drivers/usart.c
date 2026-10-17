@@ -20,17 +20,17 @@
 #define USART2_IRQ 38
 #define USART2_IRQ_PRI 15
 
-#define NUM_TX_PINS 4
-#define NUM_RX_PINS 3
+#define NUM_RX_PINS 4
+#define NUM_TX_PINS 3 
 
-const uint8_t tx_pin_LUT[NUM_TX_PINS] = {
+uint8_t const rx_pin_LUT[NUM_RX_PINS] = {
 	GPIO_PIN_10,
 	GPIO_PIN_7,
 	GPIO_PIN_3,
 	GPIO_PIN_15
 };
 
-const uint8_t rx_pin_LUT[NUM_RX_PINS] = {
+uint8_t const tx_pin_LUT[NUM_TX_PINS] = {
 	GPIO_PIN_9,
 	GPIO_PIN_6,
 	GPIO_PIN_2
@@ -122,9 +122,6 @@ void configure_usart(usart_handle_t * handler) {
         | USART_CR1_TE(1) 
         | USART_CR1_RE(1);
 
-	uint8_t af = (opts.rx_pin == USART2_RX_PIN_PA15) ? \
-		GPIO_AFSEL_AF3 : GPIO_AFSEL_AF7;
-
 	/* RX pin selection */
 
 	if (opts.rx_pin != USART_RX_PIN_NONE) {
@@ -132,6 +129,8 @@ void configure_usart(usart_handle_t * handler) {
 		uint8_t af_index = opts.rx_pin == USART1_RX_PIN_PA10 ||
 						   opts.rx_pin == USART2_RX_PIN_PA15;
 		uint8_t pin = rx_pin_LUT[opts.rx_pin];
+        uint8_t af = (opts.rx_pin == USART2_RX_PIN_PA15) ? \
+            GPIO_AFSEL_AF3 : GPIO_AFSEL_AF7;
 
 		gpio->MODER &= ~GPIO_MODER_MODE_MASK(pin);
 		gpio->MODER |= GPIO_MODER_MODE(GPIO_MODE_ALTERNATE, pin);
@@ -147,6 +146,7 @@ void configure_usart(usart_handle_t * handler) {
 		gpio_t * gpio = (opts.tx_pin != USART1_TX_PIN_PB6) ? GPIOA : GPIOB;
 		uint8_t af_index = opts.tx_pin == USART1_TX_PIN_PA9;
 		uint8_t pin = tx_pin_LUT[opts.tx_pin];
+        uint8_t af = GPIO_AFSEL_AF7;
 
 		gpio->MODER &= ~GPIO_MODER_MODE_MASK(pin);
 		gpio->MODER |= GPIO_MODER_MODE(GPIO_MODE_ALTERNATE, pin);

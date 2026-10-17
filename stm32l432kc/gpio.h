@@ -355,7 +355,7 @@ typedef struct {
 #define GPIO_OSPEEDR_OSPEED_MASK(v) GPIO_MODER_MODE(ALL1, v)
 #define GPIO_PUPDR_PUPD(v, n) ( ( (v) & 0x3 ) << ( (n) * 2 ) )
 #define GPIO_PUPDR_PUPD_MASK(v) GPIO_MODER_MODE(ALL1, v)
-#define GPIO_AFR_AFSEL(v, n) ( ( (v) & 0xF ) << ( (n) * 4 ) )
+#define GPIO_AFR_AFSEL(v, n) ( ( (v) & 0xF ) << ( ( (n) % 8 ) * 4 ) )
 #define GPIO_AFR_AFSEL_MASK(v) GPIO_AFR_AFSEL(ALL1, v)
 
 #define GPIO_IDR_ID(v, n) ( ( (v) & 0x1 ) << (n) )

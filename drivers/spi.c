@@ -59,16 +59,16 @@ static gpio_handle_t nss_gpio_handler;
 /* Read incoming RX data and place into RX FIFO */
 
 static void read_rx_data(spi_t * regs) {
-    uint8_t index = regs == SPI1;
-
+    uint8_t index = regs == SPI3;
     uint8_t data = (uint8_t) regs->DR;
+
     cbuffer_write( &spi_rx_fifo[index], data );
 }
 
 /* Output TX FIFO data if there is no outgoing data */
 
 static void write_tx_data(spi_t * regs) {
-    uint8_t index = regs == SPI1;
+    uint8_t index = regs == SPI3;
 
     uint8_t data;
 
@@ -86,7 +86,6 @@ static void write_tx_data(spi_t * regs) {
 void configure_spi(spi_handle_t * handler) {
     spi_t * spi = handler->regs;
     spi_config_t opts = handler->opts;
-
 
     /* Clock enable, IRQ, and pin setup */
 
@@ -117,8 +116,8 @@ void configure_spi(spi_handle_t * handler) {
     // SPI1 can be either on ports A or B, SPI3 is only B 
 
 	_Bool spi1_port_b = \
-		opts.miso_pin == SPI1_MISO_PIN_PB4 || \
-		opts.mosi_pin == SPI1_MOSI_PIN_PB5 || \
+		opts.miso_pin == SPI1_MISO_PIN_PB4 ||
+		opts.mosi_pin == SPI1_MOSI_PIN_PB5 ||
 		opts.sck_pin == SPI1_SCK_PIN_PB3;
 
 	RCC->AHB2ENR |= 1 << (spi == SPI3 || spi1_port_b);
@@ -153,7 +152,7 @@ void configure_spi(spi_handle_t * handler) {
 
 	/* SCK pin selections */
 
-	gpio_t * sck_gpio = (opts.sck_pin >= SPI1_SCK_PIN_PB3) ? GPIOA : GPIOB;
+	gpio_t * sck_gpio = (opts.sck_pin >= SPI1_SCK_PIN_PB3) ? GPIOB : GPIOA;
 	uint8_t sck_pin = sck_pin_LUT[opts.sck_pin];
 	uint8_t sck_af_index = 0;
 
@@ -163,18 +162,20 @@ void configure_spi(spi_handle_t * handler) {
 	sck_gpio->AFR[sck_af_index] |= GPIO_AFR_AFSEL(af, sck_pin);
 
 	/* NSS pin selection */
+    
+    if (opts.nss_pin.port != SPI_NSS_PIN_NONE) {
+        nss_gpio_handler.regs = opts.nss_pin.port;
+        nss_gpio_handler.opts.pin = opts.nss_pin.pin;
+        nss_gpio_handler.opts.mode = opts.device_type;
+        nss_gpio_handler.opts.pupd = GPIO_PUPD_NONE;
 
-	nss_gpio_handler.regs = opts.nss_pin.port;
-	nss_gpio_handler.opts.pin = opts.nss_pin.pin;
-	nss_gpio_handler.opts.mode = opts.device_type == SPI_SLAVE;
-	nss_gpio_handler.opts.pupd = GPIO_PUPD_NONE;
+        if (nss_gpio_handler.opts.mode == GPIO_MODE_OUTPUT) {
+            nss_gpio_handler.opts.otype = GPIO_OTYPE_PUSHPULL;
+            nss_gpio_handler.opts.ospeed = GPIO_OSPEED_HIGH;
+        }
 
-	if (nss_gpio_handler.opts.mode == GPIO_MODE_OUTPUT) {
-		nss_gpio_handler.opts.otype = GPIO_OTYPE_PUSHPULL;
-		nss_gpio_handler.opts.ospeed = GPIO_OSPEED_HIGH;
-	}
-
-	configure_gpio(&nss_gpio_handler);
+        configure_gpio(&nss_gpio_handler);
+    }
 
 	/* SPI options */
 	
@@ -187,7 +188,7 @@ void configure_spi(spi_handle_t * handler) {
 		| SPI_CR1_CRCL(0)
 		| SPI_CR1_RXONLY( (opts.dir >> 1) & (opts.dir & 1) )
 		| SPI_CR1_SSM(1)
-		| SPI_CR1_SSI(1)
+		| SPI_CR1_SSI(opts.device_type) // temporary for only 1 slave on bus
 		| SPI_CR1_LSBFIRST(opts.data_dir)
 		| SPI_CR1_SPE(0)
 		| SPI_CR1_BR(opts.baud_rate)
@@ -199,9 +200,9 @@ void configure_spi(spi_handle_t * handler) {
 	spi->CR2 = 
 		  SPI_CR2_LDMA_TX(0)
 		| SPI_CR2_LDMA_RX(0)
-		| SPI_CR2_FRXTH(0)
+		| SPI_CR2_FRXTH(opts.data_size <= SPI_DATA_8_BIT)
 		| SPI_CR2_DS(opts.data_size)
-		| SPI_CR2_TXEIE(1)
+		| SPI_CR2_TXEIE(0)
 		| SPI_CR2_RXNEIE(1)
 		| SPI_CR2_ERRIE(0)
 		| SPI_CR2_FRF(opts.frame_format)
@@ -219,7 +220,7 @@ void configure_spi(spi_handle_t * handler) {
 _Bool spi_read(spi_handle_t * handler, uint8_t * buf, uint32_t len) {
     spi_t * spi = handler->regs;
 
-    uint8_t index = spi == SPI1;
+    uint8_t index = spi == SPI3;
 
     if ( cbuffer_empty( &spi_rx_fifo[index] ) ) {
         return false;
@@ -237,8 +238,6 @@ _Bool spi_read(spi_handle_t * handler, uint8_t * buf, uint32_t len) {
     set_primask(primask);
 
     if (spi->CR1 & SPI_CR1_MSTR_MASK) {
-		spi->CR1 |= SPI_CR1_SSI(1);
-
 		if (nss_gpio_handler.regs != SPI_NSS_PIN_NONE) {
 			set_gpio(&nss_gpio_handler);
 		}
@@ -252,20 +251,17 @@ _Bool spi_read(spi_handle_t * handler, uint8_t * buf, uint32_t len) {
 _Bool spi_write(spi_handle_t * handler, uint8_t const * data, uint32_t len) {
     spi_t * spi = handler->regs;
 
-    uint8_t index = spi == SPI1;
+    uint8_t index = spi == SPI3;
 
     if ( cbuffer_full( &spi_tx_fifo[index] ) ) {
         return false;
     }
 
     if (spi->CR1 & SPI_CR1_MSTR_MASK) {
-		spi->CR1 &= ~SPI_CR1_SSI_MASK;
-
 		if (nss_gpio_handler.regs != SPI_NSS_PIN_NONE) {
 			reset_gpio(&nss_gpio_handler);
 		}
     }
-
 
     uint32_t primask;
 
@@ -288,7 +284,7 @@ _Bool spi_write(spi_handle_t * handler, uint8_t const * data, uint32_t len) {
 _Bool register_spi_callback( spi_handle_t * handler, void (*cb)(void) ) {
     spi_t * spi = handler->regs;
 
-    uint8_t index = spi == SPI1;
+    uint8_t index = spi == SPI3;
 
     if ( num_callbacks[index] == NUM_SPI_CALLBACKS ) {
         return false;

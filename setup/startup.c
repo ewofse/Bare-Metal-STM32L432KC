@@ -61,7 +61,7 @@ void __attribute__( ( weak, alias("DEFAULT_Handler") ) ) TIM1_CC_Handler(void);
 void __attribute__( ( weak, alias("DEFAULT_Handler") ) ) TIM2_Handler(void);
 void __attribute__( ( weak, alias("DEFAULT_Handler") ) ) I2C1_EV_Handler(void);
 void __attribute__( ( weak, alias("DEFAULT_Handler") ) ) I2C1_ER_Handler(void);
-void __attribute__( ( weak, alias("DEFAULT_Handler") ) ) SPI_Handler(void);
+void __attribute__( ( weak, alias("DEFAULT_Handler") ) ) SPI1_Handler(void);
 void __attribute__( ( weak, alias("DEFAULT_Handler") ) ) USART1_Handler(void);
 void __attribute__( ( weak, alias("DEFAULT_Handler") ) ) USART2_Handler(void);
 void __attribute__( ( weak, alias("DEFAULT_Handler") ) ) EXTI15_10_Handler(void);
@@ -143,7 +143,7 @@ void ( * const __attribute__( ( section (".vector_table") ) ) vector_table[] )(v
     I2C1_ER_Handler,
     RESERVED,
     RESERVED,
-    SPI_Handler,
+    SPI1_Handler,
     RESERVED,
     USART1_Handler,
     USART2_Handler,

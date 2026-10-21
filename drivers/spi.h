@@ -97,12 +97,6 @@ typedef enum {
 typedef SPI_REG_BLOCKS volatile spi_t;
 
 typedef struct {
-	gpio_t * port;
-	gpio_pin pin;
-} spi_nss_pin_t;
-
-typedef struct {
-    spi_nss_pin_t nss_pin;
     spi_miso_pin miso_pin;
     spi_mosi_pin mosi_pin;
     spi_sck_pin sck_pin;
@@ -121,9 +115,17 @@ typedef struct {
     spi_config_t opts;
 } spi_handle_t;
 
+typedef struct {
+	gpio_handle_t nss_handler;
+	spi_handle_t * bus;
+	gpio_t * port;
+	gpio_pin pin;
+} spi_device_t;
+
 void configure_spi(spi_handle_t * handler);
-_Bool spi_read(spi_handle_t * handler, uint8_t * buf, uint32_t len);
-_Bool spi_write(spi_handle_t * handler, uint8_t const * buf, uint32_t len);
+void register_spi_device(spi_device_t * device);
+_Bool spi_read(spi_device_t * device, uint8_t * buf, uint32_t len);
+_Bool spi_write(spi_device_t * device, uint8_t const * buf, uint32_t len);
 _Bool register_spi_callback( spi_handle_t * handler, void (*cb)(void) );
 
 #endif

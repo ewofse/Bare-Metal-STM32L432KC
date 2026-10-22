@@ -1,3 +1,4 @@
+#include "gpio.h"
 #include "gpio_irq.h"
 #include <m4/nvic.h>
 #include <stm32l432kc/exti.h>
@@ -26,15 +27,15 @@ static uint16_t volatile gpio_irq_events;
 /* Add a callback function to the GPIO ISRs */
 
 _Bool register_gpio_callback( void (*cb)(void), uint8_t pin ) {
-    if (pin > 15) {
+    if (pin > GPIO_PIN_15) {
         return false;
     }
 
     uint8_t exti_index = NUM_EXTI_LINES - 1;
 
-    if (pin <= 4) {
+    if (pin <= GPIO_PIN_4) {
         exti_index = pin;
-    } else if (pin >= 5 && pin <= 9) {
+    } else if (pin >= GPIO_PIN_5 && pin <= GPIO_PIN_9) {
         exti_index = 5;
     }
 
@@ -52,7 +53,7 @@ _Bool register_gpio_callback( void (*cb)(void), uint8_t pin ) {
 /* Check if a pin has a pending IRQ */
 
 _Bool get_irq_status_for_pin(uint8_t pin) {
-    if (pin > 15) {
+    if (pin > GPIO_PIN_15) {
         return false;
     }
    

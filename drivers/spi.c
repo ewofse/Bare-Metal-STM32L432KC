@@ -85,6 +85,13 @@ static void write_tx_data(spi_t * regs) {
 /* NSS interrupt callback function to prepare for SPI transfer */
 
 static void nss_gpio_slave_callback(void) {
+	// Check if pin has interrupt
+	// Check what edge triggered interrupt
+	// If falling edge, SPI->CR1 &= ~SPI_CR1_SSI_MASK;
+	// If rising edge, SPI->CR1 |= SPI_CR1_SSI(1); Register 1st byte in TX FIFO
+
+	// Need to figure out how to get pin number here without using macros...
+
 	return;
 }
 
@@ -216,41 +223,43 @@ void register_spi_device(spi_device_t * device) {
 	_Bool output = opts.device_type == SPI_MASTER;
 
 	/* NSS pin selection */
+
+	if (device->port == SPI_NSS_PIN_NONE) {
+		return;
+	}
     
-    if (device->port != SPI_NSS_PIN_NONE) {
-		gpio_config_t nss_config = {
-			.pin = device->pin,
-			.mode = output,
-			.pupd = GPIO_PUPD_NONE
-		};
+	gpio_config_t nss_config = {
+		.pin = device->pin,
+		.mode = output,
+		.pupd = GPIO_PUPD_NONE
+	};
 
-		if (output) {
-			nss_config.otype = GPIO_OTYPE_PUSHPULL;
-			nss_config.ospeed = GPIO_OSPEED_HIGH;			
-		} else {
-			/* Setup GPIO external interrupt */
+	if (output) {
+		nss_config.otype = GPIO_OTYPE_PUSHPULL;
+		nss_config.ospeed = GPIO_OSPEED_HIGH;			
+	} else {
+		/* Setup GPIO external interrupt */
 
-			EXTI->IMR1 |= 1 << device->pin;
-			EXTI->EMR1 &= ~(1 << device->pin);
-			EXTI->RTSR1 &= ~(1 << device->pin);
-			EXTI->FTSR1 |= 1 << device->pin;
-			EXTI->SWIER1 &= ~(1 << device->pin);
+		EXTI->IMR1 |= 1 << device->pin;
+		EXTI->EMR1 &= ~(1 << device->pin);
+		EXTI->RTSR1 |= 1 << device->pin;
+		EXTI->FTSR1 |= 1 << device->pin;
+		EXTI->SWIER1 &= ~(1 << device->pin);
 
-			register_gpio_callback(nss_gpio_slave_callback, device->pin);				
-		}
+		register_gpio_callback(nss_gpio_slave_callback, device->pin);				
+	}
 
-		gpio_handle_t nss_handler = {
-			.regs = device->port,
-			.opts = nss_config
-    	};
+	gpio_handle_t nss_handler = {
+		.regs = device->port,
+		.opts = nss_config
+	};
 
-		device->nss_handler = nss_handler;
+	device->nss_handler = nss_handler;
 
-        configure_gpio(&nss_handler);
+	configure_gpio(&nss_handler);
 
-		if (output) {
-			set_gpio(&nss_handler);
-		}
+	if (output) {
+		set_gpio(&nss_handler);
 	}
 }
 

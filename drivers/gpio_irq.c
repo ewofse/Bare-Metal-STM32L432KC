@@ -26,13 +26,13 @@
 static void ( *exti_callback[NUM_EXTI_LINES][NUM_EXTI_CALLBACKS] )(void *);
 static uint32_t num_exti_callbacks[NUM_EXTI_LINES];
 
-static void * gpio_irq_context[NUM_EXTI_LINES][NUM_EXTI_CALLBACKS];
+static void * gpio_irq_ctxt[NUM_EXTI_LINES][NUM_EXTI_CALLBACKS];
 
 static uint16_t volatile gpio_irq_events;
 
 /* Add a callback function to the GPIO ISRs */
 
-_Bool register_gpio_callback( void (*cb)(void *), uint8_t pin ) {
+_Bool register_gpio_callback( void (*cb)(void *), uint8_t pin, void * ctxt ) {
     if (pin > GPIO_PIN_15) {
         return false;
     }
@@ -51,7 +51,8 @@ _Bool register_gpio_callback( void (*cb)(void *), uint8_t pin ) {
         return false;
     }
     
-    exti_callback[exti_index][ num_exti_callbacks[exti_index]++ ] = cb;
+    exti_callback[exti_index][ num_exti_callbacks[exti_index] ] = cb;
+	gpio_irq_ctxt[exti_index][ num_exti_callbacks[exti_index]++ ] = ctxt;
 
     return true;
 }
@@ -74,7 +75,7 @@ void __attribute__( (interrupt) ) EXTI0_Handler(void) {
     gpio_irq_events = EXTI->PR1 & GPIO_IRQ_PENDING_MASK;
 
     for (uint32_t i = 0; i < num_exti_callbacks[0]; i++) {
-        exti_callback[0][i]( gpio_irq_context[0][i] );
+        exti_callback[0][i]( gpio_irq_ctxt[0][i] );
     }
     
     // Acknowledge pending interrupt
@@ -87,7 +88,7 @@ void __attribute__( (interrupt) ) EXTI1_Handler(void) {
     gpio_irq_events = EXTI->PR1 & GPIO_IRQ_PENDING_MASK;
 
     for (uint32_t i = 0; i < num_exti_callbacks[1]; i++) {
-        exti_callback[0][i]( gpio_irq_context[1][i] );
+        exti_callback[0][i]( gpio_irq_ctxt[1][i] );
     }
 
     // Acknowledge pending interrupt
@@ -100,7 +101,7 @@ void __attribute__( (interrupt) ) EXTI2_Handler(void) {
     gpio_irq_events = EXTI->PR1 & GPIO_IRQ_PENDING_MASK;
 
     for (uint32_t i = 0; i < num_exti_callbacks[2]; i++) {
-        exti_callback[0][i]( gpio_irq_context[2][i] );
+        exti_callback[0][i]( gpio_irq_ctxt[2][i] );
     }
 
     // Acknowledge pending interrupt
@@ -113,7 +114,7 @@ void __attribute__( (interrupt) ) EXTI3_Handler(void) {
     gpio_irq_events = EXTI->PR1 & GPIO_IRQ_PENDING_MASK;
 
     for (uint32_t i = 0; i < num_exti_callbacks[3]; i++) {
-        exti_callback[0][i]( gpio_irq_context[3][i] );
+        exti_callback[0][i]( gpio_irq_ctxt[3][i] );
     }
 
     // Acknowledge pending interrupt
@@ -126,7 +127,7 @@ void __attribute__( (interrupt) ) EXTI4_Handler(void) {
     gpio_irq_events = EXTI->PR1 & GPIO_IRQ_PENDING_MASK;
     
     for (uint32_t i = 0; i < num_exti_callbacks[4]; i++) {
-        exti_callback[0][i]( gpio_irq_context[4][i] );
+        exti_callback[0][i]( gpio_irq_ctxt[4][i] );
     }
     
     // Acknowledge pending interrupt
@@ -139,7 +140,7 @@ void __attribute__( (interrupt) ) EXTI9_5_Handler(void) {
     gpio_irq_events = EXTI->PR1 & GPIO_IRQ_PENDING_MASK;
 
     for (uint32_t i = 0; i < num_exti_callbacks[5]; i++) {
-        exti_callback[0][i]( gpio_irq_context[5][i] );
+        exti_callback[0][i]( gpio_irq_ctxt[5][i] );
     }
 
     // Acknowledge pending interrupts
@@ -152,7 +153,7 @@ void __attribute__( (interrupt) ) EXTI15_10_Handler(void) {
     gpio_irq_events = EXTI->PR1 & GPIO_IRQ_PENDING_MASK;
 
     for (uint32_t i = 0; i < num_exti_callbacks[6]; i++) {
-        exti_callback[0][i]( gpio_irq_context[6][i] );
+        exti_callback[0][i]( gpio_irq_ctxt[6][i] );
     }
     
     // Acknowledge pending interrupts

@@ -8,23 +8,35 @@
 #include <stdint.h>
 
 #define USART_BAUD_RATE 115200
-
-void test_spi_master(void);
-void test_spi_slave(void);
+#define SPI_DUMMY_WRITE 0x00
 
 int (* _stdout_putchar)(char c);
+
+void setup_usart(void);
+
+void test_spi_simplex(void);
+void test_spi_full_duplex(void);
 
 void send_spi_data_1hz(void);
 
 _Bool volatile send_data;
 
 void main(void) {
-	disable_irq();
+	// test_spi_simplex();
+	test_spi_full_duplex();
+}
 
-	configure_systick();	
+void send_spi_data_1hz(void) {
+	static uint16_t cnt;
 
-	register_systick_callback(send_spi_data_1hz);
+	cnt = (cnt == 999) ? 0 : cnt + 1;
 
+	if (cnt == 0) {
+		send_data = true;		
+	}
+}
+
+void setup_usart(void) {
     usart_config_t usart2_config = {
         .baud_rate = USART_BAUD_RATE,
         .rx_pin = USART2_RX_PIN_PA15,
@@ -42,12 +54,18 @@ void main(void) {
 
     configure_usart(&usart2_handle);
 
-	spi_nss_pin_t spi3_nss_pin = {
-		.port = SPI_NSS_PIN_NONE,
-	};	
+    _stdout_putchar = usart_putchar_stdout;
+}
+
+void test_spi_full_duplex(void) {
+	disable_irq();
+
+	configure_systick();	
+	register_systick_callback(send_spi_data_1hz);
+
+	setup_usart();
 
 	spi_config_t spi3_config = {
-		.nss_pin = spi3_nss_pin,
 		.miso_pin = SPI3_MISO_PIN_PB4,
 		.mosi_pin = SPI3_MOSI_PIN_PB5,
 		.sck_pin = SPI3_SCK_PIN_PB3,
@@ -64,16 +82,18 @@ void main(void) {
 	spi_handle_t spi3_handler = {
 		.regs = SPI3,
 		.opts = spi3_config
-	};	
-
-	configure_spi(&spi3_handler);
-
-	spi_nss_pin_t spi1_nss_pin = {
-		.port = SPI_NSS_PIN_NONE,
 	};
 	
+	spi_device_t spi3_device = {
+		.bus = &spi3_handler,
+		.port = GPIOA,
+		.pin = GPIO_PIN_0
+	};
+
+	configure_spi(&spi3_handler);
+	register_spi_device(&spi3_device);
+	
 	spi_config_t spi1_config = {
-		.nss_pin = spi1_nss_pin,
 		.miso_pin = SPI1_MISO_PIN_PA6,
 		.mosi_pin = SPI1_MOSI_PIN_PA7,
 		.sck_pin = SPI1_SCK_PIN_PA1,
@@ -92,39 +112,48 @@ void main(void) {
 		.opts = spi1_config	
 	};
 
+	spi_device_t spi1_device = {
+		.bus = &spi1_handler,
+		.port = GPIOA,
+		.pin = GPIO_PIN_1
+	};
+
 	configure_spi(&spi1_handler);
+	register_spi_device(&spi1_device);
 
 	enable_irq();
 
-    _stdout_putchar = usart_putchar_stdout;
-
 	while (true) {
-		uint8_t len = 3;
-		uint8_t data[3] = {0x12, 0x34, 0x56};
-		uint8_t returned_data[3];
+		uint8_t master_read_data[3];
+		uint8_t master_write_data[5] = {
+			0xCC, 
+			0x01, 
+			SPI_DUMMY_WRITE,
+			SPI_DUMMY_WRITE,
+			SPI_DUMMY_WRITE
+		};
+
+		uint8_t slave_read_data[2];
+		uint8_t slave_write_data[2] = {0xAB, 0xCD};
 
 		wait_for_interrupt();	
 
-		if (send_data) {
-			send_data = false;
-			spi_write(&spi1_handler, data, len);
+		if (!send_data) {
+			continue;
 		}
 
-		if ( spi_read(&spi3_handler, returned_data, len) ) {
-			printf( "%x\r\n", returned_data[0] );
-			printf( "%x\r\n", returned_data[1] );
-			printf( "%x\r\n", returned_data[2] );
+		send_data = false;
+		spi_write(&spi1_device, master_write_data, 5);
+
+		if ( spi_read(&spi3_device, slave_read_data, 2) ) {
+			spi_write(&spi3_device, slave_write_data, 2);
 		}
-	}
-}
 
-void send_spi_data_1hz(void) {
-	static uint16_t cnt;
-
-	cnt = (cnt == 999) ? 0 : cnt + 1;
-
-	if (cnt == 0) {
-		send_data = true;		
+		if ( spi_read(&spi1_device, master_read_data, 3) ) {
+			printf( "%x\r\n", master_read_data[0] );
+			printf( "%x\r\n", master_read_data[1] );
+			printf( "%x\r\n", master_read_data[2] );
+		}
 	}
 }
 

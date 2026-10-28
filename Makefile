@@ -15,7 +15,7 @@ CFLAGS   = -std=c99 -ffreestanding -pedantic \
 
 stm32l432kc.elf: setup/*.c lib/printf/printf.c src/test_spi.c \
 	drivers/spi.o drivers/led.o drivers/usart.o drivers/systick.o \
-	drivers/gpio.o util/cbuffer.o
+	drivers/gpio.o drivers/gpio_irq.o util/cbuffer.o
 	arm-none-eabi-gcc $(CFLAGS) $(LINKOPTS) $(LDFLAGS) $(LIBS) -o $@ $^
 
 %.o: %.c

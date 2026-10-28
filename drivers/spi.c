@@ -58,7 +58,7 @@ static cbuffer_t spi_tx_fifo[NUM_SPI_PERIPHERALS];
 static void read_rx_data(spi_t * regs);
 static void write_tx_data(spi_t * regs);
 
-static void nss_gpio_slave_callback(void * context);
+static void nss_gpio_slave_callback(void * ctxt);
 
 /* Read incoming RX data and place into RX FIFO */
 
@@ -86,8 +86,8 @@ static void write_tx_data(spi_t * regs) {
 
 /* NSS interrupt callback function to prepare for SPI transfer */
 
-static void nss_gpio_slave_callback(void * context) {
-	spi_device_t * device = (spi_device_t *) context;
+static void nss_gpio_slave_callback(void * ctxt) {
+	spi_device_t * device = (spi_device_t *) ctxt;
 
 	if ( !get_irq_status_for_pin(device->pin) ) {
 		return;
@@ -252,7 +252,7 @@ void register_spi_device(spi_device_t * device) {
 		EXTI->FTSR1 |= 1 << device->pin;
 		EXTI->SWIER1 &= ~(1 << device->pin);
 
-		register_gpio_callback(nss_gpio_slave_callback, device->pin);				
+		register_gpio_callback(nss_gpio_slave_callback, device->pin, device);				
 	}
 
 	gpio_handle_t nss_handler = {

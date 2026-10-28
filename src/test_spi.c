@@ -9,6 +9,9 @@
 
 #define USART_BAUD_RATE 115200
 
+void test_spi_master(void);
+void test_spi_slave(void);
+
 int (* _stdout_putchar)(char c);
 
 void send_spi_data_1hz(void);

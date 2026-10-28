@@ -19,14 +19,20 @@
 #define EXTI9_5_IRQ 23
 #define EXTI15_10_IRQ 40
 
-static void ( *exti_callback[NUM_EXTI_LINES][NUM_EXTI_CALLBACKS] )(void);
+#define GPIO_IRQ_PENDING_MASK 0xFFFF 
+#define EXTI9_5_IRQ_CLEAR_MASK 0x0CE0
+#define EXTI15_10_IRQ_CLEAR_MASK 0xFC00
+
+static void ( *exti_callback[NUM_EXTI_LINES][NUM_EXTI_CALLBACKS] )(void *);
 static uint32_t num_exti_callbacks[NUM_EXTI_LINES];
+
+static void * gpio_irq_context[NUM_EXTI_LINES][NUM_EXTI_CALLBACKS];
 
 static uint16_t volatile gpio_irq_events;
 
 /* Add a callback function to the GPIO ISRs */
 
-_Bool register_gpio_callback( void (*cb)(void), uint8_t pin ) {
+_Bool register_gpio_callback( void (*cb)(void *), uint8_t pin ) {
     if (pin > GPIO_PIN_15) {
         return false;
     }
@@ -65,11 +71,10 @@ _Bool get_irq_status_for_pin(uint8_t pin) {
 /* GPIO 0 ISR */
 
 void __attribute__( (interrupt) ) EXTI0_Handler(void) {
-    // Each callback must check their respective pin for pending IRQ
-    gpio_irq_events = EXTI->PR1 & 0xFFFF;
+    gpio_irq_events = EXTI->PR1 & GPIO_IRQ_PENDING_MASK;
 
     for (uint32_t i = 0; i < num_exti_callbacks[0]; i++) {
-        exti_callback[0][i]();
+        exti_callback[0][i]( gpio_irq_context[0][i] );
     }
     
     // Acknowledge pending interrupt
@@ -79,11 +84,10 @@ void __attribute__( (interrupt) ) EXTI0_Handler(void) {
 /* GPIO 1 ISR */
 
 void __attribute__( (interrupt) ) EXTI1_Handler(void) {
-    // Each callback must check their respective pin for pending IRQ
-    gpio_irq_events = EXTI->PR1 & 0xFFFF;
+    gpio_irq_events = EXTI->PR1 & GPIO_IRQ_PENDING_MASK;
 
     for (uint32_t i = 0; i < num_exti_callbacks[1]; i++) {
-        exti_callback[1][i]();
+        exti_callback[0][i]( gpio_irq_context[1][i] );
     }
 
     // Acknowledge pending interrupt
@@ -93,11 +97,10 @@ void __attribute__( (interrupt) ) EXTI1_Handler(void) {
 /* GPIO 2 ISR */
 
 void __attribute__( (interrupt) ) EXTI2_Handler(void) {
-    // Each callback must check their respective pin for pending IRQ
-    gpio_irq_events = EXTI->PR1 & 0xFFFF;
+    gpio_irq_events = EXTI->PR1 & GPIO_IRQ_PENDING_MASK;
 
     for (uint32_t i = 0; i < num_exti_callbacks[2]; i++) {
-        exti_callback[2][i]();
+        exti_callback[0][i]( gpio_irq_context[2][i] );
     }
 
     // Acknowledge pending interrupt
@@ -107,11 +110,10 @@ void __attribute__( (interrupt) ) EXTI2_Handler(void) {
 /* GPIO 3 ISR */
 
 void __attribute__( (interrupt) ) EXTI3_Handler(void) {
-    // Each callback must check their respective pin for pending IRQ
-    gpio_irq_events = EXTI->PR1 & 0xFFFF;
+    gpio_irq_events = EXTI->PR1 & GPIO_IRQ_PENDING_MASK;
 
     for (uint32_t i = 0; i < num_exti_callbacks[3]; i++) {
-        exti_callback[3][i]();
+        exti_callback[0][i]( gpio_irq_context[3][i] );
     }
 
     // Acknowledge pending interrupt
@@ -121,11 +123,10 @@ void __attribute__( (interrupt) ) EXTI3_Handler(void) {
 /* GPIO 4 ISR */
 
 void __attribute__( (interrupt) ) EXTI4_Handler(void) {
-    // Each callback must check their respective pin for pending IRQ
-    gpio_irq_events = EXTI->PR1 & 0xFFFF;
+    gpio_irq_events = EXTI->PR1 & GPIO_IRQ_PENDING_MASK;
     
     for (uint32_t i = 0; i < num_exti_callbacks[4]; i++) {
-        exti_callback[4][i]();
+        exti_callback[0][i]( gpio_irq_context[4][i] );
     }
     
     // Acknowledge pending interrupt
@@ -135,28 +136,26 @@ void __attribute__( (interrupt) ) EXTI4_Handler(void) {
 /* GPIOs 5 - 9 ISR */
 
 void __attribute__( (interrupt) ) EXTI9_5_Handler(void) {
-    // Each callback must check their respective pin for pending IRQ
-    gpio_irq_events = EXTI->PR1 & 0xFFFF;
+    gpio_irq_events = EXTI->PR1 & GPIO_IRQ_PENDING_MASK;
 
     for (uint32_t i = 0; i < num_exti_callbacks[5]; i++) {
-        exti_callback[5][i]();
+        exti_callback[0][i]( gpio_irq_context[5][i] );
     }
 
     // Acknowledge pending interrupts
-    EXTI->PR1 = gpio_irq_events & 0x0CE0;
+    EXTI->PR1 = gpio_irq_events & EXTI9_5_IRQ_CLEAR_MASK;
 }
 
 /* GPIOs 10 - 15 ISR */
 
 void __attribute__( (interrupt) ) EXTI15_10_Handler(void) {
-    // Each callback must check their respective pin for pending IRQ
-    gpio_irq_events = EXTI->PR1 & 0xFFFF;
+    gpio_irq_events = EXTI->PR1 & GPIO_IRQ_PENDING_MASK;
 
     for (uint32_t i = 0; i < num_exti_callbacks[6]; i++) {
-        exti_callback[6][i]();
+        exti_callback[0][i]( gpio_irq_context[6][i] );
     }
     
-    // Clear all processed IRQs
-    EXTI->PR1 = gpio_irq_events & 0xFC00;
+    // Acknowledge pending interrupts
+    EXTI->PR1 = gpio_irq_events & EXTI15_10_IRQ_CLEAR_MASK;
 }
 

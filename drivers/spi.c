@@ -26,6 +26,8 @@
 #define NUM_MOSI_PINS 4
 #define NUM_SCK_PINS 4
 
+#define SLAVE_ACKNOWLEDGE 0xFF
+
 uint8_t const miso_pin_LUT[NUM_MISO_PINS] = {
 	GPIO_PIN_6,
 	GPIO_PIN_11,
@@ -56,7 +58,7 @@ static cbuffer_t spi_tx_fifo[NUM_SPI_PERIPHERALS];
 static void read_rx_data(spi_t * regs);
 static void write_tx_data(spi_t * regs);
 
-static void nss_gpio_slave_callback(void);
+static void nss_gpio_slave_callback(void * context);
 
 /* Read incoming RX data and place into RX FIFO */
 
@@ -84,15 +86,19 @@ static void write_tx_data(spi_t * regs) {
 
 /* NSS interrupt callback function to prepare for SPI transfer */
 
-static void nss_gpio_slave_callback(void) {
-	// Check if pin has interrupt
-	// Check what edge triggered interrupt
-	// If falling edge, SPI->CR1 &= ~SPI_CR1_SSI_MASK;
-	// If rising edge, SPI->CR1 |= SPI_CR1_SSI(1); Register 1st byte in TX FIFO
+static void nss_gpio_slave_callback(void * context) {
+	spi_device_t * device = (spi_device_t *) context;
 
-	// Need to figure out how to get pin number here without using macros...
+	if ( !get_irq_status_for_pin(device->pin) ) {
+		return;
+	}
 
-	return;
+	if ( read_gpio(&device->nss_handler) ) {
+		device->bus->regs->CR1 |= SPI_CR1_SSI(1);
+	} else {
+		device->bus->regs->CR1 &= ~SPI_CR1_SSI_MASK;	
+		device->bus->regs->DR = SLAVE_ACKNOWLEDGE;
+	}
 }
 
 /* Setup SPI peripheral */

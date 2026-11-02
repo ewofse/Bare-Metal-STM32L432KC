@@ -20,7 +20,7 @@
 #define EXTI15_10_IRQ 40
 
 #define GPIO_IRQ_PENDING_MASK 0xFFFF 
-#define EXTI9_5_IRQ_CLEAR_MASK 0x0CE0
+#define EXTI9_5_IRQ_CLEAR_MASK 0x03E0
 #define EXTI15_10_IRQ_CLEAR_MASK 0xFC00
 
 static void ( *exti_callback[NUM_EXTI_LINES][NUM_EXTI_CALLBACKS] )(void *);
@@ -66,7 +66,7 @@ _Bool get_irq_status_for_pin(uint8_t pin) {
    
     // STM only has hardware indicating if an interrupt occurred
     // No hardware indicating which type of edge triggered the IRQ
-    return gpio_irq_events & (1 >> pin);
+    return gpio_irq_events & (1 << pin);
 }
 
 /* GPIO 0 ISR */
@@ -88,7 +88,7 @@ void __attribute__( (interrupt) ) EXTI1_Handler(void) {
     gpio_irq_events = EXTI->PR1 & GPIO_IRQ_PENDING_MASK;
 
     for (uint32_t i = 0; i < num_exti_callbacks[1]; i++) {
-        exti_callback[0][i]( gpio_irq_ctxt[1][i] );
+        exti_callback[1][i]( gpio_irq_ctxt[1][i] );
     }
 
     // Acknowledge pending interrupt
@@ -101,7 +101,7 @@ void __attribute__( (interrupt) ) EXTI2_Handler(void) {
     gpio_irq_events = EXTI->PR1 & GPIO_IRQ_PENDING_MASK;
 
     for (uint32_t i = 0; i < num_exti_callbacks[2]; i++) {
-        exti_callback[0][i]( gpio_irq_ctxt[2][i] );
+        exti_callback[2][i]( gpio_irq_ctxt[2][i] );
     }
 
     // Acknowledge pending interrupt
@@ -114,7 +114,7 @@ void __attribute__( (interrupt) ) EXTI3_Handler(void) {
     gpio_irq_events = EXTI->PR1 & GPIO_IRQ_PENDING_MASK;
 
     for (uint32_t i = 0; i < num_exti_callbacks[3]; i++) {
-        exti_callback[0][i]( gpio_irq_ctxt[3][i] );
+        exti_callback[3][i]( gpio_irq_ctxt[3][i] );
     }
 
     // Acknowledge pending interrupt
@@ -127,7 +127,7 @@ void __attribute__( (interrupt) ) EXTI4_Handler(void) {
     gpio_irq_events = EXTI->PR1 & GPIO_IRQ_PENDING_MASK;
     
     for (uint32_t i = 0; i < num_exti_callbacks[4]; i++) {
-        exti_callback[0][i]( gpio_irq_ctxt[4][i] );
+        exti_callback[4][i]( gpio_irq_ctxt[4][i] );
     }
     
     // Acknowledge pending interrupt
@@ -140,7 +140,7 @@ void __attribute__( (interrupt) ) EXTI9_5_Handler(void) {
     gpio_irq_events = EXTI->PR1 & GPIO_IRQ_PENDING_MASK;
 
     for (uint32_t i = 0; i < num_exti_callbacks[5]; i++) {
-        exti_callback[0][i]( gpio_irq_ctxt[5][i] );
+        exti_callback[5][i]( gpio_irq_ctxt[5][i] );
     }
 
     // Acknowledge pending interrupts
@@ -153,7 +153,7 @@ void __attribute__( (interrupt) ) EXTI15_10_Handler(void) {
     gpio_irq_events = EXTI->PR1 & GPIO_IRQ_PENDING_MASK;
 
     for (uint32_t i = 0; i < num_exti_callbacks[6]; i++) {
-        exti_callback[0][i]( gpio_irq_ctxt[6][i] );
+        exti_callback[6][i]( gpio_irq_ctxt[6][i] );
     }
     
     // Acknowledge pending interrupts

@@ -3,6 +3,7 @@
 #include "gpio_irq.h"
 #include "interrupt.h"
 #include <m4/nvic.h>
+#include <stm32l432kc/syscfg.h>
 #include <stm32l432kc/usart.h>
 #include <stm32l432kc/rcc.h>
 #include <stm32l432kc/exti.h>
@@ -252,7 +253,24 @@ void register_spi_device(spi_device_t * device) {
 		EXTI->FTSR1 |= 1 << device->pin;
 		EXTI->SWIER1 &= ~(1 << device->pin);
 
-		register_gpio_callback(nss_gpio_slave_callback, device->pin, device);				
+		RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN(1);
+
+		/* Attach GPIO to EXTI line */
+
+		uint32_t * exti_reg = (uint32_t *) ( (uintptr_t) &SYSCFG->EXTICR1 ) \
+			+ ( (device->pin / 4) * 4 );
+		uint8_t exti_index = (device->pin % 4) * 4;
+		uint8_t exti_pin = ( ( (uintptr_t) device->port ) & 0xFFF ) >> 10;
+
+		*exti_reg &= ~(0x7 << exti_index);
+		*exti_reg |= exti_pin << exti_index;
+
+		/* Enable EXTI line interrupt in NVIC */
+
+		// uint8_t iser_index = device->pin / 5;
+		// NVIC->ISER[iser_index] = NVIC_ISER_SETENA( 1, ? - (iser_index * 16) );
+
+		register_gpio_callback(nss_gpio_slave_callback, device->pin, device);
 	}
 
 	gpio_handle_t nss_handler = {

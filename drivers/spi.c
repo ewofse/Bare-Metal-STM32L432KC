@@ -23,6 +23,18 @@
 #define SPI3_IRQ 51
 #define SPI3_IRQ_PRI 15
 
+#define EXTI0_IRQ 6
+#define EXTI1_IRQ 7
+#define EXTI2_IRQ 8
+#define EXTI3_IRQ 9
+#define EXTI4_IRQ 10
+#define EXTI9_5_IRQ 23
+#define EXTI15_10_IRQ 40
+
+#define NSS_IRQ_PRI 15
+
+#define NUM_GPIO 16
+
 #define NUM_MISO_PINS 4
 #define NUM_MOSI_PINS 4
 #define NUM_SCK_PINS 4
@@ -48,6 +60,25 @@ uint8_t const sck_pin_LUT[NUM_SCK_PINS] = {
 	GPIO_PIN_5,
 	GPIO_PIN_3,
 	GPIO_PIN_3
+};
+
+uint8_t const exti_irq_LUT[NUM_GPIO] = {
+	EXTI0_IRQ,
+	EXTI1_IRQ,
+	EXTI2_IRQ,
+	EXTI3_IRQ,
+	EXTI4_IRQ,
+	EXTI9_5_IRQ,
+	EXTI9_5_IRQ,
+	EXTI9_5_IRQ,
+	EXTI9_5_IRQ,
+	EXTI9_5_IRQ,
+	EXTI15_10_IRQ,
+	EXTI15_10_IRQ,
+	EXTI15_10_IRQ,
+	EXTI15_10_IRQ,
+	EXTI15_10_IRQ,
+	EXTI15_10_IRQ
 };
 
 static void ( *callback[NUM_SPI_PERIPHERALS][NUM_SPI_CALLBACKS] )(void);
@@ -267,8 +298,16 @@ void register_spi_device(spi_device_t * device) {
 
 		/* Enable EXTI line interrupt in NVIC */
 
-		// uint8_t iser_index = device->pin / 5;
-		// NVIC->ISER[iser_index] = NVIC_ISER_SETENA( 1, ? - (iser_index * 16) );
+		uint8_t exti_irq_num = exti_irq_LUT[device->pin];
+		uint8_t iser_index = (device->pin == GPIO_PIN_15) ? 2 : device->pin / 5;
+		uint8_t ipr_index = exti_irq_num / 4;
+
+		NVIC->ISER[iser_index] =
+			NVIC_ISER_SETENA( 1, exti_irq_num - iser_index * 16 );
+
+		NVIC->IPR[ipr_index] = 
+			( NVIC->IPR[ipr_index] & ~NVIC_IPR_PRI_MASK(exti_irq_num) ) \
+			| NVIC_IPR_PRI(NSS_IRQ_PRI, exti_irq_num);
 
 		register_gpio_callback(nss_gpio_slave_callback, device->pin, device);
 	}

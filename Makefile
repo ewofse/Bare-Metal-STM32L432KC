@@ -11,7 +11,11 @@ LIBS 	 =
 CFLAGS   = -std=c99 -ffreestanding -pedantic \
 		   $(CPU) $(OPTS) $(INCLUDES) $(LTOPTS) -Wall 
 
-.PHONY: flash eject clean
+OPENOCD  = openocd -f interface/stlink.cfg -f target/stm32l4x.cfg
+SERIAL   = /dev/ttyACM0
+BAUD     = 115200
+
+.PHONY: flash term gdbserver gdb clean
 
 stm32l432kc.elf: setup/*.c lib/printf/printf.c src/test_spi.c \
 	drivers/spi.o drivers/led.o drivers/usart.o drivers/systick.o \
@@ -21,12 +25,18 @@ stm32l432kc.elf: setup/*.c lib/printf/printf.c src/test_spi.c \
 %.o: %.c
 	arm-none-eabi-gcc $(CFLAGS) -c $< -o $@
 
-flash: stm32l432kc.elf
-	sudo mkdir -p /mnt/d; sudo mount -t drvfs D: /mnt/d; cp $< /mnt/d 
-
-eject:
-	sudo umount /mnt/d
-
 clean:
 	-rm -f *.elf *.bin *.o drivers/*.o util/*.o
+
+flash: stm32l432kc.elf
+	$(OPENOCD) -c "program $< verify reset exit"
+
+term:
+	screen $(SERIAL) $(BAUD)
+
+gdbserver:
+	$(OPENOCD)
+
+gdb: stm32l432kc.elf
+	arm-none-eabi-gdb $< -ex "target extended-remote :3333"
 

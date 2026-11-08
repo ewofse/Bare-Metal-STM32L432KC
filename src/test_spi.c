@@ -74,7 +74,7 @@ void test_spi_full_duplex(void) {
 		.mode = SPI_MODE_0,
 		.frame_format = SPI_MOTOROLA,
 		.data_size = SPI_DATA_8_BIT,
-		.baud_rate = SPI_BAUD_FCLK_64,
+		.baud_rate = SPI_BAUD_FCLK_16,
 		.data_dir = SPI_MSB_FIRST,
 		.dma = SPI_DMA_NONE
 	};
@@ -86,7 +86,7 @@ void test_spi_full_duplex(void) {
 	
 	spi_device_t spi3_device = {
 		.bus = &spi3_handler,
-		.port = GPIOA,
+		.port = GPIOB,
 		.pin = GPIO_PIN_0
 	};
 
@@ -102,7 +102,7 @@ void test_spi_full_duplex(void) {
 		.mode = SPI_MODE_0,
 		.frame_format = SPI_MOTOROLA,
 		.data_size = SPI_DATA_8_BIT,
-		.baud_rate = SPI_BAUD_FCLK_64,
+		.baud_rate = SPI_BAUD_FCLK_16,
 		.data_dir = SPI_MSB_FIRST,
 		.dma = SPI_DMA_NONE
 	};
@@ -114,7 +114,7 @@ void test_spi_full_duplex(void) {
 
 	spi_device_t spi1_device = {
 		.bus = &spi1_handler,
-		.port = GPIOA,
+		.port = GPIOB,
 		.pin = GPIO_PIN_1
 	};
 
@@ -138,12 +138,10 @@ void test_spi_full_duplex(void) {
 
 		wait_for_interrupt();	
 
-		if (!send_data) {
-			continue;
+		if (send_data) {
+			send_data = false;
+			spi_write(&spi1_device, master_write_data, 5);
 		}
-
-		send_data = false;
-		spi_write(&spi1_device, master_write_data, 5);
 
 		if ( spi_read(&spi3_device, slave_read_data, 2) ) {
 			spi_write(&spi3_device, slave_write_data, 2);
@@ -152,7 +150,7 @@ void test_spi_full_duplex(void) {
 		if ( spi_read(&spi1_device, master_read_data, 3) ) {
 			printf( "%x\r\n", master_read_data[0] );
 			printf( "%x\r\n", master_read_data[1] );
-			printf( "%x\r\n", master_read_data[2] );
+			printf( "%x\r\n\r\n", master_read_data[2] );
 		}
 	}
 }

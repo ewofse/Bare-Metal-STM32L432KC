@@ -127,6 +127,7 @@ void register_spi_device(spi_device_t * device);
 _Bool spi_read(spi_device_t * device, uint8_t * buf, uint32_t len);
 _Bool spi_write(spi_device_t * device, uint8_t const * buf, uint32_t len);
 _Bool register_spi_callback( spi_handle_t * handler, void (*cb)(void) );
+_Bool register_spi_slave_callback( spi_handle_t * handler, void (*cb)(void) );
 
 #endif
 

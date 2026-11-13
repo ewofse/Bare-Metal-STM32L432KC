@@ -102,9 +102,8 @@ void configure_dma(dma_handle_t * handler) {
     uint8_t pri_index = irq / 4;
 
     NVIC->ISER[en_index] = NVIC_ISER_SETENA(1, irq);
-    NVIC->IPR[pri_index] = 
-        ( NVIC->IPR[pri_index] & ~NVIC_IPR_PRI_MASK(irq) ) 
-        | NVIC_IPR_PRI(irq, DMA_IRQ_PRI);
+    NVIC->IPR[pri_index] = ( NVIC->IPR[pri_index] & ~NVIC_IPR_PRI_MASK(irq) ) 
+        				   | NVIC_IPR_PRI(irq, DMA_IRQ_PRI);
 }
 
 /* Configure DMA controller and begin data transfers */

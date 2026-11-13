@@ -41,6 +41,8 @@
 
 #define SLAVE_ACKNOWLEDGE 0xFF
 
+#define SPI_DR8(regs) ( *(volatile uint8_t *) &(regs)->DR )
+
 uint8_t const miso_pin_LUT[NUM_MISO_PINS] = {
 	GPIO_PIN_6,
 	GPIO_PIN_11,
@@ -84,6 +86,9 @@ uint8_t const exti_irq_LUT[NUM_GPIO] = {
 static void ( *callback[NUM_SPI_PERIPHERALS][NUM_SPI_CALLBACKS] )(void);
 static uint32_t num_callbacks[NUM_SPI_PERIPHERALS];
 
+static void ( *slave_callback[NUM_SPI_PERIPHERALS] )(void);
+static _Bool has_slave_callback[NUM_SPI_PERIPHERALS];
+
 static cbuffer_t spi_rx_fifo[NUM_SPI_PERIPHERALS];
 static cbuffer_t spi_tx_fifo[NUM_SPI_PERIPHERALS];
 
@@ -95,10 +100,9 @@ static void nss_gpio_slave_callback(void * ctxt);
 /* Read incoming RX data and place into RX FIFO */
 
 static void read_rx_data(spi_t * regs) {
-    uint8_t index = regs == SPI3;
-    uint8_t data = (uint8_t) regs->DR;
-
-    cbuffer_write( &spi_rx_fifo[index], data );
+	uint8_t index = regs == SPI3;
+	uint8_t data = SPI_DR8(regs);
+	cbuffer_write( &spi_rx_fifo[index], data );
 }
 
 /* Output TX FIFO data if there is no outgoing data */
@@ -108,7 +112,7 @@ static void write_tx_data(spi_t * regs) {
     uint8_t data;
 
     if ( cbuffer_read( &spi_tx_fifo[index], &data ) ) {
-        regs->DR = data;
+		SPI_DR8(regs) = data;
     }
 
     if ( cbuffer_empty( &spi_tx_fifo[index] ) ) {
@@ -127,9 +131,9 @@ static void nss_gpio_slave_callback(void * ctxt) {
 
 	if ( read_gpio(&device->nss_handler) ) {
 		device->bus->regs->CR1 |= SPI_CR1_SSI(1);
+		SPI_DR8(device->bus->regs) = SLAVE_ACKNOWLEDGE;
 	} else {
 		device->bus->regs->CR1 &= ~SPI_CR1_SSI_MASK;	
-		device->bus->regs->DR = SLAVE_ACKNOWLEDGE;
 	}
 }
 
@@ -146,23 +150,15 @@ void configure_spi(spi_handle_t * handler) {
     if (spi == SPI1) {
         RCC->APB2ENR |= RCC_APB2ENR_SPI1EN(1);
 
-        /* IRQ enable and priority */
-
         NVIC->ISER[1] = NVIC_ISER_SETENA(1, SPI1_IRQ - 32);
-
-        NVIC->IPR[8] = 
-            (NVIC->IPR[8] & ~NVIC_IPR8_PRI_35_MASK) 
-          | NVIC_IPR8_PRI_35(SPI1_IRQ_PRI);
+        NVIC->IPR[8] = ( NVIC->IPR[8] & ~NVIC_IPR8_PRI_35_MASK ) 
+					   | NVIC_IPR8_PRI_35(SPI1_IRQ_PRI);
     } else {
         RCC->APB1ENR1 |= RCC_APB1ENR1_SPI3EN(1);
 
-        /* IRQ enable and priority */
-
         NVIC->ISER[1] = NVIC_ISER_SETENA(1, SPI3_IRQ - 32);
-
-        NVIC->IPR[12] = 
-            (NVIC->IPR[12] & ~NVIC_IPR12_PRI_51_MASK) 
-          | NVIC_IPR12_PRI_51(SPI3_IRQ_PRI);
+        NVIC->IPR[12] = ( NVIC->IPR[12] & ~NVIC_IPR12_PRI_51_MASK ) 
+          				| NVIC_IPR12_PRI_51(SPI3_IRQ_PRI);
     }
 
     /* Pin configurations */
@@ -200,7 +196,7 @@ void configure_spi(spi_handle_t * handler) {
 
 		gpio->MODER &= ~GPIO_MODER_MODE_MASK(pin);
 		gpio->MODER |= GPIO_MODER_MODE(GPIO_MODE_ALTERNATE, pin);
-		gpio->AFR[af_index] &= ~GPIO_AFR_AFSEL_MASK(pin);
+
 		gpio->AFR[af_index] |= GPIO_AFR_AFSEL(af, pin);
 	}
 
@@ -251,6 +247,11 @@ void configure_spi(spi_handle_t * handler) {
 
     // Enable peripheral
 	spi->CR1 |= SPI_CR1_SPE(1);
+
+	// Pre-register first byte of slave response 
+	if ( !(spi->CR1 & SPI_CR1_MSTR_MASK) ) {
+		SPI_DR8(spi) = SLAVE_ACKNOWLEDGE;
+	}
 }
 
 /* Register a device onto a SPI bus and configure NSS pin */
@@ -343,7 +344,7 @@ _Bool spi_read(spi_device_t * device, uint8_t * buf, uint32_t len) {
     disable_irq();
 
     for (uint32_t i = 0; i < len; i++) {
-        cbuffer_read( &spi_rx_fifo[index], buf++ );
+		cbuffer_read( &spi_rx_fifo[index], buf++ );
     }
 
     set_primask(primask);
@@ -402,15 +403,29 @@ _Bool register_spi_callback( spi_handle_t * handler, void (*cb)(void) ) {
     return true;
 }
 
+_Bool register_spi_slave_callback( spi_handle_t * handler, void (*cb)(void) ) {
+	spi_t * spi = handler->regs;
+
+	uint8_t index = spi == SPI3;
+
+	slave_callback[index] = cb;
+	has_slave_callback[index] = true;
+
+	return true;
+}
+
 /* SPI1 ISR */
 
 void __attribute__( (interrupt) ) SPI1_Handler(void) {
     if (SPI1->SR & SPI_SR_RXNE_MASK) {
         read_rx_data(SPI1);
+
+		if ( !(SPI1->CR1 & SPI_CR1_MSTR_MASK) && has_slave_callback[0] ) {
+			slave_callback[0]();
+		} 
     }
     
-    if (SPI1->SR & SPI_SR_TXE_MASK 
-        && SPI1->CR2 & SPI_CR2_TXEIE_MASK) {
+    if (SPI1->SR & SPI_SR_TXE_MASK && SPI1->CR2 & SPI_CR2_TXEIE_MASK) {
         write_tx_data(SPI1);
     }
 
@@ -424,10 +439,13 @@ void __attribute__( (interrupt) ) SPI1_Handler(void) {
 void __attribute__( (interrupt) ) SPI3_Handler(void) {
     if (SPI3->SR & SPI_SR_RXNE_MASK) {
         read_rx_data(SPI3);
+
+		if ( !(SPI3->CR1 & SPI_CR1_MSTR_MASK) && has_slave_callback[1] ) {
+			slave_callback[1]();
+		} 
     }
     
-    if (SPI3->SR & SPI_SR_TXE_MASK 
-        && SPI3->CR2 & SPI_CR2_TXEIE_MASK) {
+    if (SPI3->SR & SPI_SR_TXE_MASK && SPI3->CR2 & SPI_CR2_TXEIE_MASK) {
         write_tx_data(SPI3);
     }
 

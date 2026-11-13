@@ -18,8 +18,11 @@ void test_spi_simplex(void);
 void test_spi_full_duplex(void);
 
 void send_spi_data_1hz(void);
+void slave_response(void);
 
 _Bool volatile send_data;
+
+spi_device_t spi3_device;
 
 void main(void) {
 	// test_spi_simplex();
@@ -29,7 +32,7 @@ void main(void) {
 void send_spi_data_1hz(void) {
 	static uint16_t cnt;
 
-	cnt = (cnt == 999) ? 0 : cnt + 1;
+	cnt = (cnt == 4999) ? 0 : cnt + 1;
 
 	if (cnt == 0) {
 		send_data = true;		
@@ -84,14 +87,13 @@ void test_spi_full_duplex(void) {
 		.opts = spi3_config
 	};
 	
-	spi_device_t spi3_device = {
-		.bus = &spi3_handler,
-		.port = GPIOB,
-		.pin = GPIO_PIN_0
-	};
+	spi3_device.bus = &spi3_handler;
+	spi3_device.port = GPIOB;
+	spi3_device.pin = GPIO_PIN_0;
 
 	configure_spi(&spi3_handler);
 	register_spi_device(&spi3_device);
+	register_spi_slave_callback(&spi3_handler, slave_response);
 	
 	spi_config_t spi1_config = {
 		.miso_pin = SPI1_MISO_PIN_PA6,
@@ -125,33 +127,76 @@ void test_spi_full_duplex(void) {
 
 	while (true) {
 		uint8_t master_read_data[3];
-		uint8_t master_write_data[5] = {
-			0xCC, 
-			0x01, 
-			SPI_DUMMY_WRITE,
+		uint8_t master_write_data[3] = {
+			0xEE, 
 			SPI_DUMMY_WRITE,
 			SPI_DUMMY_WRITE
 		};
 
-		uint8_t slave_read_data[2];
-		uint8_t slave_write_data[2] = {0xAB, 0xCD};
-
 		wait_for_interrupt();	
 
-		if (send_data) {
-			send_data = false;
-			spi_write(&spi1_device, master_write_data, 5);
+		if (!send_data) {
+			continue;
 		}
 
-		if ( spi_read(&spi3_device, slave_read_data, 2) ) {
-			spi_write(&spi3_device, slave_write_data, 2);
+		send_data = false;
+
+		spi_write(&spi1_device, master_write_data, 3);
+
+		uint8_t cnt = 0;
+		uint8_t data;
+
+		while ( cnt < 3 && spi_read(&spi1_device, &data, 1) ) {
+			master_read_data[cnt++] = data;
 		}
 
-		if ( spi_read(&spi1_device, master_read_data, 3) ) {
-			printf( "%x\r\n", master_read_data[0] );
-			printf( "%x\r\n", master_read_data[1] );
-			printf( "%x\r\n\r\n", master_read_data[2] );
-		}
+		printf("master reads:\r\n");	
+		printf( "%x\r\n", master_read_data[0] );
+		printf( "%x\r\n", master_read_data[1] );
+		printf( "%x\r\n\r\n", master_read_data[2] );
 	}
+}
+
+void slave_response(void) {	
+	static enum {
+		READ,
+		WRITE,
+		DUMMY,
+	} state;
+
+	static uint8_t num_dummy_writes;
+	uint8_t data;
+	uint8_t const ack1 = 0xAB;
+	uint8_t const ack2 = 0xCD;
+
+	switch (state) {
+		case READ:
+			spi_read(&spi3_device, &data,  1);
+
+			if (data == 0xEE) {
+				spi_write(&spi3_device, &ack1, 1);
+				state = DUMMY;
+				num_dummy_writes = 2;
+			}
+
+			break;
+
+		case WRITE:
+			spi_read(&spi3_device, &data, 1);
+			num_dummy_writes = 0;
+			state = READ;
+			break;
+
+		case DUMMY:
+			spi_read(&spi3_device, &data, 1);
+			num_dummy_writes--;
+
+			if (num_dummy_writes == 1) {
+				spi_write(&spi3_device, &ack2, 1);
+				state = WRITE;
+			}
+
+			break;
+	};
 }
 

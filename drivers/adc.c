@@ -37,19 +37,15 @@ void configure_adc(adc_handle_t * handler) {
         ch_idx[i] = 0;
     }
     
-    /* Clock selection and enable */
+    /* Clock enable and IRQ number selection */
 
     RCC->CCIPR &= ~RCC_CCIPR_ADCSEL_MASK;
     RCC->CCIPR |= RCC_CCIPR_ADCSEL(3);
     RCC->AHB2ENR |= RCC_AHB2ENR_ADCEN(1);
 
-    /* IRQ enable and priority */
-
     NVIC->ISER[0] = NVIC_ISER_SETENA(1, ADC1_2_IRQ);
-
-    NVIC->IPR[4] =
-            (NVIC->IPR[4] & ~NVIC_IPR4_PRI_18_MASK) 
-          | NVIC_IPR4_PRI_18(ADC1_2_IRQ_PRI);
+    NVIC->IPR[4] = (NVIC->IPR[4] & ~NVIC_IPR4_PRI_18_MASK) 
+				   | NVIC_IPR4_PRI_18(ADC1_2_IRQ_PRI);
 
     /* Startup sequence */
 
